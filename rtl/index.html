@@ -569,9 +569,10 @@ function showDivision(division, button) {
     '12 academies divided into three groups of four. Each academy plays three group-stage matches. The top two teams in each group and the two best third-placed teams qualify for the quarter-finals, followed by the semi-finals and final.';
 renderTeams(division);
 }
+
 async function renderTeams(division) {
   const grid = document.getElementById('team-grid');
-  grid.innerHTML = '<p>Loading academies...</p>';
+  grid.innerHTML = '<p>Loading approved academies...</p>';
 
   const SUPABASE_URL = 'https://uisdxifqkhjuwyxdvwwm.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_aHGKUAa1V3-SZ44MWwLC8Q_I_vKN9yA';
@@ -582,7 +583,8 @@ async function renderTeams(division) {
   };
 
   try {
-    const entriesUrl = `${SUPABASE_URL}/rest/v1/rtl_entries?select=id,academy_id,entry_number,group_name&season=eq.2027&division=eq.${division}&order=entry_number.asc`;
+    const entriesUrl =
+      `${SUPABASE_URL}/rest/v1/rtl_entries?select=id,academy_id,entry_number,group_name&season=eq.2027&division=eq.${encodeURIComponent(division)}&order=entry_number.asc`;
 
     const entriesResponse = await fetch(entriesUrl, { headers });
 
@@ -592,14 +594,15 @@ async function renderTeams(division) {
 
     const entries = await entriesResponse.json();
 
-    const academyIds = [...new Set(
-      entries.map(entry => entry.academy_id).filter(Boolean)
-    )];
-
     let academies = [];
+
+    const academyIds = [
+      ...new Set(entries.map(entry => entry.academy_id).filter(Boolean))
+    ];
 
     if (academyIds.length > 0) {
       const ids = academyIds.join(',');
+
       const academiesUrl =
         `${SUPABASE_URL}/rest/v1/rtl_academies?select=id,academy_name,location&id=in.(${ids})&registration_status=eq.approved`;
 
@@ -616,16 +619,27 @@ async function renderTeams(division) {
       academies.map(academy => [academy.id, academy])
     );
 
+    const entryMap = new Map(
+      entries.map(entry => [Number(entry.entry_number), entry])
+    );
+
     grid.innerHTML = '';
 
-    entries.forEach(entry => {
-      const academy = academyMap.get(entry.academy_id);
+    for (let i = 1; i <= 12; i++) {
+      const entry = entryMap.get(i);
+      const academy = entry
+        ? academyMap.get(entry.academy_id)
+        : null;
+
+      const group = entry?.group_name ||
+        (i <= 4 ? 'Group A' : i <= 8 ? 'Group B' : 'Group C');
+
       const slot = document.createElement('div');
       slot.className = 'team-slot';
 
       slot.innerHTML = `
-        <span>${division} / ${String(entry.entry_number).padStart(2, '0')}</span>
-        <small>Group ${entry.group_name}</small>
+        <span>${division} / ${String(i).padStart(2, '0')}</span>
+        <small>${group}</small>
         <br>
         ${academy
           ? academy.academy_name
@@ -633,11 +647,12 @@ async function renderTeams(division) {
       `;
 
       grid.appendChild(slot);
-    });
+    }
 
   } catch (error) {
     console.error('RTL academy loading error:', error);
-    grid.innerHTML = '<p>Academy information is temporarily unavailable.</p>';
+    grid.innerHTML =
+      '<p>Academy information is temporarily unavailable.</p>';
   }
 }
 
