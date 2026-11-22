@@ -576,13 +576,18 @@ function renderTeams(division) {
   for (let i = 1; i <= 12; i++) {
     const slot = document.createElement('div');
     slot.className = 'team-slot';
+
+    const group = i <= 4 ? 'Group A' : i <= 8 ? 'Group B' : 'Group C';
+
     slot.innerHTML =
-      '<span>' + division + ' / ' +
-      String(i).padStart(2,'0') +
-      '</span>Academy to be confirmed';
+        '<span>' + division + ' / ' +
+        String(i).padStart(2, '0') +
+        '</span><small>' + group + '</small><br>Academy to be confirmed';
+
     grid.appendChild(slot);
-  }
+}  
 }
+
 
 renderTeams('U17');
 </script>
