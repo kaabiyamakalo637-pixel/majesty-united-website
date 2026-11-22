@@ -1,0 +1,589 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101820">
+<title>Rising Talents League | RTL</title>
+<style>
+:root {
+  --bg: #101820;
+  --panel: #192630;
+  --panel2: #22323d;
+  --text: #f5f7f8;
+  --muted: #a9b6bd;
+  --accent: #c7ed55;
+  --line: rgba(255,255,255,.12);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+}
+a { color: inherit; text-decoration: none; }
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(16,24,32,.96);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+}
+.nav {
+  max-width: 1180px;
+  margin: auto;
+  padding: 16px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+.brand-mark {
+  width: 43px;
+  height: 43px;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+}
+.brand small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+.nav-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+.nav-links a:hover { color: var(--accent); }
+.hero {
+  padding: 95px 22px 85px;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(199,237,85,.13), transparent 28%),
+    linear-gradient(135deg,#15232d,#101820 65%);
+  border-bottom: 1px solid var(--line);
+}
+.hero-inner, .container {
+  max-width: 1180px;
+  margin: auto;
+}
+.eyebrow {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+h1 {
+  font-size: clamp(42px,7vw,76px);
+  line-height: 1.04;
+  max-width: 780px;
+  margin: 18px 0;
+  letter-spacing: -2px;
+}
+.hero p {
+  max-width: 620px;
+  color: var(--muted);
+  font-size: 17px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+.btn {
+  display: inline-block;
+  padding: 12px 19px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #17212a;
+  font-weight: 800;
+  font-size: 13px;
+  border: 1px solid var(--accent);
+  cursor: pointer;
+}
+.btn.secondary {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--line);
+}
+section { padding: 65px 22px; }
+.section-heading {
+  margin-bottom: 28px;
+}
+.section-heading h2 {
+  font-size: clamp(27px,4vw,38px);
+  margin: 5px 0;
+}
+.section-heading p {
+  color: var(--muted);
+  max-width: 650px;
+  margin: 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 16px;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 23px;
+}
+.card h3 { margin: 8px 0; }
+.card p { color: var(--muted); font-size: 14px; }
+.card-number {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+.division-switch {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.division-switch button {
+  background: var(--panel2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 11px 25px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.division-switch button.active {
+  background: var(--accent);
+  color: #17212a;
+  border-color: var(--accent);
+}
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 10px;
+}
+.team-slot {
+  padding: 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.team-slot span {
+  display: block;
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 11px;
+}
+.info-strip {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 12px;
+  margin-top: 22px;
+}
+.info-box {
+  background: var(--panel2);
+  border-radius: 9px;
+  padding: 18px;
+}
+.info-box strong {
+  display: block;
+  font-size: 25px;
+  color: var(--accent);
+}
+.info-box span { color: var(--muted); font-size: 12px; }
+.feature {
+  background: #17242d;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.feature-card {
+  background: linear-gradient(135deg,#263943,#192630);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 30px;
+}
+.feature-card h3 { font-size: 25px; margin: 8px 0; }
+.feature-card p { color: var(--muted); max-width: 680px; }
+.status {
+  display: inline-block;
+  color: var(--accent);
+  border: 1px solid rgba(199,237,85,.4);
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+.placeholder {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px dashed rgba(255,255,255,.2);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.pathway {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 12px;
+}
+.pathway .card { border-top: 3px solid var(--accent); }
+footer {
+  padding: 30px 22px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+}
+.footer-inner {
+  max-width: 1180px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media(max-width:800px) {
+  .nav-links { display: none; }
+  .grid { grid-template-columns: 1fr 1fr; }
+  .team-grid { grid-template-columns: repeat(2,1fr); }
+  .pathway { grid-template-columns: 1fr 1fr; }
+}
+@media(max-width:520px) {
+  .hero { padding-top: 65px; }
+  .grid, .info-strip, .pathway { grid-template-columns: 1fr; }
+  h1 { letter-spacing: -1px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a class="brand" href="#home">
+      <span class="brand-mark">RTL</span>
+      <span>RISING TALENTS<small>LEAGUE</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#competition">Competition</a>
+      <a href="#fixtures">Fixtures</a>
+      <a href="#live">Live Centre</a>
+      <a href="#fan-vote">Fan Vote</a>
+      <a href="#pathway">Talent Pathway</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <div class="eyebrow">The 2027 Season</div>
+    <h1>DEVELOPING TALENT.<br>BUILDING FUTURES.</h1>
+    <p>
+      A competitive youth football platform created to identify,
+      develop and promote outstanding football talent across
+      the Upper River Region of The Gambia.
+    </p>
+    <div class="actions">
+      <a class="btn" href="#competition">Explore the League</a>
+      <a class="btn secondary" href="#fixtures">League Centre</a>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="section-heading">
+      <div class="eyebrow">Who We Are</div>
+      <h2>About the League</h2>
+      <p>
+        Rising Talents League provides a structured competition
+        where young players gain experience, demonstrate their
+        abilities and earn opportunities for further development.
+      </p>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <div class="card-number">01 / DEVELOPMENT</div>
+        <h3>Player Development</h3>
+        <p>Promoting technical ability, tactical understanding,
+        discipline and competitive experience.</p>
+      </article>
+      <article class="card">
+        <div class="card-number">02 / COMPETITION</div>
+        <h3>Organised Football</h3>
+        <p>A structured league for participating academies
+        across the Upper River Region.</p>
+      </article>
+      <article class="card">
+        <div class="card-number">03 / OPPORTUNITY</div>
+        <h3>Talent Identification</h3>
+        <p>Identifying outstanding players for regional,
+        national and international opportunities.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="competition">
+  <div class="container">
+    <div class="section-heading">
+      <div class="eyebrow">2027 Competition</div>
+      <h2>Two Divisions. One Platform.</h2>
+      <p>Select a division to view its competition structure.</p>
+    </div>
+
+    <div class="division-switch">
+      <button class="active" onclick="showDivision('U17',this)">U17</button>
+      <button onclick="showDivision('U19',this)">U19</button>
+    </div>
+
+    <div class="card">
+      <div class="card-number" id="division-label">U17 DIVISION</div>
+      <h3 id="division-title">Under 17 Competition</h3>
+      <p id="division-description">
+        12 participating academies. Each academy plays 11 league matches
+        in a single round-robin format, subject to final approval.
+      </p>
+      <div class="info-strip">
+        <div class="info-box">
+          <strong>12</strong><span>Academy places</span>
+        </div>
+        <div class="info-box">
+          <strong>11</strong><span>Matches per academy</span>
+        </div>
+        <div class="info-box">
+          <strong>66</strong><span>League matches in this division</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:28px">Participating Academies</h3>
+    <div class="team-grid" id="team-grid"></div>
+    <p style="color:var(--muted);font-size:12px">
+      Academy names will be published after official registration.
+    </p>
+  </div>
+</section>
+
+<section class="feature" id="fixtures">
+  <div class="container">
+    <div class="section-heading">
+      <div class="eyebrow">League Centre</div>
+      <h2>Fixtures & Results</h2>
+      <p>Follow the competition schedule and match results.</p>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <div class="card-number">MATCH SCHEDULE</div>
+        <h3>Fixtures</h3>
+        <p>Upcoming U17 and U19 league matches.</p>
+        <div class="placeholder">Official fixtures will appear here.</div>
+      </article>
+      <article class="card">
+        <div class="card-number">MATCH RECORDS</div>
+        <h3>Results</h3>
+        <p>Completed matches and final scores.</p>
+        <div class="placeholder">Official results will appear here.</div>
+      </article>
+      <article class="card">
+        <div class="card-number">LEAGUE RANKINGS</div>
+        <h3>Standings</h3>
+        <p>Points, matches played, goal difference and positions.</p>
+        <div class="placeholder">League tables will appear here.</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="live">
+  <div class="container">
+    <div class="section-heading">
+      <div class="eyebrow">Follow the Action</div>
+      <h2>Live Match Centre</h2>
+      <p>Follow RTL matches and stay updated during matchdays.</p>
+    </div>
+    <div class="feature-card">
+      <span class="status">LIVE MATCH CENTRE</span>
+      <h3>Every Match. Every Moment.</h3>
+      <p>
+        Live scores, match status and important match events
+        for the U17 and U19 divisions.
+      </p>
+      <div class="placeholder">
+        Live match information will appear here once the
+        official match system is connected.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="feature" id="fan-vote">
+  <div class="container">
+    <div class="section-heading">
+      <div class="eyebrow">Your Voice Matters</div>
+      <h2>RTL Fan Vote</h2>
+      <p>Support the players who make every match special.</p>
+    </div>
+    <div class="feature-card">
+      <span class="status">FANS' MAN OF THE MATCH</span>
+      <h3>Vote for Your Man of the Match</h3>
+      <p>
+        Fans will vote for one player from either team during
+        each eligible match. Voting remains open until full-time.
+      </p>
+      <div class="grid">
+        <div class="card">
+          <h3>One Vote Per Match</h3>
+          <p>Each fan gets one vote for each match.</p>
+        </div>
+        <div class="card">
+          <h3>Live Vote Results</h3>
+          <p>Vote totals update as fans participate.</p>
+        </div>
+        <div class="card">
+          <h3>Automatic Closure</h3>
+          <p>Voting closes when the match is officially ended.</p>
+        </div>
+      </div>
+      <div class="placeholder">
+        Fan voting will become active when the match and voting
+        systems are connected.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pathway">
+  <div class="container">
+    <div class="section-heading">
+      <div class="eyebrow">The Bigger Picture</div>
+      <h2>Talent Identification Pathway</h2>
+      <p>
+        The league provides a platform to identify outstanding
+        eligible players for Upper River Region representation.
+      </p>
+    </div>
+    <div class="pathway">
+      <article class="card">
+        <div class="card-number">STAGE 01</div>
+        <h3>Competition</h3>
+        <p>Players demonstrate their abilities in league matches.</p>
+      </article>
+      <article class="card">
+        <div class="card-number">STAGE 02</div>
+        <h3>Assessment</h3>
+        <p>Performances are reviewed by the authorised technical team.</p>
+      </article>
+      <article class="card">
+        <div class="card-number">STAGE 03</div>
+        <h3>Selection</h3>
+        <p>Outstanding eligible players are considered for selection.</p>
+      </article>
+      <article class="card">
+        <div class="card-number">STAGE 04</div>
+        <h3>Representation</h3>
+        <p>Selected players represent URR in approved competitions.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="feature" id="administration">
+  <div class="container">
+    <div class="section-heading">
+      <div class="eyebrow">League Operations</div>
+      <h2>Administration & Access</h2>
+      <p>
+        Dedicated access for the people responsible for running
+        and supporting the competition.
+      </p>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <h3>League Administrators</h3>
+        <p>Manage academies, registrations, fixtures and results.</p>
+      </article>
+      <article class="card">
+        <h3>Referees</h3>
+        <p>Access assigned matches and submit match information.</p>
+      </article>
+      <article class="card">
+        <h3>Academy Staff</h3>
+        <p>Manage their registered teams and player information.</p>
+      </article>
+    </div>
+    <div class="placeholder">
+      Secure staff login will be added after the administration
+      system is connected.
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>Rising Talents League</span>
+    <span>Developing Talent. Building Futures.</span>
+    <a href="/">Majesty United Football Academy</a>
+  </div>
+</footer>
+
+<script>
+function showDivision(division, button) {
+  document.querySelectorAll('.division-switch button')
+    .forEach(btn => btn.classList.remove('active'));
+  button.classList.add('active');
+
+  document.getElementById('division-label').textContent =
+    division + ' DIVISION';
+  document.getElementById('division-title').textContent =
+    'Under ' + division.substring(1) + ' Competition';
+
+  document.getElementById('division-description').textContent =
+    '12 participating academies. Each academy plays 11 league matches in a single round-robin format, subject to final approval.';
+
+  renderTeams(division);
+}
+
+function renderTeams(division) {
+  const grid = document.getElementById('team-grid');
+  grid.innerHTML = '';
+
+  for (let i = 1; i <= 12; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'team-slot';
+    slot.innerHTML =
+      '<span>' + division + ' / ' +
+      String(i).padStart(2,'0') +
+      '</span>Academy to be confirmed';
+    grid.appendChild(slot);
+  }
+}
+
+renderTeams('U17');
+</script>
+</body>
+</html>
