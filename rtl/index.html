@@ -688,7 +688,24 @@ async function loadRTLFixtures() {
     if (!response.ok) throw new Error(await response.text());
 
     const matches = await response.json();
+const officialsResponse = await fetch(
+  `${RTL_DATA_URL}/rest/v1/rtl_public_fixture_officials?select=fixture_id,referee_name`,
+  { headers: rtlHeaders }
+);
 
+let officials = [];
+
+if (officialsResponse.ok) {
+  officials = await officialsResponse.json();
+}
+
+const officialMap = new Map(
+  officials.map(item => [item.fixture_id, item.referee_name])
+);
+
+matches.forEach(match => {
+  match.referee_name = officialMap.get(match.id) || null;
+});
     const upcoming = matches.filter(match =>
       match.home_score === null || match.away_score === null
     );
@@ -705,6 +722,7 @@ async function loadRTLFixtures() {
             <small>${rtlSafe(match.match_date || 'Date TBC')} |
               ${rtlSafe(match.kick_off || 'Time TBC')}</small>
             <small>${rtlSafe(match.venue || 'Venue TBC')}</small>
+            <small>${match.referee_name ? 'Referee: ' + rtlSafe(match.referee_name) : ''}</small>
           </div>
         `).join('')
       : '<p>No upcoming fixtures scheduled yet.</p>';
@@ -717,6 +735,7 @@ async function loadRTLFixtures() {
               <strong>${rtlSafe(match.home_score)} - ${rtlSafe(match.away_score)}</strong>
               ${rtlSafe(match.away_academy)}</p>
             <small>${rtlSafe(match.match_date || '')}</small>
+            <small>${match.referee_name ? 'Referee: ' + rtlSafe(match.referee_name) : ''}</small>
           </div>
         `).join('')
       : '<p>No match results recorded yet.</p>';
