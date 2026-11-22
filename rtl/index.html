@@ -569,23 +569,75 @@ function showDivision(division, button) {
     '12 academies divided into three groups of four. Each academy plays three group-stage matches. The top two teams in each group and the two best third-placed teams qualify for the quarter-finals, followed by the semi-finals and final.';
 renderTeams(division);
 }
-function renderTeams(division) {
+async function renderTeams(division) {
   const grid = document.getElementById('team-grid');
-  grid.innerHTML = '';
+  grid.innerHTML = '<p>Loading academies...</p>';
 
-  for (let i = 1; i <= 12; i++) {
-    const slot = document.createElement('div');
-    slot.className = 'team-slot';
+  const SUPABASE_URL = 'https://uisdxifqkhjuwyxdvwwm.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_aHGKUAa1V3-SZ44MWwLC8Q_I_vKN9yA';
 
-    const group = i <= 4 ? 'Group A' : i <= 8 ? 'Group B' : 'Group C';
+  const headers = {
+    apikey: SUPABASE_KEY,
+    Authorization: `Bearer ${SUPABASE_KEY}`
+  };
 
-    slot.innerHTML =
-      '<span>' + division + ' / ' +
-      String(i).padStart(2, '0') +
-      '</span><small>' + group +
-      '</small><br>Academy to be confirmed';
+  try {
+    const entriesUrl = `${SUPABASE_URL}/rest/v1/rtl_entries?select=id,academy_id,entry_number,group_name&season=eq.2027&division=eq.${division}&order=entry_number.asc`;
 
-    grid.appendChild(slot);
+    const entriesResponse = await fetch(entriesUrl, { headers });
+
+    if (!entriesResponse.ok) {
+      throw new Error(await entriesResponse.text());
+    }
+
+    const entries = await entriesResponse.json();
+
+    const academyIds = [...new Set(
+      entries.map(entry => entry.academy_id).filter(Boolean)
+    )];
+
+    let academies = [];
+
+    if (academyIds.length > 0) {
+      const ids = academyIds.join(',');
+      const academiesUrl =
+        `${SUPABASE_URL}/rest/v1/rtl_academies?select=id,academy_name,location&id=in.(${ids})&registration_status=eq.approved`;
+
+      const academiesResponse = await fetch(academiesUrl, { headers });
+
+      if (!academiesResponse.ok) {
+        throw new Error(await academiesResponse.text());
+      }
+
+      academies = await academiesResponse.json();
+    }
+
+    const academyMap = new Map(
+      academies.map(academy => [academy.id, academy])
+    );
+
+    grid.innerHTML = '';
+
+    entries.forEach(entry => {
+      const academy = academyMap.get(entry.academy_id);
+      const slot = document.createElement('div');
+      slot.className = 'team-slot';
+
+      slot.innerHTML = `
+        <span>${division} / ${String(entry.entry_number).padStart(2, '0')}</span>
+        <small>Group ${entry.group_name}</small>
+        <br>
+        ${academy
+          ? academy.academy_name
+          : 'Academy to be confirmed'}
+      `;
+
+      grid.appendChild(slot);
+    });
+
+  } catch (error) {
+    console.error('RTL academy loading error:', error);
+    grid.innerHTML = '<p>Academy information is temporarily unavailable.</p>';
   }
 }
 
