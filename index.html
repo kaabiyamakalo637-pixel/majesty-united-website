@@ -1,64 +1,119 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#160607">
-<meta name="description" content="Majesty United Football Academy. Developing players and building futures in Basse, The Gambia.">
-<title>Majesty United Football Academy | The Royal Lions</title>
-<style>
-:root{--red:#790f19;--gold:#c7a24b;--black:#090909;--cream:#f4efe5;--muted:#b9b1a7;--line:rgba(199,162,75,.28);--max:1180px}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--black);color:var(--cream);font-family:Arial,Helvetica,sans-serif;line-height:1.6}a{color:inherit;text-decoration:none}.wrap{width:min(var(--max),calc(100% - 44px));margin:auto}.topline{height:4px;background:linear-gradient(90deg,var(--red),var(--gold),var(--red))}.nav{position:sticky;top:0;z-index:20;background:rgba(9,9,9,.95);border-bottom:1px solid var(--line)}.navin{height:82px;display:flex;align-items:center;justify-content:space-between;gap:24px}.brand{display:flex;align-items:center;gap:13px}.crest{width:49px;height:49px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:var(--gold);font-weight:900;font-size:12px;background:#170b0d}.brandname{font-size:14px;font-weight:850;letter-spacing:2px;line-height:1.2}.brandname small{display:block;color:var(--gold);font-size:9px;letter-spacing:2px;margin-top:5px}.links{display:flex;gap:25px;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#ddd}.links a:hover{color:var(--gold)}.navcta,.btn{display:inline-flex;padding:12px 18px;border:1px solid var(--gold);background:var(--gold);color:#160f08;font-size:11px;font-weight:850;letter-spacing:1px;text-transform:uppercase}.btn.secondary{background:transparent;color:var(--cream);border-color:rgba(255,255,255,.4)}.menu{display:none;background:none;border:1px solid var(--line);color:white;padding:9px 12px;font-size:20px}.hero{min-height:680px;display:flex;align-items:center;position:relative;overflow:hidden;background:radial-gradient(ellipse at 78% 38%,rgba(129,17,29,.52),transparent 42%),linear-gradient(112deg,#080808 5%,#18090b 58%,#310b11)}.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.18)),repeating-linear-gradient(120deg,transparent 0 70px,rgba(255,255,255,.018) 71px 72px)}.hero:after{content:"MU";position:absolute;right:-2vw;bottom:-145px;font-size:clamp(260px,42vw,620px);font-weight:950;color:rgba(199,162,75,.055);line-height:1}.hero-content{position:relative;z-index:1;max-width:760px;padding:100px 0}.eyebrow{color:var(--gold);font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase}.hero h1{font-size:clamp(48px,7vw,88px);line-height:.98;letter-spacing:-3px;margin:24px 0;font-weight:900;text-transform:uppercase}.hero h1 span{color:var(--gold)}.hero p{max-width:570px;color:#d0c8c0;font-size:18px;margin:0 0 34px}.actions{display:flex;gap:13px;flex-wrap:wrap}.hero-meta{display:flex;gap:34px;margin-top:62px;padding-top:23px;border-top:1px solid var(--line);max-width:570px}.meta strong{display:block;font-size:25px;color:var(--gold);line-height:1.1}.meta span{font-size:10px;color:#c0b7ac;text-transform:uppercase;letter-spacing:1.4px}.section{padding:92px 0}.dark{background:#101010}.sectionhead{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:36px}.sectionhead h2{font-size:clamp(32px,4vw,48px);line-height:1.05;letter-spacing:-1.5px;margin:10px 0 0;text-transform:uppercase}.sectionhead p{color:var(--muted);max-width:440px}.aboutgrid{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center}.aboutcopy p{color:#c6beb5;font-size:16px}.feature-panel{min-height:330px;padding:34px;border:1px solid var(--line);background:linear-gradient(145deg,#1b1112,#0c0b0b);display:flex;flex-direction:column;justify-content:space-between}.feature-panel .tag{color:var(--gold);font-size:11px;letter-spacing:2px;text-transform:uppercase}.feature-panel h3{font-size:30px;line-height:1.1;margin:16px 0}.feature-panel:after{content:"THE ROYAL LIONS";font-size:clamp(36px,5vw,65px);font-weight:950;color:rgba(199,162,75,.12);letter-spacing:-3px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:48px}.stat{background:#111;padding:25px}.stat strong{display:block;color:var(--gold);font-size:32px}.stat span{font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#151313;border:1px solid rgba(255,255,255,.09);padding:25px;min-height:185px}.card:hover{border-color:var(--gold)}.card .number{color:var(--gold);font-size:11px;letter-spacing:2px}.card h3{font-size:21px;margin:27px 0 7px}.card p{font-size:13px;color:var(--muted);margin:0}.pathway{background:linear-gradient(110deg,#26090e,#100d0d);border-block:1px solid var(--line)}.pathgrid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}.pathgrid h2{font-size:clamp(34px,5vw,58px);line-height:1;margin:14px 0 20px;text-transform:uppercase}.pathgrid p{color:#c9c0b7}.pillrow{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.pill{border:1px solid var(--line);padding:8px 13px;color:var(--gold);font-size:11px;letter-spacing:1px;text-transform:uppercase}.pathbox{padding:30px;border:1px solid var(--line);background:rgba(0,0,0,.28)}.pathbox li{padding:8px 0;color:#d1c9c0;border-bottom:1px solid rgba(255,255,255,.08)}.updates{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.update{border:1px solid rgba(255,255,255,.1);background:#121111;padding:25px}.update small{color:var(--gold);letter-spacing:1.5px;text-transform:uppercase}.update h3{font-size:20px;margin:14px 0 8px}.update p{color:var(--muted);font-size:13px}.update a{color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:1px}.cta{padding:75px 0;text-align:center;background:radial-gradient(ellipse at center,rgba(126,17,29,.45),transparent 65%),#0d0b0b}.cta h2{font-size:clamp(34px,5vw,58px);margin:10px 0 14px;text-transform:uppercase}.cta p{color:var(--muted);margin:0 auto 27px;max-width:600px}.footer{background:#070707;border-top:1px solid var(--line);padding:45px 0 25px}.footgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px}.footer p,.footer a{color:#aaa;font-size:13px}.footer h4{color:var(--gold);font-size:11px;letter-spacing:2px;text-transform:uppercase}.footlinks{display:grid;gap:8px}.copyright{border-top:1px solid rgba(255,255,255,.1);margin-top:35px;padding-top:18px;color:#777;font-size:10px;letter-spacing:1px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
-@media(max-width:900px){.links{gap:13px}.links a{font-size:10px}.cards{grid-template-columns:repeat(2,1fr)}.aboutgrid,.pathgrid{grid-template-columns:1fr;gap:30px}.updates{grid-template-columns:1fr 1fr}}
-@media(max-width:650px){.wrap{width:calc(100% - 32px)}.navin{height:70px}.menu{display:block}.links{display:none;position:absolute;top:70px;left:0;right:0;background:#0b0909;padding:20px 24px;border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start}.links.open{display:flex}.navcta{display:none}.hero{min-height:630px}.hero-content{padding:80px 0}.hero h1{letter-spacing:-2px}.hero p{font-size:16px}.hero-meta{gap:18px}.meta strong{font-size:21px}.section{padding:68px 0}.sectionhead{display:block}.sectionhead p{margin-top:18px}.stats{grid-template-columns:1fr}.stat{padding:18px}.cards{grid-template-columns:1fr 1fr;gap:9px}.card{padding:17px;min-height:170px}.card h3{font-size:17px}.updates{grid-template-columns:1fr}.footgrid{grid-template-columns:1fr;gap:20px}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100b0c">
+  <meta name="description" content="Majesty United Football Academy. Developing talent and building character in Basse, Upper River Region, The Gambia.">
+  <title>Majesty United Football Academy | The Royal Lions</title>
+  <style>
+    :root{--red:#8d1720;--red2:#bd2732;--gold:#c9a34b;--ink:#100b0c;--panel:#191314;--paper:#f5f1e9;--muted:#bdb5ad;--line:rgba(255,255,255,.13);--max:1180px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--ink);color:#fff;font-family:Arial,Helvetica,sans-serif;line-height:1.6}a{color:inherit;text-decoration:none}img{max-width:100%;display:block}.wrap{width:min(var(--max),calc(100% - 44px));margin:auto}
+    .topbar{height:5px;background:linear-gradient(90deg,var(--red),var(--gold),var(--red))}
+    header{position:sticky;top:0;z-index:20;background:rgba(16,11,12,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .nav{height:82px;display:flex;align-items:center;justify-content:space-between;gap:24px}.brand{display:flex;align-items:center;gap:13px;min-width:230px}.crest-slot{width:48px;height:48px;border:1px solid rgba(201,163,75,.6);border-radius:50%;display:grid;place-items:center;color:var(--gold);font-weight:800;font-size:12px;letter-spacing:1px}.brand strong{display:block;font-size:14px;letter-spacing:1.5px}.brand small{display:block;color:var(--gold);font-size:10px;letter-spacing:2.2px}.links{display:flex;align-items:center;gap:25px;font-size:12px;text-transform:uppercase;letter-spacing:1.1px;color:#e5ded7}.links a:hover{color:var(--gold)}.nav-cta,.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;background:var(--red);border:1px solid var(--red);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:.2s}.nav-cta:hover,.btn:hover{background:var(--red2);transform:translateY(-2px)}.menu{display:none;background:none;border:1px solid var(--line);color:#fff;padding:9px 12px;font-size:20px}
+    .hero{min-height:660px;position:relative;display:flex;align-items:center;overflow:hidden;background:linear-gradient(90deg,rgba(10,7,8,.96) 0%,rgba(10,7,8,.82) 43%,rgba(10,7,8,.24) 100%),linear-gradient(0deg,rgba(10,7,8,.78),transparent 45%),url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=2000&q=85') center/cover}
+    .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 55%,rgba(141,23,32,.2));pointer-events:none}.hero-content{position:relative;z-index:1;padding:95px 0;max-width:700px}.eyebrow{color:var(--gold);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase}.hero h1{font-size:clamp(46px,7vw,86px);line-height:.98;letter-spacing:-3px;margin:22px 0}.hero h1 span{color:var(--gold)}.hero p{max-width:550px;color:#ded8d1;font-size:17px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}.btn.outline{background:transparent;border-color:rgba(255,255,255,.45)}.hero-foot{display:flex;gap:38px;margin-top:62px;padding-top:22px;border-top:1px solid var(--line);max-width:520px}.metric strong{display:block;font-size:25px;color:var(--gold)}.metric span{font-size:10px;color:#c8c0b9;letter-spacing:1.3px;text-transform:uppercase}
+    .ticker{background:var(--red);padding:12px 0;overflow:hidden}.ticker .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+    section{padding:100px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:42px}.section-head h2{font-size:clamp(30px,4vw,48px);line-height:1.05;margin:12px 0 0;letter-spacing:-1.5px}.section-head p{max-width:420px;color:var(--muted);margin:0}.about-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:70px;align-items:center}.about-photo{min-height:470px;background:linear-gradient(0deg,rgba(10,7,8,.35),rgba(10,7,8,.05)),url('https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=1200&q=85') center/cover;position:relative}.photo-caption{position:absolute;bottom:22px;left:22px;background:var(--red);padding:13px 17px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase}.about-copy h2{font-size:42px;line-height:1.08;margin:12px 0 20px}.about-copy p{color:var(--muted)}.values{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}.value{border-top:1px solid var(--gold);padding-top:13px}.value strong{display:block;font-size:12px;letter-spacing:1px;text-transform:uppercase}.value span{font-size:12px;color:var(--muted)}
+    .dark-section{background:#171112}.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.team{min-height:220px;padding:24px;background:linear-gradient(145deg,#2a1719,#171112);border:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between;transition:.2s}.team:hover{border-color:var(--gold);transform:translateY(-4px)}.team .num{font-size:10px;color:var(--gold);letter-spacing:2px}.team h3{font-size:24px;margin:20px 0 4px}.team p{font-size:12px;color:var(--muted);margin:0}.team .arrow{align-self:flex-end;color:var(--gold);font-size:22px}
+    .pathway{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}.path{background:var(--ink);padding:30px}.path small{color:var(--gold);letter-spacing:2px;font-size:10px}.path h3{font-size:21px;margin:13px 0}.path p{color:var(--muted);font-size:13px;margin:0}
+    .rtl{background:linear-gradient(90deg,rgba(10,7,8,.94),rgba(10,7,8,.72)),url('https://images.unsplash.com/photo-1574629810360-7ef.b2?auto=format&fit=crop&w=1800&q=80') center/cover;padding:85px 0}.rtl-box{max-width:650px}.rtl h2{font-size:clamp(34px,5vw,58px);line-height:1.02;margin:15px 0}.rtl p{color:#ded8d1;max-width:570px}
+    .foundation-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}.foundation-card{background:var(--panel);padding:36px;border:1px solid var(--line)}.foundation-card h3{font-size:27px;margin:10px 0}.foundation-card p{color:var(--muted)}.foundation-list{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:24px}.foundation-list span{border-left:2px solid var(--gold);padding-left:12px;font-size:12px}
+    .news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.news{background:var(--panel);border:1px solid var(--line)}.news-img{height:190px;background:linear-gradient(135deg,#3a1b1f,#151011);display:grid;place-items:center;color:var(--gold);font-size:11px;letter-spacing:2px;text-transform:uppercase}.news-body{padding:22px}.news-body small{color:var(--gold);font-size:10px;letter-spacing:1.5px;text-transform:uppercase}.news-body h3{font-size:19px;line-height:1.2;margin:10px 0}.news-body p{color:var(--muted);font-size:12px}
+    .contact{background:#211719}.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px}.contact h2{font-size:42px;line-height:1.05;margin:14px 0}.contact p{color:var(--muted)}.contact-info{display:grid;gap:15px;margin-top:28px}.contact-info div{border-bottom:1px solid var(--line);padding-bottom:12px}.contact-info strong{display:block;color:var(--gold);font-size:10px;letter-spacing:1.5px;text-transform:uppercase}.contact-info span{font-size:14px}.contact-panel{padding:30px;background:var(--ink);border:1px solid var(--line)}.contact-panel h3{margin-top:0}.contact-panel a{display:block;margin:12px 0;color:var(--gold);font-size:13px}
+    footer{padding:35px 0;background:#090607;border-top:1px solid var(--line)}.footer-row{display:flex;justify-content:space-between;gap:25px;align-items:center;flex-wrap:wrap}.footer-row p{color:var(--muted);font-size:11px}.footer-links{display:flex;gap:18px;font-size:11px;color:var(--muted)}
+    @media(max-width:900px){.links{gap:13px;font-size:10px}.nav-cta{display:none}.team-grid{grid-template-columns:repeat(2,1fr)}.about-grid,.foundation-grid{gap:35px}.hero{min-height:600px}}
+    @media(max-width:680px){.wrap{width:min(100% - 32px,var(--max))}.nav{height:70px}.menu{display:block}.links{display:none;position:absolute;top:70px;left:0;right:0;background:#130e0f;padding:20px 24px;border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start}.links.open{display:flex}.hero{min-height:650px;background-position:58% center}.hero-content{padding:75px 0}.hero h1{letter-spacing:-1.8px}.hero p{font-size:15px}.hero-foot{gap:20px}.section-head{display:block}.section-head p{margin-top:18px}.about-grid,.foundation-grid,.contact-grid{grid-template-columns:1fr}.about-photo{min-height:330px;order:2}.about-copy h2{font-size:34px}.team-grid{grid-template-columns:1fr 1fr}.team{min-height:185px;padding:17px}.team h3{font-size:19px}.pathway,.news-grid{grid-template-columns:1fr}.path{padding:24px}.rtl{padding:70px 0}.foundation-list{grid-template-columns:1fr 1fr}.contact h2{font-size:34px}}
+  </style>
 </head>
 <body>
-<div class="topline"></div>
-<header class="nav"><div class="wrap navin">
-<a class="brand" href="#home"><span class="crest">MU</span><span class="brandname">MAJESTY UNITED<small>FOOTBALL ACADEMY</small></span></a>
-<button class="menu" id="menu" aria-label="Open navigation">☰</button>
-<nav class="links" id="links"><a href="#about">Academy</a><a href="#teams">Teams</a><a href="#pathway">RTL</a><a href="#updates">News</a><a href="#contact">Contact</a></nav>
-<a class="navcta" href="https://majesty-united-player-portal.pages.dev/" target="_blank" rel="noopener">Staff portal ↗</a>
-</div></header>
-<main>
-<section class="hero" id="home"><div class="wrap hero-content">
-<div class="eyebrow">Basse, Upper River Region · The Gambia</div>
-<h1>Developing<br><span>Talent.</span><br>Building Character.</h1>
-<p>Welcome to Majesty United Football Academy, home of The Royal Lions. A football community committed to player development, opportunity and a stronger future.</p>
-<div class="actions"><a class="btn" href="#about">Discover the academy</a><a class="btn secondary" href="#teams">Explore our teams</a></div>
-<div class="hero-meta"><div class="meta"><strong>200+</strong><span>Academy members</span></div><div class="meta"><strong>8</strong><span>Player categories</span></div><div class="meta"><strong>URR</strong><span>The Gambia</span></div></div>
-</div></section>
-<section class="section" id="about"><div class="wrap">
-<div class="aboutgrid"><div class="aboutcopy"><div class="eyebrow">The academy</div><h2 style="font-size:clamp(34px,4vw,52px);line-height:1.04;letter-spacing:-1.5px;text-transform:uppercase">A clear pathway.<br><span style="color:var(--gold)">A shared ambition.</span></h2>
-<p>Majesty United Football Academy is based in Basse Santa-Su, in The Gambia's Upper River Region. We provide young players with a structured football environment where learning, discipline, teamwork and personal growth matter.</p><p>Our approach puts development first. We work to give players regular opportunities to train, improve and express themselves through the game.</p><a class="btn secondary" href="#contact">Get in touch</a></div>
-<div class="feature-panel"><div><div class="tag">Our identity</div><h3>One academy.<br>One family.<br>One standard.</h3></div><div class="tag">Pride · Discipline · Development</div></div></div>
-<div class="stats"><div class="stat"><strong>200+</strong><span>Members across the academy</span></div><div class="stat"><strong>8</strong><span>Age and team categories</span></div><div class="stat"><strong>1</strong><span>United football community</span></div></div>
-</div></section>
-<section class="section dark" id="teams"><div class="wrap"><div class="sectionhead"><div><div class="eyebrow">Our football programme</div><h2>Teams & categories</h2></div><p>From early football experiences to senior competition, our academy brings players together across different stages of development.</p></div>
-<div class="cards">
-<article class="card"><div class="number">01 / FOUNDATION</div><h3>2017</h3><p>Early-stage football and fundamentals.</p></article>
-<article class="card"><div class="number">02 / DEVELOPMENT</div><h3>2015</h3><p>Building technique and confidence.</p></article>
-<article class="card"><div class="number">03 / DEVELOPMENT</div><h3>2013</h3><p>Growing game understanding.</p></article>
-<article class="card"><div class="number">04 / DEVELOPMENT</div><h3>2011</h3><p>Progressing individual and team skills.</p></article>
-<article class="card"><div class="number">05 / YOUTH</div><h3>2008/09</h3><p>Preparing players for the next level.</p></article>
-<article class="card"><div class="number">06 / TRANSITION</div><h3>U23</h3><p>Supporting the transition to senior football.</p></article>
-<article class="card"><div class="number">07 / SENIOR</div><h3>Seniors</h3><p>Competitive football and team standards.</p></article>
-<article class="card"><div class="number">08 / WOMEN</div><h3>Women's Team</h3><p>Supporting participation and opportunity.</p></article>
-</div></div></section>
-<section class="section pathway" id="pathway"><div class="wrap pathgrid">
-<div><div class="eyebrow">A regional football initiative</div><h2>Rising Talents<br><span style="color:var(--gold)">League</span></h2><p>Developing Talent. Building Futures.</p><p>Rising Talents League is planned as a platform for youth academies in the Upper River Region, with a focus on player development, talent identification and a pathway for selected players to represent the region.</p><div class="pillrow"><span class="pill">U17</span><span class="pill">U19</span><span class="pill">Planned 2027 launch</span></div><a class="btn" href="#contact">League enquiries</a></div>
-<div class="pathbox"><h3>RTL 2027 focus</h3><ul><li>Bring academies together through organised competition.</li><li>Identify promising players across the region.</li><li>Build a representative pathway for regional teams.</li><li>Promote fair play, development and opportunity.</li></ul></div>
-</div></section>
-<section class="section dark" id="updates"><div class="wrap"><div class="sectionhead"><div><div class="eyebrow">From the academy</div><h2>Latest updates</h2></div><p>Official news, match information and academy announcements will appear here.</p></div>
-<div class="updates"><article class="update"><small>Academy news</small><h3>News and announcements</h3><p>Follow updates from our teams, training programme and academy activities.</p><a href="#contact">Contact the academy ↗</a></article>
-<article class="update"><small>Fixtures & results</small><h3>Match centre</h3><p>Fixtures, results and competition information will be published here as they are confirmed.</p><a href="#contact">Match enquiries ↗</a></article>
-<article class="update"><small>Player development</small><h3>Our development pathway</h3><p>Updates on player progress, academy opportunities and development activities.</p><a href="#about">About MUFA ↗</a></article></div></div></section>
-<section class="cta" id="contact"><div class="wrap"><div class="eyebrow">Join the Royal Lions community</div><h2>Be part of the journey.</h2><p>For academy enquiries, partnerships, community projects or Rising Talents League information, contact Majesty United Football Academy.</p><div class="actions" style="justify-content:center"><a class="btn" href="#contact">Contact the academy</a><a class="btn secondary" href="https://majesty-united-player-portal.pages.dev/" target="_blank" rel="noopener">Staff portal ↗</a></div></div></section>
-</main>
-<footer class="footer"><div class="wrap"><div class="footgrid">
-<div><div class="brand"><span class="crest">MU</span><span class="brandname">MAJESTY UNITED<small>THE ROYAL LIONS</small></span></div><p>Majesty United Football Academy<br>Basse Santa-Su, Upper River Region<br>The Gambia, West Africa</p></div>
-<div><h4>Explore</h4><div class="footlinks"><a href="#about">The Academy</a><a href="#teams">Teams & Categories</a><a href="#pathway">Rising Talents League</a><a href="#updates">News & Updates</a></div></div>
-<div><h4>Academy access</h4><div class="footlinks"><a href="https://majesty-united-player-portal.pages.dev/" target="_blank" rel="noopener">Staff Player Portal ↗</a><a href="#contact">Contact</a></div></div>
-</div><div class="copyright"><span>© <span id="year"></span> MAJESTY UNITED FOOTBALL ACADEMY</span><span>THE ROYAL LIONS · THE GAMBIA</span></div></div></footer>
-<script>document.getElementById('year').textContent=new Date().getFullYear();document.getElementById('menu').addEventListener('click',()=>document.getElementById('links').classList.toggle('open'));document.querySelectorAll('#links a').forEach(a=>a.addEventListener('click',()=>document.getElementById('links').classList.remove('open')));</script>
-</body></html>
+  <div class="topbar"></div>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#home" aria-label="Majesty United home">
+        <span class="crest-slot">MUFA</span>
+        <span><strong>MAJESTY UNITED</strong><small>FOOTBALL ACADEMY</small></span>
+      </a>
+      <button class="menu" id="menu" aria-label="Open navigation">☰</button>
+      <nav class="links" id="links">
+        <a href="#about">Academy</a><a href="#teams">Teams</a><a href="#pathway">Development</a><a href="#rtl">RTL</a><a href="#foundation">Foundation</a><a href="#news">News</a><a href="#contact">Contact</a>
+      </nav>
+      <a class="nav-cta" href="https://majesty-united-player-portal.pages.dev/" target="_blank" rel="noopener">Player Portal ↗</a>
+    </div>
+  </header>
+  <main>
+    <section class="hero" id="home">
+      <div class="wrap hero-content">
+        <div class="eyebrow">Basse, Upper River Region · The Gambia</div>
+        <h1>DEVELOPING<br><span>TALENT.</span><br>BUILDING<br>CHARACTER.</h1>
+        <p>Welcome to Majesty United Football Academy, home of The Royal Lions. A football academy committed to player development, opportunity and community.</p>
+        <div class="actions"><a class="btn" href="#about">Discover the academy</a><a class="btn outline" href="#teams">Explore our teams</a></div>
+        <div class="hero-foot"><div class="metric"><strong>200+</strong><span>Academy members</span></div><div class="metric"><strong>8</strong><span>Development groups</span></div><div class="metric"><strong>1</strong><span>United community</span></div></div>
+      </div>
+    </section>
+    <div class="ticker"><div class="wrap"><span>Majesty United Football Academy</span><span>The Royal Lions</span><span>Developing talent · Building futures</span></div></div>
+    <section id="about">
+      <div class="wrap about-grid">
+        <div class="about-photo"><div class="photo-caption">The Royal Lions · Basse, The Gambia</div></div>
+        <div class="about-copy"><div class="eyebrow">Who we are</div><h2>More than football.<br>A pathway for young people.</h2>
+          <p>Majesty United Football Academy is based in Basse Santa-Su, in The Gambia's Upper River Region. We provide young players with a structured environment to learn, train, compete and grow.</p>
+          <p>Our approach puts development first. We value technical ability, game understanding, discipline, respect and teamwork. We aim to create opportunities for players while making a positive contribution to our community.</p>
+          <div class="values"><div class="value"><strong>Our mission</strong><span>Develop players and people through football.</span></div><div class="value"><strong>Our values</strong><span>Respect, discipline, unity and ambition.</span></div></div>
+        </div>
+      </div>
+    </section>
+    <section class="dark-section" id="teams">
+      <div class="wrap">
+        <div class="section-head"><div><div class="eyebrow">The academy</div><h2>One academy.<br>Every stage of the journey.</h2></div><p>Our age groups provide a development pathway from early football experiences through youth and senior competition.</p></div>
+        <div class="team-grid">
+          <a class="team" href="#contact"><span class="num">01 / FOUNDATION</span><div><h3>2017</h3><p>Early-stage football and movement skills</p></div><span class="arrow">↗</span></a>
+          <a class="team" href="#contact"><span class="num">02 / DEVELOPMENT</span><div><h3>2015</h3><p>Building technique and confidence</p></div><span class="arrow">↗</span></a>
+          <a class="team" href="#contact"><span class="num">03 / DEVELOPMENT</span><div><h3>2013</h3><p>Growing game understanding</p></div><span class="arrow">↗</span></a>
+          <a class="team" href="#contact"><span class="num">04 / DEVELOPMENT</span><div><h3>2011</h3><p>Progressing individual performance</p></div><span class="arrow">↗</span></a>
+          <a class="team" href="#contact"><span class="num">05 / YOUTH</span><div><h3>2008/09</h3><p>Preparing players for the next level</p></div><span class="arrow">↗</span></a>
+          <a class="team" href="#contact"><span class="num">06 / TRANSITION</span><div><h3>U23</h3><p>Supporting the move into senior football</p></div><span class="arrow">↗</span></a>
+          <a class="team" href="#contact"><span class="num">07 / SENIOR</span><div><h3>Seniors</h3><p>Competition, leadership and standards</p></div><span class="arrow">↗</span></a>
+          <a class="team" href="#contact"><span class="num">08 / WOMEN'S FOOTBALL</span><div><h3>Women</h3><p>Creating space and opportunity through football</p></div><span class="arrow">↗</span></a>
+        </div>
+      </div>
+    </section>
+    <section id="pathway">
+      <div class="wrap">
+        <div class="section-head"><div><div class="eyebrow">Our philosophy</div><h2>Development comes first.</h2></div><p>We focus on long-term progress and the habits that help players improve on and off the pitch.</p></div>
+        <div class="pathway">
+          <article class="path"><small>01 / TECHNICAL</small><h3>Master the ball</h3><p>Build confidence through ball contacts, passing, receiving, dribbling and finishing.</p></article>
+          <article class="path"><small>02 / TACTICAL</small><h3>Understand the game</h3><p>Develop awareness, decision-making, positioning and teamwork in realistic situations.</p></article>
+          <article class="path"><small>03 / CHARACTER</small><h3>Grow as a person</h3><p>Promote discipline, respect, responsibility, resilience and a strong team spirit.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="rtl" id="rtl">
+      <div class="wrap"><div class="rtl-box"><div class="eyebrow">A regional talent platform</div><h2>RISING TALENTS<br>LEAGUE</h2><p>Developing Talent. Building Futures. A planned youth competition pathway for academies in the Upper River Region, with U17 and U19 categories and a focus on identifying players for regional representation.</p><a class="btn" href="#contact">RTL information</a></div></div>
+    </section>
+    <section id="foundation">
+      <div class="wrap foundation-grid">
+        <div><div class="eyebrow">Beyond the pitch</div><h2 style="font-size:clamp(32px,4vw,48px);line-height:1.08;margin:14px 0">Football creates opportunity.<br>Community makes it stronger.</h2><p style="color:var(--muted)">Majesty United Foundation supports children, families and communities through donations, education support, sports equipment and grassroots football initiatives.</p><a class="btn" href="#contact">Support the foundation</a></div>
+        <div class="foundation-card"><div class="eyebrow">Majesty United Foundation</div><h3>Opportunity should reach everyone.</h3><p>Our community work focuses on practical support and creating access to sport, learning and essential resources.</p><div class="foundation-list"><span>Football equipment</span><span>School supplies</span><span>Community tournaments</span><span>Support for children</span></div></div>
+      </div>
+    </section>
+    <section class="dark-section" id="news">
+      <div class="wrap"><div class="section-head"><div><div class="eyebrow">Club updates</div><h2>Latest from the academy.</h2></div><p>Match updates, academy announcements and community stories will appear here.</p></div>
+        <div class="news-grid"><article class="news"><div class="news-img">Academy news</div><div class="news-body"><small>Academy</small><h3>Stories from The Royal Lions</h3><p>Follow training, player development and activities across our academy categories.</p></div></article><article class="news"><div class="news-img">Match centre</div><div class="news-body"><small>Football</small><h3>Fixtures and results</h3><p>Match schedules, results and competition updates will be published here.</p></div></article><article class="news"><div class="news-img">Community</div><div class="news-body"><small>Foundation</small><h3>Making a difference together</h3><p>Updates from our foundation projects, partners and community initiatives.</p></div></article></div>
+      </div>
+    </section>
+    <section class="contact" id="contact">
+      <div class="wrap contact-grid"><div><div class="eyebrow">Get in touch</div><h2>Be part of<br>The Royal Lions.</h2><p>For academy enquiries, partnerships, sponsorship and foundation projects, contact Majesty United Football Academy.</p><div class="contact-info"><div><strong>Location</strong><span>Basse Santa-Su, Upper River Region, The Gambia</span></div><div><strong>Website</strong><span>majestyunitedfa.com</span></div></div></div>
+        <div class="contact-panel"><h3>Quick links</h3><p>Access our academy platforms and follow our work.</p><a href="https://majesty-united-player-portal.pages.dev/" target="_blank" rel="noopener">↗ Majesty United Player Portal</a><a href="#rtl">↗ Rising Talents League</a><a href="#foundation">↗ Majesty United Foundation</a><a href="#teams">↗ Academy teams</a></div>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap footer-row"><div class="brand"><span class="crest-slot">MUFA</span><span><strong>MAJESTY UNITED</strong><small>THE ROYAL LIONS</small></span></div><p>© <span id="year"></span> Majesty United Football Academy. All rights reserved.</p><div class="footer-links"><a href="#about">Academy</a><a href="#teams">Teams</a><a href="#contact">Contact</a></div></div></footer>
+  <script>
+    const menu=document.getElementById('menu'),links=document.getElementById('links');
+    menu.addEventListener('click',()=>links.classList.toggle('open'));
+    links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>links.classList.remove('open')));
+    document.getElementById('year').textContent=new Date().getFullYear();
+  </script>
+</body>
+</html>
