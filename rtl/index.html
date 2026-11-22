@@ -657,6 +657,123 @@ async function renderTeams(division) {
 }
 
 
+const RTL_DATA_URL = 'https://uisdxifqkhjuwyxdvwwm.supabase.co';
+const RTL_DATA_KEY = 'sb_publishable_aHGKUAa1V3-SZ44MWwLC8Q_I_vKN9yA';
+
+const rtlHeaders = {
+  apikey: RTL_DATA_KEY,
+  Authorization: `Bearer ${RTL_DATA_KEY}`
+};
+
+function rtlSafe(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[char]);
+}
+
+async function loadRTLFixtures() {
+  const fixtureBox = document.getElementById('fixture-list');
+  const resultBox = document.getElementById('results-list');
+
+  try {
+    const response = await fetch(
+      `${RTL_DATA_URL}/rest/v1/rtl_public_fixtures?select=*&season=eq.2027&order=match_date.asc`,
+      { headers: rtlHeaders }
+    );
+
+    if (!response.ok) throw new Error(await response.text());
+
+    const matches = await response.json();
+
+    const upcoming = matches.filter(match =>
+      match.home_score === null || match.away_score === null
+    );
+
+    const completed = matches.filter(match =>
+      match.home_score !== null && match.away_score !== null
+    );
+
+    fixtureBox.innerHTML = upcoming.length
+      ? upcoming.map(match => `
+          <div class="team-slot">
+            <strong>${rtlSafe(match.division)} | ${rtlSafe(match.stage)}</strong>
+            <p>${rtlSafe(match.home_academy)} vs ${rtlSafe(match.away_academy)}</p>
+            <small>${rtlSafe(match.match_date || 'Date TBC')} |
+              ${rtlSafe(match.kick_off || 'Time TBC')}</small>
+            <small>${rtlSafe(match.venue || 'Venue TBC')}</small>
+          </div>
+        `).join('')
+      : '<p>No upcoming fixtures scheduled yet.</p>';
+
+    resultBox.innerHTML = completed.length
+      ? completed.map(match => `
+          <div class="team-slot">
+            <strong>${rtlSafe(match.division)} | ${rtlSafe(match.stage)}</strong>
+            <p>${rtlSafe(match.home_academy)}
+              <strong>${rtlSafe(match.home_score)} - ${rtlSafe(match.away_score)}</strong>
+              ${rtlSafe(match.away_academy)}</p>
+            <small>${rtlSafe(match.match_date || '')}</small>
+          </div>
+        `).join('')
+      : '<p>No match results recorded yet.</p>';
+
+  } catch (error) {
+    console.error('RTL fixtures loading error:', error);
+    fixtureBox.innerHTML = '<p>Fixtures are temporarily unavailable.</p>';
+    resultBox.innerHTML = '<p>Results are temporarily unavailable.</p>';
+  }
+}
+
+async function loadRTLStandings() {
+  const standingsBox = document.getElementById('standings-list');
+
+  try {
+    const response = await fetch(
+      `${RTL_DATA_URL}/rest/v1/rtl_public_standings?select=*&season=eq.2027&order=division.asc,group_name.asc,points.desc,goal_difference.desc,goals_for.desc`,
+      { headers: rtlHeaders }
+    );
+
+    if (!response.ok) throw new Error(await response.text());
+
+    const standings = await response.json();
+
+    if (!standings.length) {
+      standingsBox.innerHTML = '<p>No league standings available yet.</p>';
+      return;
+    }
+
+    standingsBox.innerHTML = standings.map(row => `
+      <div class="team-slot">
+        <strong>${rtlSafe(row.division)} | Group ${rtlSafe(row.group_name)}</strong>
+        <p>${rtlSafe(row.academy_name)}</p>
+        <small>
+          P: ${rtlSafe(row.played)} |
+          W: ${rtlSafe(row.won)} |
+          D: ${rtlSafe(row.drawn)} |
+          L: ${rtlSafe(row.lost)}
+        </small>
+        <small>
+          GF: ${rtlSafe(row.goals_for)} |
+          GA: ${rtlSafe(row.goals_against)} |
+          GD: ${rtlSafe(row.goal_difference)} |
+          Points: ${rtlSafe(row.points)}
+        </small>
+      </div>
+    `).join('');
+
+  } catch (error) {
+    console.error('RTL standings loading error:', error);
+    standingsBox.innerHTML = '<p>League standings are temporarily unavailable.</p>';
+  }
+}
+
+loadRTLFixtures();
+loadRTLStandings();
+
 renderTeams('U17');
 </script>
 </body>
