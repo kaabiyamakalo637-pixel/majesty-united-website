@@ -580,12 +580,13 @@ function renderTeams(division) {
     const group = i <= 4 ? 'Group A' : i <= 8 ? 'Group B' : 'Group C';
 
     slot.innerHTML =
-        '<span>' + division + ' / ' +
-        String(i).padStart(2, '0') +
-        '</span><small>' + group + '</small><br>Academy to be confirmed';
+      '<span>' + division + ' / ' +
+      String(i).padStart(2, '0') +
+      '</span><small>' + group +
+      '</small><br>Academy to be confirmed';
 
     grid.appendChild(slot);
-}  
+  }
 }
 
 
