@@ -1193,5 +1193,43 @@ document.getElementById('rtl-create-fixture-form')
 loadFixtureAcademies();
   loadAdminFixtures();
 </script>
+  <section id="rtl-player-registration" class="admin-section">
+  <h2>Player Registration</h2>
+  <p>Register and manage players for your academy.</p>
+
+  <form id="rtl-player-form">
+    <label for="player-academy">Academy</label>
+    <select id="player-academy" required>
+      <option value="">Select academy</option>
+    </select>
+
+    <label for="player-division">Eligible Division</label>
+    <select id="player-division" required>
+      <option value="">Select division</option>
+      <option value="U17">U17</option>
+      <option value="U19">U19</option>
+    </select>
+
+    <label for="player-name">Full Name</label>
+    <input id="player-name" type="text" required>
+
+    <label for="player-foot">Preferred Foot</label>
+    <select id="player-foot">
+      <option value="">Select foot</option>
+      <option>Right</option>
+      <option>Left</option>
+      <option>Both</option>
+    </select>
+
+    <label for="player-dob">Date of Birth</label>
+    <input id="player-dob" type="date" required>
+
+    <label for="player-photo">Player Photo</label>
+    <input id="player-photo" type="file" accept="image/*" required>
+
+    <button type="submit">Register Player</button>
+    <p id="player-registration-message"></p>
+  </form>
+  </section>
 </body>
 </html>
