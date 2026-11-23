@@ -538,11 +538,23 @@ footer {
         <p>Manage their registered teams and player information.</p>
       </article>
     </div>
-    <div class="placeholder">
-      Secure staff login will be added after the administration
-      system is connected.
+    <div class="card" id="staff-login">
+  <h3>RTL Staff Login</h3>
+  <p>Secure access for administrators, referees and academy staff.</p>
+
+  <form id="rtl-login-form">
+    <label for="rtl-email">Email address</label>
+    <input type="email" id="rtl-email" required
+      placeholder="Enter your email">
+
+    <label for="rtl-password">Password</label>
+    <input type="password" id="rtl-password" required
+      placeholder="Enter your password">
+
+    <button type="submit">Sign In</button>
+    <p id="rtl-login-message"></p>
+  </form>
     </div>
-  </div>
 </section>
 </main>
 
