@@ -575,7 +575,7 @@ footer {
     <article class="card">
       <h3>Fixture Management</h3>
       <p>Create fixtures, assign dates, venues and referees.</p>
-      <button type="button">Manage Fixtures</button>
+      <button type="button" onclick="openRTLSection('fixtures')">Manage Fixtures</button>
     </article>
 
     <article class="card">
@@ -596,7 +596,18 @@ footer {
       <button type="button">Manage Staff</button>
     </article>
   </div>
-</div>
+<div class="card" id="rtl-fixtures-section" hidden>
+  <h2>Fixture Management</h2>
+  <p>Create and manage U17 and U19 fixtures.</p>
+
+  <button type="button" onclick="openRTLSection('dashboard')">
+    Back to Dashboard
+  </button>
+
+  <div id="rtl-fixture-manager">
+    <p>Fixture management will load here.</p>
+  </div>
+</div></div>
 </section>
 </main>
 
@@ -609,6 +620,18 @@ footer {
 </footer>
 
 <script>
+  function openRTLSection(section) {
+  const dashboard = document.getElementById('rtl-admin-dashboard');
+  const fixtures = document.getElementById('rtl-fixtures-section');
+
+  if (section === 'fixtures') {
+    dashboard.hidden = true;
+    fixtures.hidden = false;
+  } else {
+    fixtures.hidden = true;
+    dashboard.hidden = false;
+  }
+  }
 function showDivision(division, button) {
   document.querySelectorAll('.division-switch button')
     .forEach(btn => btn.classList.remove('active'));
