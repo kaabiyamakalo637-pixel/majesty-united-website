@@ -954,7 +954,7 @@ if (rtlLoginForm) {
       }
 
       const staffResponse = await fetch(
-        `${RTL_DATA_URL}/rest/v1/rtl_staff?select=full_name,role,active&user_id=eq.${loginData.user.id}&active=eq.true`,
+        `${RTL_DATA_URL}/rest/v1/rtl_staff?select=full_name,role,active,academy_id&user_id=eq.${loginData.user.id}&active=eq.true`,
         {
           headers: {
             apikey: RTL_DATA_KEY,
@@ -976,7 +976,7 @@ if (rtlLoginForm) {
       sessionStorage.setItem('rtlAccessToken', loginData.access_token);
       sessionStorage.setItem('rtlStaffRole', staffRecords[0].role);
       sessionStorage.setItem('rtlStaffName', staffRecords[0].full_name);
-
+sessionStorage.setItem('rtlStaffAcademyId', staffRecords[0].academy_id || '');
       message.textContent =
         `Welcome ${staffRecords[0].full_name}. Role: ${staffRecords[0].role}`;
 document.getElementById('rtl-admin-dashboard').hidden = false;
@@ -1231,5 +1231,69 @@ loadFixtureAcademies();
     <p id="player-registration-message"></p>
   </form>
   </section>
+  
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const academySelect = document.getElementById('player-academy');
+  const message = document.getElementById('player-registration-message');
+
+  const role = sessionStorage.getItem('rtlStaffRole');
+  const staffAcademyId = sessionStorage.getItem('rtlStaffAcademyId');
+  const token = sessionStorage.getItem('rtlAccessToken');
+
+  if (!academySelect || !token) return;
+
+  try {
+    const response = await fetch(
+      `${RTL_DATA_URL}/rest/v1/rtl_academies?select=id,academy_name,registration_status&order=academy_name.asc`,
+      {
+        headers: {
+          apikey: RTL_DATA_KEY,
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Could not load academies.');
+    }
+
+    const academies = await response.json();
+
+    const approved = academies.filter(
+      academy =>
+        String(academy.registration_status).toLowerCase() === 'approved'
+    );
+
+    const visibleAcademies = role === 'admin'
+      ? approved
+      : approved.filter(academy => academy.id === staffAcademyId);
+
+    academySelect.innerHTML =
+      '<option value="">Select academy</option>';
+
+    visibleAcademies.forEach(academy => {
+      const option = document.createElement('option');
+      option.value = academy.id;
+      option.textContent = academy.academy_name;
+      academySelect.appendChild(option);
+    });
+
+    if (visibleAcademies.length === 1) {
+      academySelect.value = visibleAcademies[0].id;
+    }
+
+    if (!visibleAcademies.length && message) {
+      message.textContent =
+        'No approved academy is available for this account.';
+    }
+
+  } catch (error) {
+    console.error(error);
+    if (message) message.textContent = error.message;
+  }
+});
+</script>
+
 </body>
 </html>
