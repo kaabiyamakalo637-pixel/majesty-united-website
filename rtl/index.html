@@ -802,7 +802,70 @@ async function loadRTLStandings() {
   }
 }
 
-loadRTLFixtures();
+const rtlLoginForm = document.getElementById('rtl-login-form');
+
+if (rtlLoginForm) {
+  rtlLoginForm.addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const message = document.getElementById('rtl-login-message');
+    const email = document.getElementById('rtl-email').value.trim();
+    const password = document.getElementById('rtl-password').value;
+
+    message.textContent = 'Signing in...';
+
+    try {
+      const loginResponse = await fetch(
+        `${RTL_DATA_URL}/auth/v1/token?grant_type=password`,
+        {
+          method: 'POST',
+          headers: {
+            apikey: RTL_DATA_KEY,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        }
+      );
+
+      const loginData = await loginResponse.json();
+
+      if (!loginResponse.ok) {
+        throw new Error('Incorrect email or password.');
+      }
+
+      const staffResponse = await fetch(
+        `${RTL_DATA_URL}/rest/v1/rtl_staff?select=full_name,role,active&user_id=eq.${loginData.user.id}&active=eq.true`,
+        {
+          headers: {
+            apikey: RTL_DATA_KEY,
+            Authorization: `Bearer ${loginData.access_token}`
+          }
+        }
+      );
+
+      if (!staffResponse.ok) {
+        throw new Error('Unable to verify RTL staff access.');
+      }
+
+      const staffRecords = await staffResponse.json();
+
+      if (!staffRecords.length) {
+        throw new Error('This account is not registered as active RTL staff.');
+      }
+
+      sessionStorage.setItem('rtlAccessToken', loginData.access_token);
+      sessionStorage.setItem('rtlStaffRole', staffRecords[0].role);
+      sessionStorage.setItem('rtlStaffName', staffRecords[0].full_name);
+
+      message.textContent =
+        `Welcome ${staffRecords[0].full_name}. Role: ${staffRecords[0].role}`;
+
+    } catch (error) {
+      message.textContent = error.message;
+    }
+  });
+}
+  loadRTLFixtures();
 loadRTLStandings();
 
 renderTeams('U17');
