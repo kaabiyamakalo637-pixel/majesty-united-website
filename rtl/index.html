@@ -559,7 +559,7 @@ footer {
   <h2>RTL Administration Dashboard</h2>
   <p>Welcome to the Rising Talents League management centre.</p>
 
-  <div class="admin-grid">
+  <div class="admin-grid" id="rtl-admin-grid">
     <article class="card">
       <h3>Academy Management</h3>
       <p>Review and approve academy registrations.</p>
@@ -595,13 +595,55 @@ footer {
       <p>Manage administrators, referees and academy staff.</p>
       <button type="button">Manage Staff</button>
     </article>
-  <h3>Player Management</h3>
+  <article class="card"><h3>Player Management</h3>
   <p>Register players, manage profiles, photos and age verification.</p>
   <button type="button" onclick="openRTLSection('players')">
     Manage Players
   </button>
     </article>
   </div>
+      <section id="rtl-player-registration" class="admin-section" hidden>
+  <h2>Player Registration</h2>
+  <p>Register and manage players for your academy.</p>
+
+  <button type="button" onclick="openRTLSection('dashboard')">
+    Back to Dashboard
+  </button>
+
+  <form id="rtl-player-form">
+    <label for="player-academy">Academy</label>
+    <select id="player-academy" required>
+      <option value="">Select academy</option>
+    </select>
+
+    <label for="player-division">Eligible Division</label>
+    <select id="player-division" required>
+      <option value="">Select division</option>
+      <option value="U17">U17</option>
+      <option value="U19">U19</option>
+    </select>
+
+    <label for="player-name">Full Name</label>
+    <input id="player-name" type="text" required>
+
+    <label for="player-foot">Preferred Foot</label>
+    <select id="player-foot">
+      <option value="">Select foot</option>
+      <option>Right</option>
+      <option>Left</option>
+      <option>Both</option>
+    </select>
+
+    <label for="player-dob">Date of Birth</label>
+    <input id="player-dob" type="date" required>
+
+    <label for="player-photo">Player Photo</label>
+    <input id="player-photo" type="file" accept="image/*" required>
+
+    <button type="submit">Register Player</button>
+    <p id="player-registration-message"></p>
+  </form>
+      </section>
   </div>
 <div class="card" id="rtl-fixtures-section" hidden>
   <h2>Fixture Management</h2>
@@ -675,18 +717,31 @@ footer {
 </footer>
 
 <script>
-  function openRTLSection(section) {
-  const dashboard = document.getElementById('rtl-admin-dashboard');
-  const fixtures = document.getElementById('rtl-fixtures-section');
+function openRTLSection(section) {
+  const role = sessionStorage.getItem('rtlStaffRole');
 
-  if (section === 'fixtures') {
-    dashboard.hidden = true;
-    fixtures.hidden = false;
-  } else {
-    fixtures.hidden = true;
-    dashboard.hidden = false;
+  if (
+    section === 'players' &&
+    !['admin', 'academy_staff'].includes(role)
+  ) {
+    alert('You are not authorised to access Player Management.');
+    return;
   }
+
+  const dashboard = document.getElementById('rtl-admin-dashboard');
+  const grid = document.getElementById('rtl-admin-grid');
+  const fixtures = document.getElementById('rtl-fixtures-section');
+  const players = document.getElementById('rtl-player-registration');
+
+  dashboard.hidden = false;
+  grid.hidden = section !== 'dashboard';
+  fixtures.hidden = section !== 'fixtures';
+  players.hidden = section !== 'players';
+
+  if (section === 'players') {
+    loadPlayerAcademies();
   }
+}
 function showDivision(division, button) {
   document.querySelectorAll('.division-switch button')
     .forEach(btn => btn.classList.remove('active'));
@@ -1193,47 +1248,10 @@ document.getElementById('rtl-create-fixture-form')
 loadFixtureAcademies();
   loadAdminFixtures();
 </script>
-  <section id="rtl-player-registration" class="admin-section">
-  <h2>Player Registration</h2>
-  <p>Register and manage players for your academy.</p>
-
-  <form id="rtl-player-form">
-    <label for="player-academy">Academy</label>
-    <select id="player-academy" required>
-      <option value="">Select academy</option>
-    </select>
-
-    <label for="player-division">Eligible Division</label>
-    <select id="player-division" required>
-      <option value="">Select division</option>
-      <option value="U17">U17</option>
-      <option value="U19">U19</option>
-    </select>
-
-    <label for="player-name">Full Name</label>
-    <input id="player-name" type="text" required>
-
-    <label for="player-foot">Preferred Foot</label>
-    <select id="player-foot">
-      <option value="">Select foot</option>
-      <option>Right</option>
-      <option>Left</option>
-      <option>Both</option>
-    </select>
-
-    <label for="player-dob">Date of Birth</label>
-    <input id="player-dob" type="date" required>
-
-    <label for="player-photo">Player Photo</label>
-    <input id="player-photo" type="file" accept="image/*" required>
-
-    <button type="submit">Register Player</button>
-    <p id="player-registration-message"></p>
-  </form>
-  </section>
+  
   
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
+async function loadPlayerAcademies() {
   const academySelect = document.getElementById('player-academy');
   const message = document.getElementById('player-registration-message');
 
@@ -1292,7 +1310,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error(error);
     if (message) message.textContent = error.message;
   }
-});
+}
 </script>
 
 </body>
