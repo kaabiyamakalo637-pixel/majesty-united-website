@@ -1066,22 +1066,58 @@ async function loadAdminFixtures() {
     const fixtures = await response.json();
 
     box.innerHTML = fixtures.length
-      ? fixtures.map(match => `
-          <div class="team-slot">
-            <strong>${rtlSafe(match.division)} | Group ${rtlSafe(match.group_name)}</strong>
-            <p>${rtlSafe(match.home_academy)} vs ${rtlSafe(match.away_academy)}</p>
-            <small>${rtlSafe(match.match_date)} | ${rtlSafe(match.kick_off)}</small>
-            <small>${rtlSafe(match.venue)}</small>
-            <small>Status: ${rtlSafe(match.status)}</small>
-          </div>
-        `).join('')
-      : '<p>No fixtures scheduled yet.</p>';
+  ? fixtures.map(match => `
+      <div class="team-slot">
+        <strong>${rtlSafe(match.division)} | Group ${rtlSafe(match.group_name)}</strong>
+        <p>${rtlSafe(match.home_academy)} vs ${rtlSafe(match.away_academy)}</p>
+        <small>${rtlSafe(match.match_date)} | ${rtlSafe(match.kick_off)}</small>
+        <small>${rtlSafe(match.venue)}</small>
+        <small>Status: ${rtlSafe(match.status)}</small>
+        <button type="button" onclick="deleteRTLFixture('${match.id}')">Delete Fixture</button>
+      </div>
+    `).join('')
+  : '<p>No fixtures scheduled yet.</p>';
 
   } catch (error) {
     console.error(error);
     box.innerHTML = '<p>Unable to load fixtures.</p>';
   }
       }
+  async function deleteRTLFixture(fixtureId) {
+  const confirmed = confirm('Are you sure you want to delete this fixture?');
+  if (!confirmed) return;
+
+  const token = sessionStorage.getItem('rtlAccessToken');
+
+  if (!token) {
+    alert('Please sign in again.');
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${RTL_DATA_URL}/rest/v1/rtl_fixtures?id=eq.${fixtureId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          apikey: RTL_DATA_KEY,
+          Authorization: `Bearer ${token}`,
+          Prefer: 'return=minimal'
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    await loadAdminFixtures();
+    alert('Fixture deleted successfully.');
+
+  } catch (error) {
+    alert('Error deleting fixture: ' + error.message);
+  }
+}
 document.getElementById('fixture-division')
   .addEventListener('change', loadFixtureAcademies);
 
