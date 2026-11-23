@@ -901,7 +901,8 @@ if (rtlLoginForm) {
 
       message.textContent =
         `Welcome ${staffRecords[0].full_name}. Role: ${staffRecords[0].role}`;
-
+document.getElementById('rtl-admin-dashboard').hidden = false;
+document.getElementById('rtl-login-form').hidden = true;
     } catch (error) {
       message.textContent = error.message;
     }
