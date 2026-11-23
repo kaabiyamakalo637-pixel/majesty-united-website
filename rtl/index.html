@@ -606,7 +606,55 @@ footer {
   </button>
 
   <div id="rtl-fixture-manager">
-    <p>Fixture management will load here.</p>
+
+  <h3>Create New Fixture</h3>
+
+  <form id="rtl-create-fixture-form">
+
+    <label>Division</label>
+    <select id="fixture-division" required>
+      <option value="U17">U17</option>
+      <option value="U19">U19</option>
+    </select>
+
+    <label>Group</label>
+    <select id="fixture-group" required>
+      <option value="A">Group A</option>
+      <option value="B">Group B</option>
+      <option value="C">Group C</option>
+    </select>
+
+    <label>Home Academy</label>
+    <select id="fixture-home" required>
+      <option value="">Select home academy</option>
+    </select>
+
+    <label>Away Academy</label>
+    <select id="fixture-away" required>
+      <option value="">Select away academy</option>
+    </select>
+
+    <label>Match Date</label>
+    <input type="date" id="fixture-date" required>
+
+    <label>Kick-off Time</label>
+    <input type="time" id="fixture-time" required>
+
+    <label>Venue</label>
+    <input type="text" id="fixture-venue"
+      placeholder="Enter match venue" required>
+
+    <button type="submit">Save Fixture</button>
+
+    <p id="fixture-message"></p>
+
+  </form>
+
+  <h3>Scheduled Fixtures</h3>
+  <div id="admin-fixture-list">
+    <p>Loading fixtures...</p>
+  </div>
+
   </div>
 </div>
 </section>
@@ -936,6 +984,77 @@ document.getElementById('rtl-login-form').hidden = true;
 loadRTLStandings();
 
 renderTeams('U17');
+  async function loadFixtureAcademies() {
+  const division = document.getElementById('fixture-division').value;
+  const group = document.getElementById('fixture-group').value;
+
+  const home = document.getElementById('fixture-home');
+  const away = document.getElementById('fixture-away');
+
+  home.innerHTML = '<option value="">Loading...</option>';
+  away.innerHTML = '<option value="">Loading...</option>';
+
+  try {
+    const entriesResponse = await fetch(
+      `${RTL_DATA_URL}/rest/v1/rtl_entries?select=id,academy_id,entry_number&season=eq.2027&division=eq.${division}&group_name=eq.${group}`,
+      {
+        headers: {
+          apikey: RTL_DATA_KEY,
+          Authorization: `Bearer ${RTL_DATA_KEY}`
+        }
+      }
+    );
+
+    if (!entriesResponse.ok) throw new Error(await entriesResponse.text());
+
+    const entries = await entriesResponse.json();
+
+    if (!entries.length) throw new Error('No academy entries found.');
+
+    const ids = [...new Set(entries.map(entry => entry.academy_id))];
+
+    const academyResponse = await fetch(
+      `${RTL_DATA_URL}/rest/v1/rtl_academies?select=id,academy_name&id=in.(${ids.join(',')})&registration_status=eq.approved`,
+      {
+        headers: {
+          apikey: RTL_DATA_KEY,
+          Authorization: `Bearer ${RTL_DATA_KEY}`
+        }
+      }
+    );
+
+    if (!academyResponse.ok) throw new Error(await academyResponse.text());
+
+    const academies = await academyResponse.json();
+
+    const options = entries
+      .map(entry => {
+        const academy = academies.find(item => item.id === entry.academy_id);
+        return academy
+          ? `<option value="${entry.id}">${academy.academy_name}</option>`
+          : '';
+      })
+      .join('');
+
+    const placeholder = '<option value="">Select academy</option>';
+
+    home.innerHTML = placeholder + options;
+    away.innerHTML = placeholder + options;
+
+  } catch (error) {
+    home.innerHTML = '<option value="">Unable to load academies</option>';
+    away.innerHTML = '<option value="">Unable to load academies</option>';
+    console.error(error);
+  }
+}
+
+document.getElementById('fixture-division')
+  .addEventListener('change', loadFixtureAcademies);
+
+document.getElementById('fixture-group')
+  .addEventListener('change', loadFixtureAcademies);
+
+loadFixtureAcademies();
 </script>
 </body>
 </html>
