@@ -1053,7 +1053,66 @@ document.getElementById('fixture-division')
 
 document.getElementById('fixture-group')
   .addEventListener('change', loadFixtureAcademies);
+document.getElementById('rtl-create-fixture-form')
+  .addEventListener('submit', async function(event) {
+    event.preventDefault();
 
+    const message = document.getElementById('fixture-message');
+    const token = sessionStorage.getItem('rtlAccessToken');
+
+    const home = document.getElementById('fixture-home').value;
+    const away = document.getElementById('fixture-away').value;
+
+    if (home === away) {
+      message.textContent = 'Home and away academies must be different.';
+      return;
+    }
+
+    if (!token) {
+      message.textContent = 'Please sign in again.';
+      return;
+    }
+
+    message.textContent = 'Saving fixture...';
+
+    try {
+      const response = await fetch(
+        `${RTL_DATA_URL}/rest/v1/rtl_fixtures`,
+        {
+          method: 'POST',
+          headers: {
+            apikey: RTL_DATA_KEY,
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            Prefer: 'return=representation'
+          },
+          body: JSON.stringify({
+            season: 2027,
+            division: document.getElementById('fixture-division').value,
+            stage: 'group',
+            group_name: document.getElementById('fixture-group').value,
+            home_entry_id: home,
+            away_entry_id: away,
+            match_date: document.getElementById('fixture-date').value,
+            kick_off: document.getElementById('fixture-time').value,
+            venue: document.getElementById('fixture-venue').value,
+            status: 'scheduled'
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      message.textContent = 'Fixture saved successfully.';
+      document.getElementById('rtl-create-fixture-form').reset();
+      await loadFixtureAcademies();
+
+    } catch (error) {
+      message.textContent = 'Error: ' + error.message;
+    }
+  });
 loadFixtureAcademies();
 </script>
 </body>
