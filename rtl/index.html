@@ -1047,7 +1047,41 @@ renderTeams('U17');
     console.error(error);
   }
 }
+async function loadAdminFixtures() {
+  const box = document.getElementById('admin-fixture-list');
 
+  try {
+    const response = await fetch(
+      `${RTL_DATA_URL}/rest/v1/rtl_public_fixtures?select=*&season=eq.2027&order=match_date.asc`,
+      {
+        headers: {
+          apikey: RTL_DATA_KEY,
+          Authorization: `Bearer ${RTL_DATA_KEY}`
+        }
+      }
+    );
+
+    if (!response.ok) throw new Error(await response.text());
+
+    const fixtures = await response.json();
+
+    box.innerHTML = fixtures.length
+      ? fixtures.map(match => `
+          <div class="team-slot">
+            <strong>${rtlSafe(match.division)} | Group ${rtlSafe(match.group_name)}</strong>
+            <p>${rtlSafe(match.home_academy)} vs ${rtlSafe(match.away_academy)}</p>
+            <small>${rtlSafe(match.match_date)} | ${rtlSafe(match.kick_off)}</small>
+            <small>${rtlSafe(match.venue)}</small>
+            <small>Status: ${rtlSafe(match.status)}</small>
+          </div>
+        `).join('')
+      : '<p>No fixtures scheduled yet.</p>';
+
+  } catch (error) {
+    console.error(error);
+    box.innerHTML = '<p>Unable to load fixtures.</p>';
+  }
+      }
 document.getElementById('fixture-division')
   .addEventListener('change', loadFixtureAcademies);
 
@@ -1105,6 +1139,7 @@ document.getElementById('rtl-create-fixture-form')
         throw new Error(await response.text());
       }
 
+      await loadAdminFixtures();
       message.textContent = 'Fixture saved successfully.';
       document.getElementById('rtl-create-fixture-form').reset();
       await loadFixtureAcademies();
@@ -1114,6 +1149,7 @@ document.getElementById('rtl-create-fixture-form')
     }
   });
 loadFixtureAcademies();
+  loadAdminFixtures();
 </script>
 </body>
 </html>
