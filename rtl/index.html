@@ -1004,9 +1004,12 @@ if (rtlLoginForm) {
 
       const loginData = await loginResponse.json();
 
-      if (!loginResponse.ok) {
-        throw new Error('Incorrect email or password.');
-      }
+if (!loginResponse.ok) {
+  console.error('RTL login error:', loginData);
+  throw new Error(
+    loginData.msg || loginData.message || loginData.error_description || 'Login failed.'
+  );
+}
 
       const staffResponse = await fetch(
         `${RTL_DATA_URL}/rest/v1/rtl_staff?select=full_name,role,active,academy_id&user_id=eq.${loginData.user.id}&active=eq.true`,
