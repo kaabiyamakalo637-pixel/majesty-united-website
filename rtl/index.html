@@ -819,8 +819,8 @@ footer {
 <div id="rtl-lineups-section" class="card admin-section" hidden><h2>Match Line-up Review</h2><button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button><div id="rtl-admin-lineup-list">Loading...</div></div>
 <div id="rtl-matches-section" class="card admin-section" hidden><h2>Live Match Centre</h2><button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button><div id="rtl-admin-match-list">Loading...</div><h3>Referee Reports</h3><div id="rtl-admin-report-list">Loading...</div></div>
 <div id="rtl-staff-section" class="card admin-section" hidden><h2>Staff Management</h2><button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button>
-  <p>Create a staff profile for an existing Supabase Auth user. Create the Auth account first in Supabase Authentication.</p>
-  <form id="rtl-staff-form"><label>Auth user UUID</label><input id="staff-user-id" required placeholder="Existing Auth user UUID"><label>Full name</label><input id="staff-full-name" required><label>Role</label><select id="staff-role"><option value="academy_staff">Academy Staff</option><option value="referee">Referee</option><option value="admin">Administrator</option></select><label>Academy, required for academy staff</label><select id="staff-academy"><option value="">No academy</option></select><label><input type="checkbox" id="staff-active" checked> Active</label><button type="submit">Save Staff Profile</button><p id="staff-message"></p></form>
+  <p>Create secure login accounts for Academy Staff, Referees, RTL Staff and additional Administrators. Only Admins may access this section.</p>
+  <form id="rtl-staff-form"><label>Full name</label><input id="staff-full-name" required autocomplete="name"><label>Email address</label><input id="staff-email" type="email" required autocomplete="email"><label>Temporary password</label><input id="staff-password" type="password" minlength="10" required autocomplete="new-password"><label>Role</label><select id="staff-role" required><option value="academy_staff">Academy Staff</option><option value="referee">Referee</option><option value="rtl_staff">RTL Staff</option><option value="admin">Administrator</option></select><label>Academy, required for Academy Staff</label><select id="staff-academy"><option value="">No academy</option></select><button type="submit">Create Staff Account</button><p id="staff-message"></p></form>
   <h3>Registered Staff</h3><div id="rtl-admin-staff-list">Loading...</div>
 </div>
 
@@ -837,12 +837,13 @@ footer {
 <script>
 function openRTLSection(section) {
   const role = sessionStorage.getItem('rtlStaffRole');
-  const adminOnly = ['academies','entries','fixtures','lineups','matches','staff'];
-  if (adminOnly.includes(section) && role !== 'admin') {
+  const managerSections = ['academies','entries','fixtures','lineups','matches'];
+  const adminOnly = ['staff','players'];
+  if (managerSections.includes(section) && !['admin','rtl_staff'].includes(role)) {
     alert('This section is reserved for RTL administrators.');
     return;
   }
-  if (section === 'players' && !['admin','academy_staff'].includes(role)) {
+  if (adminOnly.includes(section) && role !== 'admin') {
     alert('You are not authorised to access Player Management.');
     return;
   }
@@ -1491,10 +1492,18 @@ const rtlApi = (table, query='') => `${RTL_DATA_URL}/rest/v1/${table}${query}`;
 function rtlAuthHeaders(extra={}) { const token=sessionStorage.getItem('rtlAccessToken'); return {apikey:RTL_DATA_KEY, Authorization:`Bearer ${token||RTL_DATA_KEY}`, ...extra}; }
 async function rtlRequest(table, query='', options={}) { const r=await fetch(rtlApi(table,query),{...options,headers:rtlAuthHeaders(options.headers||{})}); if(!r.ok) throw new Error(await r.text()); const t=await r.text(); return t?JSON.parse(t):null; }
 function showRTLPortal(role) {
-  document.getElementById('rtl-admin-dashboard').hidden = role!=='admin';
+  document.getElementById('rtl-admin-dashboard').hidden = !['admin','rtl_staff'].includes(role);
   document.getElementById('rtl-academy-portal').hidden = role!=='academy_staff';
   document.getElementById('rtl-referee-portal').hidden = role!=='referee';
-  if(role==='admin') openRTLSection('dashboard');
+  if(role==='admin' || role==='rtl_staff') {
+    const staffCard = document.querySelector('#rtl-admin-grid article:has(button[onclick*="openRTLSection(\'staff\')"])');
+    if(staffCard) staffCard.hidden = role !== 'admin';
+    const playerCard = document.querySelector('#rtl-admin-grid article:has(button[onclick*="openRTLSection(\'players\')"])');
+    if(playerCard) playerCard.hidden = role !== 'admin';
+    const heading = document.querySelector('#rtl-admin-dashboard h2');
+    if(heading) heading.textContent = role === 'admin' ? 'RTL Administration Dashboard' : 'RTL Staff Operations Dashboard';
+    openRTLSection('dashboard');
+  }
   else if(role==='academy_staff') loadAcademyPortal();
   else if(role==='referee') loadRefereePortal();
   else { alert('This staff role is not supported. Contact RTL administration.'); rtlLogout(); }
@@ -1552,7 +1561,35 @@ document.getElementById('rtl-entry-form')?.addEventListener('submit',async e=>{e
 async function loadAdminLineups(){const box=document.getElementById('rtl-admin-lineup-list');try{const rows=await rtlRequest('rtl_match_lineups','?select=*&order=submitted_at.desc');box.innerHTML=rows.length?rows.map(x=>`<div class="team-slot"><strong>${rtlSafe(x.status)} | ${rtlSafe(x.coach_name)}</strong><p>Fixture: ${rtlSafe(x.fixture_id)} | Entry: ${rtlSafe(x.academy_entry_id)}</p><small>Submitted: ${rtlSafe(x.submitted_at||x.created_at)}</small><button type="button" onclick="reviewRTLLineup('${x.id}','approved')">Approve</button><button type="button" onclick="reviewRTLLineup('${x.id}','correction_required')">Request correction</button></div>`).join(''):'<p>No line-ups submitted yet.</p>';}catch(e){box.textContent='Unable to load line-ups: '+e.message;}}
 async function loadAdminMatchCentre(){const box=document.getElementById('rtl-admin-match-list'),reportsBox=document.getElementById('rtl-admin-report-list');try{const [rows,reports]=await Promise.all([rtlRequest('rtl_public_fixtures','?select=*&season=eq.2027&order=match_date.asc'),rtlRequest('rtl_referee_reports','?select=*&order=submitted_at.desc')]);box.innerHTML=rows.length?rows.map(x=>`<div class="team-slot"><strong>${rtlSafe(x.division)} | ${rtlSafe(x.home_academy)} vs ${rtlSafe(x.away_academy)}</strong><p>${rtlSafe(x.match_date)} ${rtlSafe(x.kick_off)} | ${rtlSafe(x.status)}</p><p>Score: ${rtlSafe(x.home_score??'-')} - ${rtlSafe(x.away_score??'-')}</p></div>`).join(''):'<p>No matches scheduled.</p>';reportsBox.innerHTML=reports.length?reports.map(r=>`<div class="team-slot"><strong>Report: ${rtlSafe(r.status)}</strong><p>Fixture: ${rtlSafe(r.fixture_id)} | Score: ${rtlSafe(r.home_score)}-${rtlSafe(r.away_score)}</p><p>${rtlSafe(r.report_text)}</p><button type="button" onclick="reviewRTLReport('${r.id}','approved')">Approve report</button><button type="button" onclick="reviewRTLReport('${r.id}','correction_required')">Request correction</button></div>`).join(''):'<p>No referee reports submitted.</p>';}catch(e){box.textContent='Unable to load matches: '+e.message;reportsBox.textContent='Unable to load reports: '+e.message;}}
 async function loadAdminStaff(){const box=document.getElementById('rtl-admin-staff-list');try{const [staff,academies]=await Promise.all([rtlRequest('rtl_staff','?select=*&order=full_name.asc'),rtlRequest('rtl_academies','?select=id,academy_name&order=academy_name.asc')]);const sel=document.getElementById('staff-academy');sel.innerHTML='<option value="">No academy</option>'+academies.map(a=>`<option value="${a.id}">${rtlSafe(a.academy_name)}</option>`).join('');box.innerHTML=staff.map(x=>{const a=academies.find(y=>y.id===x.academy_id);return `<div class="team-slot"><strong>${rtlSafe(x.full_name)}</strong><p>${rtlSafe(x.role)} | ${x.active?'Active':'Inactive'} | ${rtlSafe(a?.academy_name||'No academy')}</p><small>Auth UUID: ${rtlSafe(x.user_id)}</small></div>`}).join('')||'<p>No staff profiles.</p>';}catch(e){box.textContent='Unable to load staff: '+e.message;}}
-document.getElementById('rtl-staff-form')?.addEventListener('submit',async e=>{e.preventDefault();const m=document.getElementById('staff-message');const role=document.getElementById('staff-role').value;const academy=document.getElementById('staff-academy').value;if(role==='academy_staff'&&!academy){m.textContent='Select an academy for academy staff.';return;}try{const userId=document.getElementById('staff-user-id').value.trim();const payload={user_id:userId,full_name:document.getElementById('staff-full-name').value.trim(),role,academy_id:academy||null,active:document.getElementById('staff-active').checked};const existing=await rtlRequest('rtl_staff',`?select=id&user_id=eq.${userId}`);if(existing.length){await rtlRequest('rtl_staff',`?id=eq.${existing[0].id}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(payload)});}else{await rtlRequest('rtl_staff','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(payload)});}m.textContent='Staff profile saved.';e.target.reset();loadAdminStaff();}catch(err){m.textContent='Could not save staff profile: '+err.message;}});
+document.getElementById('rtl-staff-form')?.addEventListener('submit',async e=>{
+ e.preventDefault();
+ const m=document.getElementById('staff-message');
+ const role=document.getElementById('staff-role').value;
+ const academy=document.getElementById('staff-academy').value;
+ if(role==='academy_staff'&&!academy){m.textContent='Select an academy for Academy Staff.';return;}
+ if(role!=='academy_staff'&&academy){m.textContent='Only Academy Staff should be linked to an academy.';return;}
+ const token=sessionStorage.getItem('rtlAccessToken');
+ if(!token){m.textContent='Your session has expired. Sign in again.';return;}
+ m.textContent='Creating secure staff account...';
+ try{
+   const response=await fetch(`${RTL_DATA_URL}/functions/v1/create-rtl-staff-`,{
+     method:'POST',
+     headers:{apikey:RTL_DATA_KEY,Authorization:`Bearer ${token}`,'Content-Type':'application/json'},
+     body:JSON.stringify({
+       full_name:document.getElementById('staff-full-name').value.trim(),
+       email:document.getElementById('staff-email').value.trim(),
+       password:document.getElementById('staff-password').value,
+       role,
+       academy_id:academy||null
+     })
+   });
+   const result=await response.json();
+   if(!response.ok) throw new Error(result.error||result.message||'Staff account creation failed.');
+   m.textContent=`Account created for ${result.staff.full_name} (${result.staff.role}). Share the login details securely.`;
+   e.target.reset();
+   await loadAdminStaff();
+ }catch(err){m.textContent='Could not create staff account: '+err.message;}
+});
 async function loadAcademyPortal(){const aid=sessionStorage.getItem('rtlStaffAcademyId');document.getElementById('academy-portal-welcome').textContent='Welcome '+(sessionStorage.getItem('rtlStaffName')||'');if(!aid){document.getElementById('academy-portal-profile').textContent='Your account has no academy assigned. Contact RTL administration.';return;}try{const [a,entries,fixtures,lineups]=await Promise.all([rtlRequest('rtl_academies',`?select=*&id=eq.${aid}`),rtlRequest('rtl_entries',`?select=*&academy_id=eq.${aid}&season=eq.2027`),rtlRequest('rtl_public_fixtures','?select=id,division,match_date,kick_off,home_academy,away_academy&season=eq.2027&order=match_date.asc'),rtlRequest('rtl_match_lineups','?select=*&order=submitted_at.desc')]);const academy=a[0];document.getElementById('academy-portal-profile').innerHTML=academy?`<strong>${rtlSafe(academy.academy_name)}</strong><p>${rtlSafe(academy.location)}</p><p>Status: ${rtlSafe(academy.registration_status)}</p>`:'Academy record unavailable.';document.getElementById('academy-portal-entries').innerHTML=entries.length?entries.map(x=>`<p>${rtlSafe(x.division)} | Group ${rtlSafe(x.group_name)} | Entry ${rtlSafe(x.entry_number)}</p>`).join(''):'No approved entries listed.';const entrySel=document.getElementById('academy-lineup-entry');entrySel.innerHTML='<option value="">Select entry</option>'+entries.map(x=>`<option value="${x.id}">${rtlSafe(x.division)} Group ${rtlSafe(x.group_name)}</option>`).join('');const fxSel=document.getElementById('academy-lineup-fixture');fxSel.innerHTML='<option value="">Select fixture</option>'+fixtures.map(x=>`<option value="${x.id}">${rtlSafe(x.match_date)} ${rtlSafe(x.division)}: ${rtlSafe(x.home_academy)} vs ${rtlSafe(x.away_academy)}</option>`).join('');const mine=lineups.filter(x=>entries.some(en=>en.id===x.academy_entry_id));document.getElementById('academy-lineup-history').innerHTML=mine.length?mine.map(x=>`<p>${rtlSafe(x.coach_name)} | ${rtlSafe(x.status)} | ${rtlSafe(x.submitted_at||x.created_at)}</p>`).join(''):'No line-up submissions yet.';}catch(e){document.getElementById('academy-portal-profile').textContent='Unable to load academy data: '+e.message;}}
 document.getElementById('academy-lineup-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.getElementById('academy-lineup-message');try{const row=await rtlRequest('rtl_match_lineups','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({fixture_id:document.getElementById('academy-lineup-fixture').value,academy_entry_id:document.getElementById('academy-lineup-entry').value,coach_name:document.getElementById('academy-lineup-coach').value.trim(),status:'submitted',created_by:await rtlCurrentUserId(),submitted_at:new Date().toISOString()})});const lineup=row[0];const lines=document.getElementById('academy-lineup-players').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);const players=lines.map((line,i)=>{const parts=line.split(',').map(x=>x.trim());return {lineup_id:lineup.id,shirt_number:Number(parts[0]),player_name:parts[1],selection_status:(parts[2]||'Starter').toLowerCase(),sort_order:i+1};});if(players.length)await rtlRequest('rtl_lineup_players','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(players)});msg.textContent='Line-up submitted successfully.';e.target.reset();loadAcademyPortal();}catch(err){msg.textContent='Line-up submission failed: '+err.message;}});
 async function rtlCurrentUserId(){const r=await fetch(`${RTL_DATA_URL}/auth/v1/user`,{headers:rtlAuthHeaders()});if(!r.ok)throw new Error('Session expired. Sign in again.');const u=await r.json();return u.id;}
