@@ -563,7 +563,9 @@ footer {
     <article class="card">
       <h3>Academy Management</h3>
       <p>Review and approve academy registrations.</p>
-      <button type="button">Manage Academies</button>
+      <button type="button" onclick="openRTLSection('academies')">
+  Manage Academies
+      </button>
     </article>
 
     <article class="card">
@@ -706,6 +708,42 @@ footer {
   </div>
 </div>
 </section>
+  <section id="rtl-academies-section" class="admin-section" hidden>
+  <h2>Academy Management</h2>
+  <p>Register, review and manage participating academies.</p>
+
+  <button type="button" onclick="openRTLSection('dashboard')">
+    Back to Dashboard
+  </button>
+
+  <div class="card">
+    <h3>Register New Academy</h3>
+
+    <form id="rtl-academy-form">
+      <label>Academy Name</label>
+      <input id="academy-name" type="text" required>
+
+      <label>Location</label>
+      <input id="academy-location" type="text" required>
+
+      <label>Contact Person</label>
+      <input id="academy-contact" type="text" required>
+
+      <label>Contact Phone</label>
+      <input id="academy-phone" type="tel" required>
+
+      <button type="submit">Register Academy</button>
+      <p id="academy-message"></p>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Registered Academies</h3>
+    <div id="rtl-academy-list">
+      Loading academies...
+    </div>
+  </div>
+  </section>
 </main>
 
 <footer>
@@ -728,19 +766,21 @@ function openRTLSection(section) {
     return;
   }
 
-  const dashboard = document.getElementById('rtl-admin-dashboard');
-  const grid = document.getElementById('rtl-admin-grid');
-  const fixtures = document.getElementById('rtl-fixtures-section');
-  const players = document.getElementById('rtl-player-registration');
+  const sections = {
+    dashboard: document.getElementById('rtl-admin-grid'),
+    fixtures: document.getElementById('rtl-fixtures-section'),
+    players: document.getElementById('rtl-player-registration'),
+    academies: document.getElementById('rtl-academies-section')
+  };
 
-  dashboard.hidden = false;
-  grid.hidden = section !== 'dashboard';
-  fixtures.hidden = section !== 'fixtures';
-  players.hidden = section !== 'players';
+  document.getElementById('rtl-admin-dashboard').hidden = false;
 
-  if (section === 'players') {
-    loadPlayerAcademies();
-  }
+  Object.entries(sections).forEach(([name, element]) => {
+    if (element) element.hidden = name !== section;
+  });
+
+  if (section === 'players') loadPlayerAcademies();
+  if (section === 'academies') loadRTLAcademies();
 }
 function showDivision(division, button) {
   document.querySelectorAll('.division-switch button')
@@ -1312,6 +1352,49 @@ async function loadPlayerAcademies() {
   } catch (error) {
     console.error(error);
     if (message) message.textContent = error.message;
+  }
+}
+async function loadRTLAcademies() {
+  const list = document.getElementById('rtl-academy-list');
+  list.textContent = 'Loading academies...';
+
+  try {
+    const token = sessionStorage.getItem('rtlAccessToken');
+
+    const response = await fetch(
+      `${RTL_DATA_URL}/rest/v1/rtl_academies?select=*&order=academy_name.asc`,
+      {
+        headers: {
+          apikey: RTL_DATA_KEY,
+          Authorization: `Bearer ${token || RTL_DATA_KEY}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    const academies = await response.json();
+
+    if (!academies.length) {
+      list.textContent = 'No academies registered yet.';
+      return;
+    }
+
+    list.innerHTML = academies.map(academy => `
+      <article class="card">
+        <h3>${academy.academy_name}</h3>
+        <p>Location: ${academy.location || 'Not provided'}</p>
+        <p>Contact: ${academy.contact_name || 'Not provided'}</p>
+        <p>Phone: ${academy.contact_phone || 'Not provided'}</p>
+        <p>Status: ${academy.registration_status}</p>
+      </article>
+    `).join('');
+
+  } catch (error) {
+    console.error(error);
+    list.textContent = 'Unable to load academies: ' + error.message;
   }
 }
 </script>
