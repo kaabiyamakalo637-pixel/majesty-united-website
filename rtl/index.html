@@ -308,6 +308,45 @@ footer {
   .grid, .info-strip, .pathway { grid-template-columns: 1fr; }
   h1 { letter-spacing: -1px; }
 }
+
+/* RTL match-sheet interface */
+.match-sheet { background:#f7faf8; color:#26332c; border:1px solid #2aa77e; padding:16px; border-radius:4px; margin:18px 0; }
+.match-sheet h3 { color:#fff; background:#20a77e; padding:13px 16px; margin:20px 0 0; font-size:18px; }
+.match-sheet .sheet-panel { background:#fff; border:1px solid #2aa77e; padding:14px; margin-bottom:16px; }
+.match-sheet label { color:#34483d; }
+.match-sheet input,.match-sheet select { color:#24342c; background:#fff; border:1px solid #cbd8d0; }
+.match-sheet button { background:#20a77e; border-color:#20a77e; color:#fff; }
+.player-row { display:grid; grid-template-columns:64px minmax(0,1fr) 74px 116px; gap:12px; align-items:center; padding:12px 4px; border-bottom:1px solid #d7dfda; }
+.player-photo { width:64px; height:78px; object-fit:cover; background:#e5ece8; border:1px solid #d5dfd9; }
+.player-placeholder { width:64px; height:78px; display:grid; place-items:center; background:#e5ece8; color:#5a7164; font-weight:800; }
+.player-meta strong { display:block; color:#26332c; font-size:15px; }
+.player-meta small { display:block; color:#718078; }
+.player-number { background:#e6e6e6; color:#26332c; font-size:25px; text-align:center; padding:8px 3px; font-weight:700; }
+.player-row select { margin:0; padding:8px 5px; font-size:13px; }
+.sheet-status { display:inline-block; padding:4px 8px; background:#e4f4ed; color:#147b59; border-radius:4px; font-weight:700; font-size:12px; }
+@media(max-width:520px) {
+ .player-row { grid-template-columns:54px minmax(0,1fr) 56px; gap:8px; }
+ .player-photo,.player-placeholder { width:54px; height:68px; }
+ .player-row select { grid-column:2 / 4; width:100%; }
+ .player-number { font-size:21px; }
+}
+
+
+.lineup-pitch{background:linear-gradient(180deg,#07552f,#063d27);border:2px solid rgba(255,255,255,.7);border-radius:12px;padding:14px 8px;margin:12px 0;position:relative;overflow:hidden;min-height:300px}
+.lineup-pitch:before{content:"";position:absolute;inset:8px;border:1px solid rgba(255,255,255,.45);border-radius:8px;pointer-events:none}
+#lineup-pitch-rows{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:space-around;gap:12px;min-height:285px}
+.pitch-row{display:flex;justify-content:space-evenly;align-items:center;gap:5px}
+.pitch-slot{width: min(19%,130px);min-width:0;text-align:center;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:5px}
+.pitch-slot small{display:block;color:#fff;font-size:10px;margin-bottom:3px}
+.pitch-slot select{font-size:11px;padding:5px;margin:0;background:#123d2a;min-width:0}
+.publish-choice{display:flex;align-items:center;gap:10px;margin:16px 0;padding:12px;border:1px solid var(--line);border-radius:8px}
+.publish-choice input{width:auto;margin:0}
+.public-lineup-card{background:#0b2117;border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}
+.public-lineup-pitch{background:linear-gradient(180deg,#07552f,#063d27);border:2px solid #fff;border-radius:10px;padding:14px 8px;display:flex;flex-direction:column;gap:14px}
+.public-lineup-row{display:flex;justify-content:space-evenly;gap:5px}
+.public-player{max-width:22%;text-align:center;color:#fff;font-size:11px;font-weight:700;text-shadow:0 1px 2px #000}
+.public-player .shirt{display:block;margin:auto auto 4px;width:28px;height:28px;border-radius:50%;background:#fff;color:#063d27;line-height:28px;text-shadow:none;font-size:12px}
+
 </style>
 </head>
 <body>
@@ -784,18 +823,48 @@ footer {
     <article class="card"><h3>My Academy</h3><div id="academy-portal-profile">Loading...</div></article>
     <article class="card"><h3>My Team Entries</h3><div id="academy-portal-entries">Loading...</div></article>
   </div>
-  <div class="card"><h3>Submit Match Line-up</h3>
-    <form id="academy-lineup-form">
-      <label>Fixture</label><select id="academy-lineup-fixture" required><option value="">Select fixture</option></select>
-      <label>Team entry</label><select id="academy-lineup-entry" required><option value="">Select entry</option></select>
-      <label>Coach name</label><input id="academy-lineup-coach" required>
-      <label>Players, one per line. Format: Shirt number, Player name, Status (Starter or Substitute)</label>
-      <textarea id="academy-lineup-players" rows="8" placeholder="1, Player Name, Starter&#10;2, Player Name, Starter&#10;12, Player Name, Substitute" required></textarea>
-      <button type="submit">Submit Line-up</button><p id="academy-lineup-message"></p>
+  <div class="card">
+    <h3>Registered Player List</h3>
+    <p>Add and maintain your academy's eligible players. Player photographs are optional.</p>
+    <form id="academy-player-form">
+      <label>Player full name</label><input id="roster-player-name" required>
+      <div class="grid">
+        <div><label>Shirt number</label><input id="roster-player-number" type="number" min="1" max="99" required></div>
+        <div><label>Position</label><select id="roster-player-position"><option value="">Select position</option><option>Goalkeeper</option><option>Defender</option><option>Midfielder</option><option>Forward</option></select></div>
+      </div>
+      <div class="grid">
+        <div><label>Date of birth</label><input id="roster-player-dob" type="date"></div>
+        <div><label>Player photo URL (optional)</label><input id="roster-player-photo" type="url" placeholder="https://..."></div>
+      </div>
+      <button type="submit">Add Player</button><p id="academy-player-message"></p>
     </form>
+    <div id="academy-player-roster">Loading registered players...</div>
+  </div>
+  <div class="card match-sheet">
+    <h3>Submit Match Line-up</h3>
+    <div class="sheet-panel">
+      <form id="academy-lineup-form">
+        <label>Fixture</label><select id="academy-lineup-fixture" required><option value="">Select fixture</option></select>
+        <label>Team entry</label><select id="academy-lineup-entry" required><option value="">Select entry</option></select>
+        <label>Team official / Coach</label><input id="academy-lineup-coach" required>
+        <h3>Eligible Players</h3>
+        <div id="lineup-eligible-players"><p>Load your registered players first.</p></div>
+        <label>Formation</label>
+        <select id="lineup-formation" required>
+          <option value="4-2-3-1">4-2-3-1</option><option value="4-4-2">4-4-2</option><option value="4-3-3">4-3-3</option><option value="5-3-2">5-3-2</option><option value="3-5-2">3-5-2</option><option value="3-4-3">3-4-3</option><option value="4-1-4-1">4-1-4-1</option><option value="4-4-1-1">4-4-1-1</option>
+        </select>
+        <h3>Starting XI</h3><p>Select players as starters in Eligible Players, then assign them to positions on the pitch.</p>
+        <div id="lineup-pitch" class="lineup-pitch"><div id="lineup-pitch-rows"></div></div>
+        <div id="lineup-starters" class="sheet-panel"><p>Select 11 starting players to fill the formation.</p></div>
+        <h3>Substitutes</h3><div id="lineup-subs" class="sheet-panel"><p>Select substitute players below.</p></div>
+        <label class="publish-choice"><input id="lineup-public-request" type="checkbox"> I want RTL to publish my starting XI after approval.</label>
+        <button type="submit">Submit Line-up</button><p id="academy-lineup-message"></p>
+      </form>
+    </div>
   </div>
   <div class="card"><h3>My Line-up Submissions</h3><div id="academy-lineup-history">Loading...</div></div>
 </div>
+<section class="section" id="public-lineups-section"><div class="container"><h2>Confirmed Starting XIs</h2><p>Starting line-ups shared by academies and approved by RTL.</p><div id="public-lineups-list"><p>No public line-ups confirmed yet.</p></div></div></section>
 <div id="rtl-referee-portal" class="admin-section" hidden>
   <div class="card"><h2>Referee Portal</h2><p id="referee-portal-welcome"></p><button type="button" onclick="rtlLogout()">Sign out</button></div>
   <div class="card"><h3>My Assigned Fixtures</h3><div id="referee-fixture-list">Loading...</div></div>
@@ -988,6 +1057,15 @@ function rtlSafe(value) {
   })[char]);
 }
 
+async function loadPublicLineups(){
+ const box=document.getElementById('public-lineups-list');if(!box)return;
+ try{
+  const rows=await fetch(`${RTL_DATA_URL}/rest/v1/rtl_public_lineups?select=*&order=match_date.asc`,{headers:rtlHeaders}).then(r=>{if(!r.ok)throw new Error('Public line-ups unavailable');return r.json();});
+  const grouped={};rows.forEach(x=>(grouped[x.lineup_id]??=[]).push(x));
+  const cards=Object.values(grouped);
+  box.innerHTML=cards.length?cards.map(items=>{const first=items[0],shape=RTL_FORMATIONS[first.formation]||RTL_FORMATIONS['4-2-3-1'];const bySlot=Object.fromEntries(items.filter(x=>x.selection_status==='starter').map(x=>[x.position_slot,x]));return `<article class="public-lineup-card"><h3>${rtlSafe(first.academy_name)} | ${rtlSafe(first.division)}</h3><p>${rtlSafe(first.home_academy)} vs ${rtlSafe(first.away_academy)} · ${rtlSafe(first.match_date||'Date TBC')}</p><strong>Formation: ${rtlSafe(first.formation)}</strong><div class="public-lineup-pitch">${shape.map((line,r)=>`<div class="public-lineup-row">${line.map((pos,i)=>{const x=bySlot[`${r}-${i}`];return `<div class="public-player"><span class="shirt">${x?rtlSafe(x.shirt_number):'·'}</span>${x?rtlSafe(x.player_name):pos}</div>`;}).join('')}</div>`).join('')}</div><h4>Substitutes</h4><p>${items.filter(x=>x.selection_status==='substitute').map(x=>rtlSafe(x.shirt_number)+' '+rtlSafe(x.player_name)).join(' · ')||'None listed'}</p></article>`;}).join(''):'<p>No public line-ups confirmed yet.</p>';
+ }catch(e){box.textContent='Public line-ups will appear here when confirmed.';}
+}
 async function loadRTLFixtures() {
   const fixtureBox = document.getElementById('fixture-list');
   const resultBox = document.getElementById('results-list');
@@ -1019,6 +1097,7 @@ const officialMap = new Map(
 matches.forEach(match => {
   match.referee_name = officialMap.get(match.id) || null;
 });
+    await loadPublicLineups();
     const upcoming = matches.filter(match =>
       match.home_score === null || match.away_score === null
     );
@@ -1558,7 +1637,7 @@ async function assignEntryAcademy(entryId) {
 }
 
 document.getElementById('rtl-entry-form')?.addEventListener('submit',async e=>{e.preventDefault();const m=document.getElementById('entry-message');try{await rtlRequest('rtl_entries','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({academy_id:document.getElementById('entry-academy').value,season:2027,division:document.getElementById('entry-division').value,entry_number:Number(document.getElementById('entry-number').value),group_name:document.getElementById('entry-group').value})});m.textContent='Team entry saved.';e.target.reset();loadAdminEntries();}catch(err){m.textContent='Could not save entry: '+err.message;}});
-async function loadAdminLineups(){const box=document.getElementById('rtl-admin-lineup-list');try{const rows=await rtlRequest('rtl_match_lineups','?select=*&order=submitted_at.desc');box.innerHTML=rows.length?rows.map(x=>`<div class="team-slot"><strong>${rtlSafe(x.status)} | ${rtlSafe(x.coach_name)}</strong><p>Fixture: ${rtlSafe(x.fixture_id)} | Entry: ${rtlSafe(x.academy_entry_id)}</p><small>Submitted: ${rtlSafe(x.submitted_at||x.created_at)}</small><button type="button" onclick="reviewRTLLineup('${x.id}','approved')">Approve</button><button type="button" onclick="reviewRTLLineup('${x.id}','correction_required')">Request correction</button></div>`).join(''):'<p>No line-ups submitted yet.</p>';}catch(e){box.textContent='Unable to load line-ups: '+e.message;}}
+async function loadAdminLineups(){const box=document.getElementById('rtl-admin-lineup-list');try{const rows=await rtlRequest('rtl_match_lineups','?select=*&order=submitted_at.desc');box.innerHTML=rows.length?rows.map(x=>`<div class="team-slot"><strong>${rtlSafe(x.status)} | ${rtlSafe(x.coach_name)}</strong><p>Formation: ${rtlSafe(x.formation||'Not set')} | Public request: ${x.public_requested?'Yes':'No'}</p><p>Fixture: ${rtlSafe(x.fixture_id)} | Entry: ${rtlSafe(x.academy_entry_id)}</p><small>Submitted: ${rtlSafe(x.submitted_at||x.created_at)}</small><button type="button" onclick="reviewRTLLineup('${x.id}','approved')">Approve</button><button type="button" onclick="reviewRTLLineup('${x.id}','correction_required')">Request correction</button></div>`).join(''):'<p>No line-ups submitted yet.</p>';}catch(e){box.textContent='Unable to load line-ups: '+e.message;}}
 async function loadAdminMatchCentre(){const box=document.getElementById('rtl-admin-match-list'),reportsBox=document.getElementById('rtl-admin-report-list');try{const [rows,reports]=await Promise.all([rtlRequest('rtl_public_fixtures','?select=*&season=eq.2027&order=match_date.asc'),rtlRequest('rtl_referee_reports','?select=*&order=submitted_at.desc')]);box.innerHTML=rows.length?rows.map(x=>`<div class="team-slot"><strong>${rtlSafe(x.division)} | ${rtlSafe(x.home_academy)} vs ${rtlSafe(x.away_academy)}</strong><p>${rtlSafe(x.match_date)} ${rtlSafe(x.kick_off)} | ${rtlSafe(x.status)}</p><p>Score: ${rtlSafe(x.home_score??'-')} - ${rtlSafe(x.away_score??'-')}</p></div>`).join(''):'<p>No matches scheduled.</p>';reportsBox.innerHTML=reports.length?reports.map(r=>`<div class="team-slot"><strong>Report: ${rtlSafe(r.status)}</strong><p>Fixture: ${rtlSafe(r.fixture_id)} | Score: ${rtlSafe(r.home_score)}-${rtlSafe(r.away_score)}</p><p>${rtlSafe(r.report_text)}</p><button type="button" onclick="reviewRTLReport('${r.id}','approved')">Approve report</button><button type="button" onclick="reviewRTLReport('${r.id}','correction_required')">Request correction</button></div>`).join(''):'<p>No referee reports submitted.</p>';}catch(e){box.textContent='Unable to load matches: '+e.message;reportsBox.textContent='Unable to load reports: '+e.message;}}
 async function loadAdminStaff(){const box=document.getElementById('rtl-admin-staff-list');try{const [staff,academies]=await Promise.all([rtlRequest('rtl_staff','?select=*&order=full_name.asc'),rtlRequest('rtl_academies','?select=id,academy_name&order=academy_name.asc')]);const sel=document.getElementById('staff-academy');sel.innerHTML='<option value="">No academy</option>'+academies.map(a=>`<option value="${a.id}">${rtlSafe(a.academy_name)}</option>`).join('');box.innerHTML=staff.map(x=>{const a=academies.find(y=>y.id===x.academy_id);return `<div class="team-slot"><strong>${rtlSafe(x.full_name)}</strong><p>${rtlSafe(x.role)} | ${x.active?'Active':'Inactive'} | ${rtlSafe(a?.academy_name||'No academy')}</p><small>Auth UUID: ${rtlSafe(x.user_id)}</small></div>`}).join('')||'<p>No staff profiles.</p>';}catch(e){box.textContent='Unable to load staff: '+e.message;}}
 document.getElementById('rtl-staff-form')?.addEventListener('submit',async e=>{
@@ -1590,8 +1669,118 @@ document.getElementById('rtl-staff-form')?.addEventListener('submit',async e=>{
    await loadAdminStaff();
  }catch(err){m.textContent='Could not create staff account: '+err.message;}
 });
-async function loadAcademyPortal(){const aid=sessionStorage.getItem('rtlStaffAcademyId');document.getElementById('academy-portal-welcome').textContent='Welcome '+(sessionStorage.getItem('rtlStaffName')||'');if(!aid){document.getElementById('academy-portal-profile').textContent='Your account has no academy assigned. Contact RTL administration.';return;}try{const [a,entries,fixtures,lineups]=await Promise.all([rtlRequest('rtl_academies',`?select=*&id=eq.${aid}`),rtlRequest('rtl_entries',`?select=*&academy_id=eq.${aid}&season=eq.2027`),rtlRequest('rtl_public_fixtures','?select=id,division,match_date,kick_off,home_academy,away_academy&season=eq.2027&order=match_date.asc'),rtlRequest('rtl_match_lineups','?select=*&order=submitted_at.desc')]);const academy=a[0];document.getElementById('academy-portal-profile').innerHTML=academy?`<strong>${rtlSafe(academy.academy_name)}</strong><p>${rtlSafe(academy.location)}</p><p>Status: ${rtlSafe(academy.registration_status)}</p>`:'Academy record unavailable.';document.getElementById('academy-portal-entries').innerHTML=entries.length?entries.map(x=>`<p>${rtlSafe(x.division)} | Group ${rtlSafe(x.group_name)} | Entry ${rtlSafe(x.entry_number)}</p>`).join(''):'No approved entries listed.';const entrySel=document.getElementById('academy-lineup-entry');entrySel.innerHTML='<option value="">Select entry</option>'+entries.map(x=>`<option value="${x.id}">${rtlSafe(x.division)} Group ${rtlSafe(x.group_name)}</option>`).join('');const fxSel=document.getElementById('academy-lineup-fixture');fxSel.innerHTML='<option value="">Select fixture</option>'+fixtures.map(x=>`<option value="${x.id}">${rtlSafe(x.match_date)} ${rtlSafe(x.division)}: ${rtlSafe(x.home_academy)} vs ${rtlSafe(x.away_academy)}</option>`).join('');const mine=lineups.filter(x=>entries.some(en=>en.id===x.academy_entry_id));document.getElementById('academy-lineup-history').innerHTML=mine.length?mine.map(x=>`<p>${rtlSafe(x.coach_name)} | ${rtlSafe(x.status)} | ${rtlSafe(x.submitted_at||x.created_at)}</p>`).join(''):'No line-up submissions yet.';}catch(e){document.getElementById('academy-portal-profile').textContent='Unable to load academy data: '+e.message;}}
-document.getElementById('academy-lineup-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.getElementById('academy-lineup-message');try{const row=await rtlRequest('rtl_match_lineups','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({fixture_id:document.getElementById('academy-lineup-fixture').value,academy_entry_id:document.getElementById('academy-lineup-entry').value,coach_name:document.getElementById('academy-lineup-coach').value.trim(),status:'submitted',created_by:await rtlCurrentUserId(),submitted_at:new Date().toISOString()})});const lineup=row[0];const lines=document.getElementById('academy-lineup-players').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);const players=lines.map((line,i)=>{const parts=line.split(',').map(x=>x.trim());return {lineup_id:lineup.id,shirt_number:Number(parts[0]),player_name:parts[1],selection_status:(parts[2]||'Starter').toLowerCase(),sort_order:i+1};});if(players.length)await rtlRequest('rtl_lineup_players','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(players)});msg.textContent='Line-up submitted successfully.';e.target.reset();loadAcademyPortal();}catch(err){msg.textContent='Line-up submission failed: '+err.message;}});
+let rtlAcademyRoster = [];
+function rosterPhoto(url,name){
+  if(url) return `<img class="player-photo" src="${rtlSafe(url)}" alt="${rtlSafe(name)}" loading="lazy" onerror="this.style.display='none'">`;
+  return `<div class="player-placeholder">${rtlSafe((name||'?').split(/\s+/).map(x=>x[0]).slice(0,2).join('').toUpperCase())}</div>`;
+}
+function renderAcademyRoster(){
+  const box=document.getElementById('academy-player-roster');
+  const eligible=document.getElementById('lineup-eligible-players');
+  if(!box) return;
+  box.innerHTML=rtlAcademyRoster.length?rtlAcademyRoster.map(p=>`<div class="player-row">${rosterPhoto(p.photo_url,p.full_name)}<div class="player-meta"><strong>${rtlSafe(p.full_name)}</strong><small>${rtlSafe(p.position||'Position not set')} · ${p.date_of_birth?rtlSafe(p.date_of_birth):'Date of birth not set'}</small><span class="sheet-status">${p.active?'Active':'Inactive'}</span></div><div class="player-number">${rtlSafe(p.shirt_number)}</div><button type="button" onclick="toggleRosterPlayer('${p.id}',${!p.active})">${p.active?'Deactivate':'Activate'}</button></div>`).join(''):'<p>No players registered yet. Add your squad above.</p>';
+  if(eligible){
+    const active=rtlAcademyRoster.filter(p=>p.active);
+    eligible.innerHTML=active.length?active.map(p=>`<div class="player-row" data-player-id="${p.id}">${rosterPhoto(p.photo_url,p.full_name)}<div class="player-meta"><strong>${rtlSafe(p.full_name)}</strong><small>${rtlSafe(p.position||'Position not set')}</small></div><div class="player-number">${rtlSafe(p.shirt_number)}</div><select class="lineup-status" aria-label="Select match status for ${rtlSafe(p.full_name)}"><option value="">Not selected</option><option value="starter">Starting XI</option><option value="substitute">Substitute</option></select></div>`).join(''):'<p>No active eligible players. Register players first.</p>';
+    eligible.querySelectorAll('.lineup-status').forEach(sel=>sel.addEventListener('change',renderSelectedLineup));
+  }
+  renderSelectedLineup();
+}
+let rtlPitchAssignments={};
+const RTL_FORMATIONS={
+ '4-2-3-1':[['GK'],['LB','CB','CB','RB'],['DM','DM'],['LW','AM','RW'],['ST']],
+ '4-4-2':[['GK'],['LB','CB','CB','RB'],['LM','CM','CM','RM'],['ST','ST']],
+ '4-3-3':[['GK'],['LB','CB','CB','RB'],['CM','CM','CM'],['LW','ST','RW']],
+ '5-3-2':[['GK'],['LWB','CB','CB','CB','RWB'],['CM','CM','CM'],['ST','ST']],
+ '3-5-2':[['GK'],['CB','CB','CB'],['LWB','CM','CM','CM','RWB'],['ST','ST']],
+ '3-4-3':[['GK'],['CB','CB','CB'],['LM','CM','CM','RM'],['LW','ST','RW']],
+ '4-1-4-1':[['GK'],['LB','CB','CB','RB'],['DM'],['LM','CM','CM','RM'],['ST']],
+ '4-4-1-1':[['GK'],['LB','CB','CB','RB'],['LM','CM','CM','RM'],['AM'],['ST']]
+};
+function selectedLineupPlayers(status){
+ return [...document.querySelectorAll('#lineup-eligible-players .player-row')].filter(row=>row.querySelector('.lineup-status')?.value===status).map(row=>rtlAcademyRoster.find(p=>p.id===row.dataset.playerId)).filter(Boolean);
+}
+function renderSelectedLineup(){
+ const starters=selectedLineupPlayers('starter'),subs=selectedLineupPlayers('substitute');
+ const formation=document.getElementById('lineup-formation')?.value||'4-2-3-1';
+ const rows=document.getElementById('lineup-pitch-rows');
+ if(rows){
+  const shape=RTL_FORMATIONS[formation]||RTL_FORMATIONS['4-2-3-1'];
+  rows.innerHTML=shape.map((line,r)=>`<div class="pitch-row">${line.map((pos,i)=>{const slot=`${r}-${i}`;return `<div class="pitch-slot"><small>${pos}</small><select class="pitch-player" data-slot="${slot}"><option value="">Select player</option>${starters.map(p=>`<option value="${p.id}" ${rtlPitchAssignments[slot]===p.id?'selected':''}>${rtlSafe(p.shirt_number)} ${rtlSafe(p.full_name)}</option>`).join('')}</select></div>`;}).join('')}</div>`).join('');
+  rows.querySelectorAll('.pitch-player').forEach(sel=>sel.addEventListener('change',()=>{rtlPitchAssignments[sel.dataset.slot]=sel.value;renderSelectedLineupSummary();}));
+ }
+ const chosen=[...document.querySelectorAll('.pitch-player')].map(x=>({slot:x.dataset.slot,player:rtlAcademyRoster.find(p=>p.id===x.value)})).filter(x=>x.player);
+ const startersBox=document.getElementById('lineup-starters'),subsBox=document.getElementById('lineup-subs');
+ if(startersBox)startersBox.innerHTML=starters.length?starters.map(p=>{const slot=chosen.find(x=>x.player.id===p.id);return `<div class="player-row">${rosterPhoto(p.photo_url,p.full_name)}<div class="player-meta"><strong>${rtlSafe(p.full_name)}</strong><small>${rtlSafe(p.position||'Position not set')}</small></div><div class="player-number">${rtlSafe(p.shirt_number)}</div><span class="sheet-status">${slot?'POSITION ASSIGNED':'POSITION TO ASSIGN'}</span></div>`;}).join(''):'<p>Select your starting 11 above.</p>';
+ if(subsBox)subsBox.innerHTML=subs.length?subs.map(p=>`<div class="player-row">${rosterPhoto(p.photo_url,p.full_name)}<div class="player-meta"><strong>${rtlSafe(p.full_name)}</strong><small>${rtlSafe(p.position||'Position not set')}</small></div><div class="player-number">${rtlSafe(p.shirt_number)}</div><span class="sheet-status">SUBSTITUTE</span></div>`).join(''):'<p>No substitutes selected.</p>';
+}
+document.getElementById('lineup-formation')?.addEventListener('change',()=>{rtlPitchAssignments={};renderSelectedLineup();});
+async function loadAcademyRoster(academyId){
+  rtlAcademyRoster=await rtlRequest('rtl_players',`?select=*&academy_id=eq.${academyId}&order=shirt_number.asc,full_name.asc`);
+  renderAcademyRoster();
+}
+async function loadAcademyPortal(){
+  const aid=sessionStorage.getItem('rtlStaffAcademyId');
+  document.getElementById('academy-portal-welcome').textContent='Welcome '+(sessionStorage.getItem('rtlStaffName')||'');
+  if(!aid){document.getElementById('academy-portal-profile').textContent='Your account has no academy assigned. Contact RTL administration.';return;}
+  try{
+    const [a,entries,fixtures,lineups]=await Promise.all([
+      rtlRequest('rtl_academies',`?select=*&id=eq.${aid}`),
+      rtlRequest('rtl_entries',`?select=*&academy_id=eq.${aid}&season=eq.2027`),
+      rtlRequest('rtl_public_fixtures','?select=id,division,match_date,kick_off,home_academy,away_academy&season=eq.2027&order=match_date.asc'),
+      rtlRequest('rtl_match_lineups','?select=*&order=submitted_at.desc')
+    ]);
+    const academy=a[0];
+    document.getElementById('academy-portal-profile').innerHTML=academy?`<strong>${rtlSafe(academy.academy_name)}</strong><p>${rtlSafe(academy.location)}</p><p>Status: ${rtlSafe(academy.registration_status)}</p>`:'Academy record unavailable.';
+    document.getElementById('academy-portal-entries').innerHTML=entries.length?entries.map(x=>`<p>${rtlSafe(x.division)} | Group ${rtlSafe(x.group_name)} | Entry ${rtlSafe(x.entry_number)}</p>`).join(''):'No approved entries listed.';
+    const entrySel=document.getElementById('academy-lineup-entry');
+    entrySel.innerHTML='<option value="">Select entry</option>'+entries.map(x=>`<option value="${x.id}">${rtlSafe(x.division)} Group ${rtlSafe(x.group_name)}</option>`).join('');
+    const fxSel=document.getElementById('academy-lineup-fixture');
+    fxSel.innerHTML='<option value="">Select fixture</option>'+fixtures.map(x=>`<option value="${x.id}">${rtlSafe(x.match_date)} ${rtlSafe(x.division)}: ${rtlSafe(x.home_academy)} vs ${rtlSafe(x.away_academy)}</option>`).join('');
+    const mine=lineups.filter(x=>entries.some(en=>en.id===x.academy_entry_id));
+    document.getElementById('academy-lineup-history').innerHTML=mine.length?mine.map(x=>`<p>${rtlSafe(x.coach_name)} | ${rtlSafe(x.status)} | ${rtlSafe(x.submitted_at||x.created_at)}</p>`).join(''):'No line-up submissions yet.';
+    await loadAcademyRoster(aid);
+  }catch(e){document.getElementById('academy-portal-profile').textContent='Unable to load academy data: '+e.message;}
+}
+document.getElementById('academy-player-form')?.addEventListener('submit',async e=>{
+  e.preventDefault();const msg=document.getElementById('academy-player-message');
+  try{
+    const academyId=sessionStorage.getItem('rtlStaffAcademyId');
+    await rtlRequest('rtl_players','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({
+      academy_id:academyId,full_name:document.getElementById('roster-player-name').value.trim(),
+      shirt_number:Number(document.getElementById('roster-player-number').value),
+      position:document.getElementById('roster-player-position').value||null,
+      date_of_birth:document.getElementById('roster-player-dob').value||null,
+      photo_url:document.getElementById('roster-player-photo').value.trim()||null,
+      active:true,created_by:await rtlCurrentUserId()
+    })});
+    msg.textContent='Player added to your academy roster.';e.target.reset();await loadAcademyRoster(academyId);
+  }catch(err){msg.textContent='Unable to add player: '+err.message;}
+});
+async function toggleRosterPlayer(id,active){
+  try{await rtlRequest('rtl_players',`?id=eq.${id}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({active})});await loadAcademyRoster(sessionStorage.getItem('rtlStaffAcademyId'));}
+  catch(e){alert('Unable to update player: '+e.message);}
+}
+document.getElementById('academy-lineup-form')?.addEventListener('submit',async e=>{
+ e.preventDefault();const msg=document.getElementById('academy-lineup-message');
+ try{
+  const starters=selectedLineupPlayers('starter'),subs=selectedLineupPlayers('substitute');
+  const slots=[...document.querySelectorAll('.pitch-player')].map(x=>({slot:x.dataset.slot,player:rtlAcademyRoster.find(p=>p.id===x.value)})).filter(x=>x.player);
+  if(starters.length!==11)throw new Error('Select exactly 11 starting players.');
+  if(slots.length!==11)throw new Error('Assign all 11 starting players to positions on the pitch.');
+  if(new Set(slots.map(x=>x.player.id)).size!==11)throw new Error('Each starting player must occupy one position only.');
+  if(slots.some(x=>!starters.some(p=>p.id===x.player.id)))throw new Error('Only selected starting players are allowed on the pitch.');
+  const lineupRows=await rtlRequest('rtl_match_lineups','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({
+   fixture_id:document.getElementById('academy-lineup-fixture').value,academy_entry_id:document.getElementById('academy-lineup-entry').value,
+   coach_name:document.getElementById('academy-lineup-coach').value.trim(),formation:document.getElementById('lineup-formation').value,
+   public_requested:document.getElementById('lineup-public-request').checked,status:'submitted',created_by:await rtlCurrentUserId(),submitted_at:new Date().toISOString()
+  })});
+  const lineup=lineupRows[0];
+  const players=[...slots.map((x,i)=>({lineup_id:lineup.id,player_id:x.player.id,player_name:x.player.full_name,shirt_number:x.player.shirt_number,selection_status:'starter',position_slot:x.slot,sort_order:i+1})),...subs.map((p,i)=>({lineup_id:lineup.id,player_id:p.id,player_name:p.full_name,shirt_number:p.shirt_number,selection_status:'substitute',position_slot:null,sort_order:i+12}))];
+  if(players.length)await rtlRequest('rtl_lineup_players','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(players)});
+  msg.textContent='Line-up submitted. RTL will review it before any public display.';rtlPitchAssignments={};e.target.reset();renderSelectedLineup();await loadAcademyPortal();
+ }catch(err){msg.textContent='Line-up submission failed: '+err.message;}
+});
 async function rtlCurrentUserId(){const r=await fetch(`${RTL_DATA_URL}/auth/v1/user`,{headers:rtlAuthHeaders()});if(!r.ok)throw new Error('Session expired. Sign in again.');const u=await r.json();return u.id;}
 async function loadRefereePortal(){document.getElementById('referee-portal-welcome').textContent='Welcome '+(sessionStorage.getItem('rtlStaffName')||'');try{const uid=await rtlCurrentUserId();const [assigned,publicFixtures,reports]=await Promise.all([rtlRequest('rtl_fixtures',`?select=*&season=eq.2027&referee_user_id=eq.${uid}&order=match_date.asc`),rtlRequest('rtl_public_fixtures','?select=*'),rtlRequest('rtl_referee_reports',`?select=*&referee_user_id=eq.${uid}&order=submitted_at.desc`)]);const fixtures=assigned.map(f=>({...f,...(publicFixtures.find(p=>p.id===f.id)||{})}));const list=document.getElementById('referee-fixture-list'),sel=document.getElementById('referee-fixture');list.innerHTML=fixtures.length?fixtures.map(f=>`<div class="team-slot"><strong>${rtlSafe(f.division)} | ${rtlSafe(f.home_academy||f.home_entry_id)} vs ${rtlSafe(f.away_academy||f.away_entry_id)}</strong><p>${rtlSafe(f.match_date)} ${rtlSafe(f.kick_off)} | ${rtlSafe(f.venue)}</p></div>`).join(''):'<p>No fixtures assigned to your account.</p>';sel.innerHTML='<option value="">Select assigned fixture</option>'+fixtures.map(f=>`<option value="${f.id}">${rtlSafe(f.match_date)} ${rtlSafe(f.home_academy||f.home_entry_id)} vs ${rtlSafe(f.away_academy||f.away_entry_id)}</option>`).join('');document.getElementById('referee-report-history').innerHTML=reports.length?reports.map(r=>`<p>${rtlSafe(r.submitted_at)} | ${rtlSafe(r.status)} | ${rtlSafe(r.home_score)}-${rtlSafe(r.away_score)}</p>`).join(''):'No reports submitted yet.';}catch(e){document.getElementById('referee-fixture-list').textContent='Unable to load assigned fixtures: '+e.message;}}
 document.getElementById('referee-report-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.getElementById('referee-report-message');try{const uid=await rtlCurrentUserId(),fixture=document.getElementById('referee-fixture').value;await rtlRequest('rtl_referee_reports','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({fixture_id:fixture,referee_user_id:uid,home_score:Number(document.getElementById('referee-home-score').value),away_score:Number(document.getElementById('referee-away-score').value),report_text:document.getElementById('referee-report-text').value.trim(),status:'submitted',submitted_at:new Date().toISOString()})});const eventLines=document.getElementById('referee-events').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);const events=eventLines.map(line=>{const p=line.split(',').map(x=>x.trim());return {fixture_id:fixture,minute:Number(p[0]),event_type:p[1],player_name:p[2]||null,academy_entry_id:p[3]||null};});if(events.length)await rtlRequest('rtl_match_events','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(events)});msg.textContent='Match report submitted.';e.target.reset();loadRefereePortal();}catch(err){msg.textContent='Report submission failed: '+err.message;}});
