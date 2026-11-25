@@ -348,23 +348,27 @@ footer {
 .public-player .shirt{display:block;margin:auto auto 4px;width:28px;height:28px;border-radius:50%;background:#fff;color:#063d27;line-height:28px;text-shadow:none;font-size:12px}
 
 
-/* RTL 2027 visual identity */
-:root{--bg:#061321;--panel:#0d2030;--panel2:#142d40;--text:#f7f9fc;--muted:#b8c5d2;--accent:#e31b32;--red:#e31b32;--blue:#1746a2;--green:#087b43;--white:#fff;--line:rgba(255,255,255,.14)}
-body{background:radial-gradient(ellipse at 50% -15%,rgba(23,70,162,.22),transparent 45%),var(--bg)}
-header{background:rgba(4,14,25,.96);border-bottom:2px solid rgba(227,27,50,.65)}
-.brand{gap:13px}.rtl-crest{width:58px;height:58px;object-fit:contain;border-radius:50%;background:#000;box-shadow:0 0 0 2px rgba(255,255,255,.18)}
-.brand>span:last-child{color:#fff}.brand small{color:#b8c5d2}
+/* RTL premium stadium-night identity */
+:root{--bg:#06101d;--panel:#0d1d30;--panel2:#132943;--text:#f7f9fc;--muted:#b9c5d3;--accent:#e31b32;--red:#e31b32;--blue:#1746a2;--green:#087b43;--white:#fff;--line:rgba(255,255,255,.13)}
+html{background:#06101d}
+body{background:radial-gradient(ellipse at 12% 12%,rgba(225,27,50,.10),transparent 32%),radial-gradient(ellipse at 88% 28%,rgba(23,70,162,.17),transparent 36%),linear-gradient(180deg,#071626 0%,#050d18 48%,#091827 100%);background-attachment:fixed}
+header{background:rgba(3,10,19,.94);border-bottom:1px solid rgba(255,255,255,.14);box-shadow:0 8px 30px rgba(0,0,0,.28)}
+.brand{gap:14px}.rtl-crest{width:68px;height:68px;object-fit:contain;border-radius:0;background:transparent;box-shadow:none;flex:none}
+.brand>span:last-child{color:#fff}.brand small{color:#b9c5d3}
 .nav-links a:hover{color:#fff;text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:6px}
-.hero{background:radial-gradient(circle at 82% 18%,rgba(8,123,67,.24),transparent 28%),radial-gradient(circle at 8% 85%,rgba(227,27,50,.16),transparent 30%),linear-gradient(135deg,#0b2033,#061321 68%);position:relative}
-.hero:after{content:"";display:block;height:4px;max-width:1180px;margin:50px auto 0;background:linear-gradient(90deg,#e31b32 0 33%,#fff 33% 42%,#1746a2 42% 66%,#fff 66% 75%,#087b43 75%)}
-.eyebrow{color:#ff5365}.hero h1{max-width:980px;font-size:clamp(36px,6vw,68px);letter-spacing:-1.5px}
-.card,.admin-section,.section .card{background:linear-gradient(155deg,rgba(17,42,61,.98),rgba(8,25,40,.98));border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 30px rgba(0,0,0,.18)}
-section:nth-of-type(even){background:rgba(255,255,255,.018)}
-button,.btn{background:#d71932;border-color:#d71932;color:#fff}.btn.secondary{background:transparent;border-color:rgba(255,255,255,.35);color:#fff}
-input,select,textarea{background:#10283b;border-color:rgba(255,255,255,.2)}
+.hero{background:radial-gradient(ellipse at 78% 8%,rgba(23,70,162,.30),transparent 34%),radial-gradient(ellipse at 8% 85%,rgba(227,27,50,.20),transparent 34%),linear-gradient(120deg,rgba(9,29,49,.98),rgba(4,13,25,.98) 62%,rgba(7,28,37,.98));position:relative;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.12)}
+.hero:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;background:repeating-linear-gradient(90deg,transparent 0,transparent 118px,rgba(255,255,255,.07) 119px,transparent 120px),linear-gradient(180deg,transparent 72%,rgba(8,123,67,.22));mask-image:linear-gradient(180deg,black,transparent)}
+.hero-inner{position:relative;z-index:1}
+.hero:after{content:"";display:block;height:4px;max-width:1180px;margin:48px auto 0;background:linear-gradient(90deg,#e31b32 0 30%,#fff 30% 38%,#1746a2 38% 64%,#fff 64% 72%,#087b43 72%);box-shadow:0 0 18px rgba(23,70,162,.22)}
+.eyebrow{color:#ff7180}.hero h1{max-width:850px;font-size:clamp(34px,5.2vw,62px);letter-spacing:-1.2px;line-height:1.06;text-wrap:balance}
+.hero p{max-width:680px;font-size:clamp(16px,2vw,19px);line-height:1.75;color:#c3cfdb}
+.card,.admin-section,.section .card{background:linear-gradient(145deg,rgba(17,39,62,.97),rgba(8,21,37,.98));border:1px solid rgba(255,255,255,.13);box-shadow:0 14px 34px rgba(0,0,0,.24)}
+section:nth-of-type(even){background:linear-gradient(110deg,rgba(255,255,255,.025),rgba(23,70,162,.035),rgba(255,255,255,.012))}
+button,.btn{background:#d71932;border-color:#d71932;color:#fff;box-shadow:0 5px 16px rgba(215,25,50,.16)}.btn.secondary{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.3);color:#fff;box-shadow:none}
+input,select,textarea{background:#10263d;border-color:rgba(255,255,255,.2)}
 .division-switch button,.tab-button{background:#12385a;color:#fff}
-footer{background:#030c15;border-top:2px solid #087b43}
-@media(max-width:600px){.rtl-crest{width:48px;height:48px}.nav{padding:10px 14px}.brand{font-size:14px}.hero{padding:70px 18px 55px}}
+footer{background:#030a13;border-top:2px solid #087b43}
+@media(max-width:600px){.rtl-crest{width:58px;height:58px}.nav{padding:10px 14px}.brand{font-size:14px}.hero{padding:62px 18px 48px}.hero h1{font-size:clamp(32px,8vw,44px);letter-spacing:-.8px}.hero:after{margin-top:34px}}
 
 </style>
 </head>
@@ -373,7 +377,7 @@ footer{background:#030c15;border-top:2px solid #087b43}
 <header>
   <nav class="nav">
     <a class="brand" href="#home">
-      <img class="rtl-crest" src="assets/rtl-crest.webp" alt="Rising Talents League crest">
+      <img class="rtl-crest" src="/rtl/assets/rtl-crest.webp" alt="Rising Talents League crest">
       <span>RISING TALENTS<small>LEAGUE</small></span>
     </a>
     <div class="nav-links">
