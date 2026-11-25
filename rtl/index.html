@@ -612,6 +612,88 @@ footer {
  #academy-lineup-form #lineup-pitch-rows{min-height:283px}
 }
 
+
+/* RTL mobile usability refinement v3 */
+:where(button, .btn, input, select, textarea, a) {
+  -webkit-tap-highlight-color: transparent;
+}
+button, .btn { touch-action: manipulation; }
+button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible {
+  outline: 2px solid #f0c75e;
+  outline-offset: 2px;
+}
+img { max-width: 100%; }
+.admin-grid { align-items: stretch; }
+.admin-grid > * { min-width: 0; }
+#rtl-admin-dashboard, #rtl-academy-portal, #rtl-referee-portal {
+  min-width: 0;
+}
+#rtl-admin-dashboard .card, #rtl-academy-portal .card,
+#rtl-referee-portal .card, .admin-section {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+form button[type="submit"] { min-height: 44px; }
+input, select, textarea { font-size: 16px; }
+.rtl-match-card, .team-slot, .lineup-history-item { min-width: 0; }
+@media (max-width: 800px) {
+  .nav { padding: 12px 16px; gap: 10px; }
+  .brand { gap: 9px; min-width: 0; }
+  .brand-mark { width: 39px; height: 39px; flex: 0 0 39px; }
+  .admin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .admin-grid .card, .admin-section { padding: 16px; }
+  .admin-section > button { min-height: 42px; }
+}
+@media (max-width: 600px) {
+  section { padding: 42px 15px; }
+  .hero { padding: 54px 17px 48px; }
+  .hero p { font-size: 15px; }
+  .container, .hero-inner { width: 100%; }
+  .nav { padding: 10px 14px; }
+  .brand { font-size: 13px; letter-spacing: .5px; }
+  .brand small { font-size: 9px; letter-spacing: 1.5px; }
+  .admin-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .admin-grid .card, .admin-section, #rtl-admin-dashboard > .card {
+    padding: 14px;
+    border-radius: 10px;
+  }
+  .admin-section h2 { font-size: 22px; }
+  .admin-section h3 { font-size: 17px; }
+  .admin-section form > .grid,
+  .admin-section .grid { grid-template-columns: minmax(0, 1fr); }
+  .admin-section button, .admin-grid button,
+  #rtl-admin-dashboard button, #rtl-academy-portal button,
+  #rtl-referee-portal button {
+    min-height: 42px;
+    max-width: 100%;
+    white-space: normal;
+  }
+  .admin-section input, .admin-section select,
+  .admin-section textarea, #rtl-admin-dashboard input,
+  #rtl-admin-dashboard select, #rtl-academy-portal input,
+  #rtl-academy-portal select, #rtl-referee-portal input,
+  #rtl-referee-portal select, #rtl-referee-portal textarea {
+    min-width: 0;
+    margin-bottom: 10px;
+  }
+  .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lineup-selection-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #academy-lineup-form #lineup-eligible-players {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lineup-submit { position: static !important; }
+  .footer-inner { flex-direction: column; }
+}
+@media (max-width: 380px) {
+  .team-grid, #academy-lineup-form #lineup-eligible-players {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lineup-selection-summary { gap: 4px; }
+  .lineup-counter strong { font-size: 15px; }
+  .rtl-match-meta { overflow-wrap: anywhere; }
+}
+
 </style>
 </head>
 <body>
