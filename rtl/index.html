@@ -414,6 +414,44 @@ footer {
  #lineup-pitch-rows{min-height:330px}
 }
 
+
+/* RTL mobile polish: restore registered player cards and prevent sticky overlap */
+#academy-player-roster{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+#academy-player-roster>.player-row{
+ display:grid;grid-template-columns:42px minmax(0,1fr) 42px auto;align-items:center;gap:9px;
+ padding:10px;background:#10291d;border:1px solid rgba(150,195,166,.2);border-radius:10px;
+ min-width:0;margin:0
+}
+#academy-player-roster .player-photo,#academy-player-roster .player-placeholder{
+ width:42px;height:48px;object-fit:cover;border-radius:7px;display:grid;place-items:center;
+ background:#0b2016;color:#a8c5b2;font-size:12px;font-weight:800
+}
+#academy-player-roster .player-meta{display:flex;flex-direction:column;gap:2px;min-width:0}
+#academy-player-roster .player-meta strong{font-size:13px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#academy-player-roster .player-meta small{font-size:10px;line-height:1.35;color:#a7b9ad}
+#academy-player-roster .sheet-status{font-size:9px;color:#68c58c;font-weight:800}
+#academy-player-roster .player-number{grid-column:auto;grid-row:auto;justify-self:center;background:#0b2016;border-radius:7px;padding:6px 8px;font-size:16px;font-weight:800;color:#fff}
+#academy-player-roster button{min-height:36px;padding:6px 9px;font-size:11px;white-space:nowrap}
+#lineup-eligible-players .player-number{grid-column:2;grid-row:1;justify-self:end}
+#lineup-eligible-players .player-meta{grid-column:1/-1;grid-row:2;min-width:0}
+#lineup-eligible-players .player-pick-actions{grid-row:3}
+#lineup-eligible-players .player-row{grid-template-columns:30px minmax(0,1fr);grid-template-rows:auto auto auto}
+.lineup-submit{position:static;bottom:auto;z-index:auto;box-shadow:none}
+.lineup-pitch{max-width:480px;min-height:340px}
+#lineup-pitch-rows{min-height:318px}
+.pitch-slot select{min-height:36px}
+@media(max-width:520px){
+ #academy-player-roster>.player-row{grid-template-columns:36px minmax(0,1fr) 34px auto;gap:7px;padding:8px}
+ #academy-player-roster .player-photo,#academy-player-roster .player-placeholder{width:36px;height:42px}
+ #academy-player-roster .player-meta strong{font-size:12px}
+ #academy-player-roster .player-number{font-size:14px;padding:5px}
+ #academy-player-roster button{font-size:10px;padding:5px 7px}
+}
+@media(max-width:370px){
+ #academy-player-roster>.player-row{grid-template-columns:34px minmax(0,1fr) 30px}
+ #academy-player-roster button{grid-column:2/-1;justify-self:start}
+}
+
 /* Final RTL League Centre refinement */
 #fixtures .grid{gap:16px}
 #fixtures .card{padding:24px 26px;border-color:rgba(255,255,255,.085);box-shadow:0 10px 28px rgba(0,0,0,.13)}
