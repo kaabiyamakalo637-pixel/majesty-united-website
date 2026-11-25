@@ -694,6 +694,14 @@ input, select, textarea { font-size: 16px; }
   .rtl-match-meta { overflow-wrap: anywhere; }
 }
 
+
+#admin-fixture-list form{display:grid;gap:8px;margin-top:12px}
+#admin-fixture-list form .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#admin-fixture-list form label{margin-top:2px}
+#admin-fixture-list form button{width:100%;margin-top:4px}
+#admin-fixture-list form button.secondary{background:transparent;color:var(--text);border-color:var(--line)}
+#admin-fixture-list .fixture-update-message{min-height:20px;margin:2px 0;color:#9bd8b2;font-size:12px}
+@media(max-width:520px){#admin-fixture-list form .grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1732,7 +1740,32 @@ loadRTLStandings();
 
 renderTeams('U17');
   async function loadFixtureAcademies() {
-  const division = document.getElementById('fixture-division').value;
+  const division = async function deleteRTLFixture(fixtureId) {
+  const confirmed = confirm('Are you sure you want to delete this fixture?');
+  if (!confirmed) return;
+  const token = sessionStorage.getItem('rtlAccessToken');
+  if (!token) { alert('Please sign in again.'); return; }
+  try {
+    const response = await fetch(
+      `${RTL_DATA_URL}/rest/v1/rtl_fixtures?id=eq.${fixtureId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          apikey: RTL_DATA_KEY,
+          Authorization: `Bearer ${token}`,
+          Prefer: 'return=minimal'
+        }
+      }
+    );
+    if (!response.ok) throw new Error(await response.text());
+    await Promise.all([loadAdminFixtures(), loadRTLFixtures(), loadRTLStandings()]);
+    alert('Fixture deleted successfully.');
+  } catch (error) {
+    alert('Error deleting fixture: ' + error.message);
+  }
+}
+
+document.getElementById('fixture-division').value;
   const group = document.getElementById('fixture-group').value;
 
   const home = document.getElementById('fixture-home');
@@ -1796,75 +1829,97 @@ renderTeams('U17');
 }
 async function loadAdminFixtures() {
   const box = document.getElementById('admin-fixture-list');
-
+  if (!box) return;
+  box.innerHTML = '<p>Loading fixtures...</p>';
   try {
     const response = await fetch(
       `${RTL_DATA_URL}/rest/v1/rtl_public_fixtures?select=*&season=eq.2027&order=match_date.asc`,
-      {
-        headers: {
-          apikey: RTL_DATA_KEY,
-          Authorization: `Bearer ${RTL_DATA_KEY}`
-        }
-      }
+      { headers: rtlAuthHeaders() }
     );
-
     if (!response.ok) throw new Error(await response.text());
-
     const fixtures = await response.json();
-
-    box.innerHTML = fixtures.length
-  ? fixtures.map(match => `
-      <div class="team-slot">
+    box.innerHTML = fixtures.length ? fixtures.map(match => `
+      <div class="team-slot" style="margin:12px 0;padding:16px">
         <strong>${rtlSafe(match.division)} | Group ${rtlSafe(match.group_name)}</strong>
-        <p>${rtlSafe(match.home_academy)} vs ${rtlSafe(match.away_academy)}</p>
-        <small>${rtlSafe(match.match_date)} | ${rtlSafe(match.kick_off)}</small>
-        <small>${rtlSafe(match.venue)}</small>
-        <small>Status: ${rtlSafe(match.status)}</small>
-        <button type="button" onclick="deleteRTLFixture('${match.id}')">Delete Fixture</button>
+        <p style="margin:8px 0">${rtlSafe(match.home_academy)} vs ${rtlSafe(match.away_academy)}</p>
+        <form onsubmit="saveRTLFixtureUpdates(event,'${match.id}')">
+          <div class="grid">
+            <div><label>Match date</label><input type="date" name="match_date" value="${rtlSafe(match.match_date || '')}" required></div>
+            <div><label>Kick-off time</label><input type="time" name="kick_off" value="${rtlSafe(String(match.kick_off || '').slice(0,5))}" required></div>
+          </div>
+          <label>Venue</label><input name="venue" value="${rtlSafe(match.venue || '')}" required>
+          <div class="grid">
+            <div><label>Home score</label><input type="number" name="home_score" min="0" step="1" value="${match.home_score ?? ''}" placeholder="Not entered"></div>
+            <div><label>Away score</label><input type="number" name="away_score" min="0" step="1" value="${match.away_score ?? ''}" placeholder="Not entered"></div>
+          </div>
+          <label>Match status</label>
+          <select name="status">
+            ${['scheduled','live','completed','postponed','cancelled'].map(status =>
+              `<option value="${status}" ${String(match.status || 'scheduled').toLowerCase() === status ? 'selected' : ''}>${status.charAt(0).toUpperCase()+status.slice(1)}</option>`
+            ).join('')}
+          </select>
+          <button type="submit">Save Fixture & Result</button>
+          <button type="button" class="secondary" onclick="deleteRTLFixture('${match.id}')">Delete Fixture</button>
+          <p class="fixture-update-message" role="status" aria-live="polite"></p>
+        </form>
       </div>
-    `).join('')
-  : '<p>No fixtures scheduled yet.</p>';
-
+    `).join('') : '<p>No fixtures scheduled yet.</p>';
   } catch (error) {
-    console.error(error);
-    box.innerHTML = '<p>Unable to load fixtures.</p>';
+    console.error('RTL admin fixtures loading error:', error);
+    box.innerHTML = `<p>Unable to load fixtures: ${rtlSafe(error.message)}</p>`;
   }
-      }
-  async function deleteRTLFixture(fixtureId) {
-  const confirmed = confirm('Are you sure you want to delete this fixture?');
-  if (!confirmed) return;
+}
 
+async function saveRTLFixtureUpdates(event, fixtureId) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const message = form.querySelector('.fixture-update-message');
   const token = sessionStorage.getItem('rtlAccessToken');
-
-  if (!token) {
-    alert('Please sign in again.');
+  if (!token) { message.textContent = 'Please sign in again.'; return; }
+  const data = new FormData(form);
+  const homeRaw = String(data.get('home_score') ?? '').trim();
+  const awayRaw = String(data.get('away_score') ?? '').trim();
+  if ((homeRaw === '') !== (awayRaw === '')) {
+    message.textContent = 'Enter both scores, or leave both blank.';
     return;
   }
-
+  const payload = {
+    match_date: data.get('match_date'),
+    kick_off: data.get('kick_off'),
+    venue: String(data.get('venue') || '').trim(),
+    status: data.get('status'),
+    home_score: homeRaw === '' ? null : Number(homeRaw),
+    away_score: awayRaw === '' ? null : Number(awayRaw)
+  };
+  if (payload.home_score !== null &&
+      (!Number.isInteger(payload.home_score) || payload.home_score < 0 ||
+       !Number.isInteger(payload.away_score) || payload.away_score < 0)) {
+    message.textContent = 'Scores must be whole numbers of zero or more.';
+    return;
+  }
+  message.textContent = 'Saving changes...';
   try {
     const response = await fetch(
-      `${RTL_DATA_URL}/rest/v1/rtl_fixtures?id=eq.${fixtureId}`,
+      `${RTL_DATA_URL}/rest/v1/rtl_fixtures?id=eq.${encodeURIComponent(fixtureId)}`,
       {
-        method: 'DELETE',
+        method: 'PATCH',
         headers: {
           apikey: RTL_DATA_KEY,
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
           Prefer: 'return=minimal'
-        }
+        },
+        body: JSON.stringify(payload)
       }
     );
-
-    if (!response.ok) {
-      throw new Error(await response.text());
-    }
-
-    await loadAdminFixtures();
-    alert('Fixture deleted successfully.');
-
+    if (!response.ok) throw new Error(await response.text());
+    message.textContent = 'Fixture and result updated.';
+    await Promise.all([loadAdminFixtures(), loadRTLFixtures(), loadRTLStandings(), loadAdminMatchCentre()]);
   } catch (error) {
-    alert('Error deleting fixture: ' + error.message);
+    message.textContent = 'Update failed: ' + error.message;
   }
 }
+
 document.getElementById('fixture-division')
   .addEventListener('change', loadFixtureAcademies);
 
