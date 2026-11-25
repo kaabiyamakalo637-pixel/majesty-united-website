@@ -308,6 +308,20 @@ footer {
   .grid, .info-strip, .pathway { grid-template-columns: 1fr; }
   h1 { letter-spacing: -1px; }
 }
+
+/* Professional league standings table */
+.standings-card { grid-column: 1 / -1; }
+.standings-group { margin-top: 18px; }
+.standings-group h4 { margin: 0 0 10px; color: var(--text); font-size: 16px; }
+.standings-table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+.standings-table { width: 100%; min-width: 720px; border-collapse: collapse; text-align: left; font-size: 13px; }
+.standings-table th { padding: 12px 10px; background: var(--panel2); color: var(--muted); font-size: 11px; letter-spacing: .6px; text-transform: uppercase; white-space: nowrap; }
+.standings-table td { padding: 12px 10px; border-top: 1px solid var(--line); white-space: nowrap; }
+.standings-table tbody tr:nth-child(even) { background: rgba(255,255,255,.025); }
+.standings-table .position { color: var(--accent); font-weight: 800; }
+.standings-table .team-name { font-weight: 700; white-space: normal; min-width: 150px; }
+.standings-table .points { font-weight: 800; color: var(--text); }
+@media(max-width:800px) { .standings-card { grid-column: 1 / -1; } }
 </style>
 </head>
 <body>
@@ -440,7 +454,7 @@ footer {
         <p>Completed matches and final scores.</p>
         <div class="placeholder" id="results-list">Loading results...</div>
       </article>
-      <article class="card">
+      <article class="card standings-card">
         <div class="card-number">LEAGUE RANKINGS</div>
         <h3>Standings</h3>
         <p>Points, matches played, goal difference and positions.</p>
@@ -1078,24 +1092,42 @@ async function loadRTLStandings() {
       return;
     }
 
-    standingsBox.innerHTML = standings.map(row => `
-      <div class="team-slot">
-        <strong>${rtlSafe(row.division)} | Group ${rtlSafe(row.group_name)}</strong>
-        <p>${rtlSafe(row.academy_name)}</p>
-        <small>
-          P: ${rtlSafe(row.played)} |
-          W: ${rtlSafe(row.won)} |
-          D: ${rtlSafe(row.drawn)} |
-          L: ${rtlSafe(row.lost)}
-        </small>
-        <small>
-          GF: ${rtlSafe(row.goals_for)} |
-          GA: ${rtlSafe(row.goals_against)} |
-          GD: ${rtlSafe(row.goal_difference)} |
-          Points: ${rtlSafe(row.points)}
-        </small>
-      </div>
-    `).join('');
+    const groups = new Map();
+    standings.forEach(row => {
+      const key = `${row.division}|${row.group_name}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(row);
+    });
+
+    standingsBox.innerHTML = [...groups.entries()].map(([key, rows]) => {
+      const [division, group] = key.split('|');
+      return `
+        <div class="standings-group">
+          <h4>${rtlSafe(division)} | Group ${rtlSafe(group)}</h4>
+          <div class="standings-table-wrap">
+            <table class="standings-table">
+              <thead><tr>
+                <th>Pos</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th>
+                <th>GF</th><th>GA</th><th>GD</th><th>Pts</th>
+              </tr></thead>
+              <tbody>${rows.map((row, index) => `
+                <tr>
+                  <td class="position">${index + 1}</td>
+                  <td class="team-name">${rtlSafe(row.academy_name || 'Academy pending')}</td>
+                  <td>${rtlSafe(row.played ?? 0)}</td>
+                  <td>${rtlSafe(row.won ?? 0)}</td>
+                  <td>${rtlSafe(row.drawn ?? 0)}</td>
+                  <td>${rtlSafe(row.lost ?? 0)}</td>
+                  <td>${rtlSafe(row.goals_for ?? 0)}</td>
+                  <td>${rtlSafe(row.goals_against ?? 0)}</td>
+                  <td>${rtlSafe(row.goal_difference ?? 0)}</td>
+                  <td class="points">${rtlSafe(row.points ?? 0)}</td>
+                </tr>
+              `).join('')}</tbody>
+            </table>
+          </div>
+        </div>`;
+    }).join('');
 
   } catch (error) {
     console.error('RTL standings loading error:', error);
