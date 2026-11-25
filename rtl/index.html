@@ -1553,8 +1553,10 @@ async function loadRTLAcademies() {
         <p>Contact: ${academy.contact_name || 'Not provided'}</p>
         <p>Phone: ${academy.contact_phone || 'Not provided'}</p>
         <p>Status: ${rtlSafe(academy.registration_status)}</p>
-        <button type="button" onclick="setAcademyStatus('${academy.id}','approved')">Approve</button>
-        <button type="button" onclick="setAcademyStatus('${academy.id}','rejected')">Reject</button>
+        ${academy.registration_status === 'pending' ? `
+          <button type="button" onclick="setAcademyStatus('${academy.id}','approved')">Approve</button>
+          <button type="button" onclick="setAcademyStatus('${academy.id}','rejected')">Reject</button>
+        ` : ''}
       </article>
     `).join('');
 
@@ -1595,7 +1597,7 @@ async function loadAdminEntries(){
  try {
    const [entries,academies]=await Promise.all([
      rtlRequest('rtl_entries','?select=*&season=eq.2027&order=division.asc,group_name.asc,entry_number.asc'),
-     rtlRequest('rtl_academies','?select=id,academy_name&order=academy_name.asc')
+     rtlRequest('rtl_academies','?select=id,academy_name&registration_status=eq.approved&order=academy_name.asc')
    ]);
    const academyOptions='<option value="">Choose academy</option>'+academies.map(a=>`<option value="${a.id}">${rtlSafe(a.academy_name)}</option>`).join('');
    if(sel) sel.innerHTML=academyOptions;
