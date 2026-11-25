@@ -778,6 +778,15 @@ input, select, textarea { font-size: 16px; }
 .rtl-lineup-team h5{margin:0 0 7px;color:#fff;font-size:12px}
 .rtl-lineup-player-list{display:flex;flex-wrap:wrap;gap:6px}
 .rtl-lineup-player{padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.06);font-size:11px;color:#e8f1ea}
+.rtl-public-pitch{position:relative;display:grid;gap:10px;margin:10px 0 16px;padding:14px 9px;border:1px solid rgba(255,255,255,.2);border-radius:10px;background:linear-gradient(180deg,#145a39,#0c432c);overflow:hidden}
+.rtl-public-pitch:before{content:"";position:absolute;inset:7px;border:1px solid rgba(255,255,255,.25);border-radius:5px;pointer-events:none}
+.rtl-public-pitch:after{content:"";position:absolute;left:7px;right:7px;top:50%;border-top:1px solid rgba(255,255,255,.22);pointer-events:none}
+.rtl-public-pitch-line{position:relative;z-index:1;display:flex;justify-content:space-around;align-items:center;gap:4px;min-height:48px}
+.rtl-public-pitch-player{display:flex;flex-direction:column;align-items:center;gap:3px;max-width:24%;text-align:center;color:#fff;font-size:9px;font-weight:700;line-height:1.2}
+.rtl-public-pitch-shirt{display:grid;place-items:center;width:25px;height:25px;border:1px solid rgba(255,255,255,.8);border-radius:50%;background:#ce1126;color:#fff;font-size:10px;font-weight:900}
+.rtl-public-pitch-player.is-gk .rtl-public-pitch-shirt{background:#d6a529;color:#111}
+.rtl-public-bench{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0 14px}
+.rtl-public-bench span{padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.07);font-size:10px;color:#e8f1ea}
 @media(max-width:520px){.rtl-match-tabbar{gap:4px}.rtl-match-tab{font-size:10px;padding:9px 2px}.rtl-match-tabpanel{padding:9px}.rtl-match-event-row{grid-template-columns:40px minmax(0,1fr) auto;gap:7px}}
 
 </style>
@@ -1700,15 +1709,35 @@ function rtlRenderLineups(rows,match){
   const academies=[...new Set(rows.map(p=>p.academy_name||match.home_academy||'Team'))];
   return academies.map(name=>{
     const teamRows=rows.filter(p=>(p.academy_name||match.home_academy||'Team')===name);
-    const render=(title,items)=>items.length?`<div class="rtl-lineup-team"><h5>${title}</h5><div class="rtl-lineup-player-list">${items.map(p=>`<span class="rtl-lineup-player">${rtlSafe(p.shirt_number??'')} ${rtlSafe(p.player_name||'Player')}${p.is_captain?' (C)':''}${p.is_goalkeeper?' (GK)':''}</span>`).join('')}</div></div>`:'';
-    return render(name+' · Starting XI',teamRows.filter(p=>String(p.selection_status||'').toLowerCase()==='starter'))+render(name+' · Substitutes',teamRows.filter(p=>String(p.selection_status||'').toLowerCase()==='substitute'));
+    const starters=teamRows.filter(p=>String(p.selection_status||'').toLowerCase()==='starter');
+    const subs=teamRows.filter(p=>String(p.selection_status||'').toLowerCase()==='substitute');
+    const formation=starters[0]?.formation||teamRows[0]?.formation||'4-2-3-1';
+    const shape=RTL_FORMATIONS[formation]||RTL_FORMATIONS['4-2-3-1'];
+    const bySlot=Object.fromEntries(starters.map(p=>[String(p.position_slot||''),p]));
+    const pitch=shape.map((line,r)=>`<div class="rtl-public-pitch-line">${line.map((position,i)=>{
+      const player=bySlot[`${r}-${i}`];
+      return `<div class="rtl-public-pitch-player ${player?.is_goalkeeper?'is-gk':''}"><span class="rtl-public-pitch-shirt">${player?rtlSafe(player.shirt_number??'·'):'·'}</span><span>${player?rtlSafe(player.player_name||'Player'):rtlSafe(position)}${player?.is_captain?' (C)':''}${player?.is_goalkeeper?' (GK)':''}</span></div>`;
+    }).join('')}</div>`).join('');
+    const bench=subs.length?`<h5>${rtlSafe(name)} · Substitutes</h5><div class="rtl-public-bench">${subs.map(p=>`<span>${rtlSafe(p.shirt_number??'')} ${rtlSafe(p.player_name||'Player')}</span>`).join('')}</div>`:'';
+    return `<div class="rtl-lineup-team"><h5>${rtlSafe(name)} · Starting XI · ${rtlSafe(formation)}</h5><div class="rtl-public-pitch">${pitch}</div>${bench}</div>`;
   }).join('');
 }
 function rtlRenderH2H(match,matches){
-  const home=String(match.home_academy||'').toLowerCase(),away=String(match.away_academy||'').toLowerCase();
-  const previous=(matches||[]).filter(x=>x.id!==match.id&&((String(x.home_academy||'').toLowerCase()===home&&String(x.away_academy||'').toLowerCase()===away)||(String(x.home_academy||'').toLowerCase()===away&&String(x.away_academy||'').toLowerCase()===home))).sort((a,b)=>String(b.match_date||'').localeCompare(String(a.match_date||'')));
-  if(!previous.length)return '<p class="rtl-event-empty">No previous meetings are recorded in this season.</p>';
-  return previous.map(x=>`<div class="rtl-h2h-row"><span>${rtlSafe(x.match_date||'Date TBC')} · ${rtlSafe(x.home_academy||'Home')} vs ${rtlSafe(x.away_academy||'Away')}</span><strong>${rtlSafe(x.home_score??'-')} - ${rtlSafe(x.away_score??'-')}</strong></div>`).join('');
+  const home=String(match.home_academy||'').trim().toLowerCase(),away=String(match.away_academy||'').trim().toLowerCase();
+  const matchDate=String(match.match_date||'').slice(0,10);
+  const previous=(matches||[]).filter(x=>{
+    if(x.id===match.id||String(x.status||'').toLowerCase()!=='completed')return false;
+    const date=String(x.match_date||'').slice(0,10);
+    if(!date||!matchDate||date>=matchDate)return false;
+    const h=String(x.home_academy||'').trim().toLowerCase(),a=String(x.away_academy||'').trim().toLowerCase();
+    return (h===home&&a===away)||(h===away&&a===home);
+  }).sort((a,b)=>String(b.match_date||'').localeCompare(String(a.match_date||'')));
+  if(!previous.length)return '<p class="rtl-event-empty">No earlier completed meetings between these academies are recorded.</p>';
+  return previous.map(x=>{
+    const reversed=String(x.home_academy||'').trim().toLowerCase()===away;
+    const first=reversed?x.away_score:x.home_score,second=reversed?x.home_score:x.away_score;
+    return `<div class="rtl-h2h-row"><span>${rtlSafe(x.match_date||'Date TBC')} · ${rtlSafe(x.home_academy||'Home')} vs ${rtlSafe(x.away_academy||'Away')}</span><strong>${rtlSafe(first??'-')} - ${rtlSafe(second??'-')}</strong></div>`;
+  }).join('');
 }
 function rtlRenderMatchTabs(match,events,allMatches,lineups=[]){
   const id=rtlMatchTabId(match.id);
