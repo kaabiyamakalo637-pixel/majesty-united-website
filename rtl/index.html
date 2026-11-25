@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -896,6 +895,42 @@ input, select, textarea { font-size: 16px; }
  #results-list .rtl-match-team{font-size:10px}
  #results-list .rtl-match-score{min-width:48px;font-size:15px}
 }
+
+/* RTL consistent status styling and compact mobile cards */
+.rtl-match-card--live{border-color:rgba(37,99,235,.62);background:linear-gradient(110deg,rgba(37,99,235,.12),rgba(255,255,255,.012))}
+.rtl-match-card--live:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:#2563eb}
+.rtl-match-card--live .rtl-match-status{color:#8db8ff;background:rgba(37,99,235,.17)}
+.rtl-match-card--scheduled .rtl-match-status{color:#9bdd83;background:rgba(58,119,40,.16)}
+.rtl-live-card{border-color:rgba(37,99,235,.58);background:linear-gradient(135deg,rgba(18,45,92,.40),rgba(5,17,11,.92))}
+.rtl-live-card:before{background:#2563eb}
+@media(max-width:600px){
+ #fixture-list{gap:7px}
+ #fixture-list .rtl-match-card{display:block;min-width:0;padding:9px 11px 8px 13px;margin:0;border-radius:10px}
+ #fixture-list .rtl-match-date{display:flex;flex-direction:row;align-items:baseline;justify-content:flex-start;gap:6px;width:100%;min-height:0;height:auto;padding:0 0 6px;margin:0 0 6px;border:0;border-bottom:1px solid rgba(255,255,255,.08);border-radius:0;background:transparent;text-align:left}
+ #fixture-list .rtl-match-date .day{font-size:13px;line-height:1;font-weight:850}
+ #fixture-list .rtl-match-date .month,#fixture-list .rtl-match-date .year{margin:0;font-size:9px}
+ #fixture-list .rtl-match-main{display:flex;flex-direction:column;gap:5px;min-width:0}
+ #fixture-list .rtl-match-topline{display:flex;align-items:center;justify-content:space-between;gap:6px;min-height:22px}
+ #fixture-list .rtl-match-tag{font-size:9px;padding:3px 6px}
+ #fixture-list .rtl-match-status{font-size:9px;padding:4px 7px}
+ #fixture-list .rtl-match-teams{display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr);align-items:center;gap:5px}
+ #fixture-list .rtl-match-team{font-size:11px;line-height:1.2;overflow-wrap:anywhere}
+ #fixture-list .rtl-match-team.away{text-align:right}
+ #fixture-list .rtl-match-vs{font-size:9px;text-align:center}
+ #fixture-list .rtl-match-meta{font-size:8px;line-height:1.2;gap:3px 7px;margin-top:1px}
+ .rtl-live-match-list{gap:8px;margin-top:12px}
+ .rtl-live-card{padding:11px 12px;border-radius:10px}
+ .rtl-live-head{gap:6px;margin-bottom:8px}
+ .rtl-live-division{font-size:9px}
+ .rtl-live-badge{font-size:9px;padding:4px 7px}
+ .rtl-live-teams{gap:5px}
+ .rtl-live-team{font-size:11px;line-height:1.2}
+ .rtl-live-score{gap:5px;padding:6px 8px;font-size:19px}
+ .rtl-live-minute{min-width:48px;margin-top:8px;padding:5px 8px;font-size:11px}
+ .rtl-live-meta{gap:4px 8px;margin-top:7px;font-size:9px}
+ .rtl-live-events{margin-top:10px;padding-top:9px}
+}
+
 </style>
 </head>
 <body>
@@ -3196,3 +3231,4 @@ async function rtlEnablePushNotifications() {
 
 </body>
 </html>
+
