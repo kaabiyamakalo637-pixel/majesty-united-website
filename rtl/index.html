@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -788,6 +789,10 @@ input, select, textarea { font-size: 16px; }
 .rtl-public-bench span{padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.07);font-size:10px;color:#e8f1ea}
 @media(max-width:520px){.rtl-match-tabbar{gap:4px}.rtl-match-tab{font-size:10px;padding:9px 2px}.rtl-match-tabpanel{padding:9px}.rtl-match-event-row{grid-template-columns:40px minmax(0,1fr) auto;gap:7px}}
 
+
+/* RTL public live chat */
+.rtl-chat-card{max-width:900px;margin:0 auto}.rtl-chat-announcement{padding:16px 18px;margin-bottom:20px;border-left:4px solid var(--accent);background:rgba(206,17,38,.09);border-radius:8px}.rtl-chat-announcement p{margin:6px 0 0;color:var(--muted)}.rtl-chat-heading{display:flex;justify-content:space-between;align-items:center;gap:16px}.rtl-chat-heading h3{margin:8px 0 0}.rtl-chat-messages{height:360px;overflow-y:auto;padding:14px;margin:12px 0 18px;background:#06170f;border:1px solid var(--line);border-radius:10px}.rtl-chat-message{padding:11px 12px;margin-bottom:10px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:8px;overflow-wrap:anywhere}.rtl-chat-message:last-child{margin-bottom:0}.rtl-chat-message-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.rtl-chat-message-head strong{color:#f08ca1}.rtl-chat-message time{font-size:11px;color:var(--muted)}.rtl-chat-message p{margin:5px 0 0;white-space:pre-wrap}.rtl-chat-message-actions{display:flex;gap:8px;margin-top:8px}.rtl-chat-message-actions button{font-size:11px;padding:5px 8px}.rtl-chat-form textarea{resize:vertical}.rtl-chat-form-footer{display:flex;justify-content:space-between;align-items:center;gap:12px}.rtl-chat-form-footer small{color:var(--muted)}
+@media(max-width:600px){.rtl-chat-heading{align-items:flex-start}.rtl-chat-messages{height:320px}.rtl-chat-form-footer{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
@@ -803,6 +808,7 @@ input, select, textarea { font-size: 16px; }
       <a href="#competition">Competition</a>
       <a href="#fixtures">Fixtures</a>
       <a href="#live">Live Centre</a>
+      <a href="#rtl-live-chat">Live Chat</a>
       <a href="#fan-vote">Fan Vote</a>
       <a href="#pathway">Talent Pathway</a>
     </div>
@@ -950,6 +956,29 @@ input, select, textarea { font-size: 16px; }
       <div id="live-match-list" class="rtl-live-match-list">
         <p class="rtl-live-empty">No live matches at the moment. Live scores will appear here during matchdays.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="feature" id="rtl-live-chat">
+  <div class="container">
+    <div class="section-heading">
+      <div class="eyebrow">RTL Community</div>
+      <h2>Live Chat</h2>
+      <p>Join the conversation. Support your teams. Respect every player, official and supporter.</p>
+    </div>
+    <div class="feature-card rtl-chat-card">
+      <div class="rtl-chat-announcement" id="rtl-chat-announcement"><strong>RTL Official Announcement</strong><p>No official announcements yet.</p></div>
+      <div class="rtl-chat-heading"><div><span class="status">PUBLIC CHAT ROOM</span><h3>Matchday Community</h3><p id="rtl-chat-status" class="rtl-event-empty">Loading messages...</p></div><button type="button" class="btn secondary" onclick="rtlLoadChat()">Refresh</button></div>
+      <label for="rtl-chat-nickname">Your display name</label>
+      <input id="rtl-chat-nickname" maxlength="24" placeholder="Choose a nickname" autocomplete="nickname">
+      <div id="rtl-chat-messages" class="rtl-chat-messages" aria-live="polite"><p class="rtl-event-empty">Loading the conversation...</p></div>
+      <form id="rtl-chat-form" class="rtl-chat-form">
+        <label for="rtl-chat-input">Your message</label>
+        <textarea id="rtl-chat-input" rows="2" maxlength="500" placeholder="Share your thoughts about RTL..." required></textarea>
+        <div class="rtl-chat-form-footer"><small>Be respectful. Maximum 500 characters.</small><button type="submit">Send Message</button></div>
+      </form>
+      <p id="rtl-chat-feedback" class="rtl-event-empty" role="status" aria-live="polite"></p>
     </div>
   </div>
 </section>
@@ -1138,6 +1167,12 @@ input, select, textarea { font-size: 16px; }
       <h3>Live Match Centre</h3>
       <p>Manage match events and live scores.</p>
       <button type="button" onclick="openRTLSection('matches')">Manage Matches</button>
+    </article>
+
+    <article class="card">
+      <h3>Live Chat Moderation</h3>
+      <p>Publish official announcements and moderate the public chat.</p>
+      <button type="button" onclick="openRTLSection('chat')">Manage Live Chat</button>
     </article>
 
     <article class="card">
@@ -1383,6 +1418,12 @@ input, select, textarea { font-size: 16px; }
 </div>
 <div id="rtl-lineups-section" class="card admin-section" hidden><h2>Match Line-up Review</h2><button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button><div id="rtl-admin-lineup-list">Loading...</div></div>
 <div id="rtl-matches-section" class="card admin-section" hidden><h2>Live Match Centre</h2><button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button><div id="rtl-admin-match-list">Loading...</div><h3>Referee Reports</h3><div id="rtl-admin-report-list">Loading...</div></div>
+<div id="rtl-chat-section" class="card admin-section" hidden>
+  <h2>Live Chat Moderation</h2><button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button>
+  <p>Manage public messages and publish official RTL announcements. Moderation actions are recorded against your staff account.</p>
+  <form id="rtl-chat-announcement-form"><label for="rtl-chat-announcement-input">Official announcement</label><textarea id="rtl-chat-announcement-input" rows="3" maxlength="500" placeholder="Write an official RTL update..." required></textarea><button type="submit">Publish Announcement</button><p id="rtl-chat-admin-feedback" role="status" aria-live="polite"></p></form>
+  <h3>Recent Chat Messages</h3><div id="rtl-chat-admin-list">Loading messages...</div>
+</div>
 <div id="rtl-staff-section" class="card admin-section" hidden><h2>Staff Management</h2><button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button>
   <p>Create secure login accounts for Academy Staff, Referees, RTL Staff and additional Administrators. Only Admins may access this section.</p>
   <form id="rtl-staff-form"><label>Full name</label><input id="staff-full-name" required autocomplete="name"><label>Email address</label><input id="staff-email" type="email" required autocomplete="email"><label>Temporary password</label><input id="staff-password" type="password" minlength="10" required autocomplete="new-password"><label>Role</label><select id="staff-role" required><option value="academy_staff">Academy Staff</option><option value="referee">Referee</option><option value="rtl_staff">RTL Staff</option><option value="admin">Administrator</option></select><label>Academy, required for Academy Staff</label><select id="staff-academy"><option value="">No academy</option></select><button type="submit">Create Staff Account</button><p id="staff-message"></p></form>
@@ -1402,7 +1443,7 @@ input, select, textarea { font-size: 16px; }
 <script>
 function openRTLSection(section) {
   const role = sessionStorage.getItem('rtlStaffRole');
-  const managerSections = ['academies','entries','fixtures','lineups','matches'];
+  const managerSections = ['academies','entries','fixtures','lineups','matches','chat'];
   const adminOnly = ['staff','players'];
   if (managerSections.includes(section) && !['admin','rtl_staff'].includes(role)) {
     alert('This section is reserved for RTL administrators.');
@@ -1416,7 +1457,7 @@ function openRTLSection(section) {
     dashboard:'rtl-admin-grid', fixtures:'rtl-fixtures-section',
     players:'rtl-player-registration', academies:'rtl-academies-section',
     entries:'rtl-entries-section', lineups:'rtl-lineups-section',
-    matches:'rtl-matches-section', staff:'rtl-staff-section'
+    matches:'rtl-matches-section', chat:'rtl-chat-section', staff:'rtl-staff-section'
   };
   document.getElementById('rtl-admin-dashboard').hidden = false;
   document.getElementById('rtl-academy-portal').hidden = true;
@@ -1429,6 +1470,7 @@ function openRTLSection(section) {
   if(section==='entries') loadAdminEntries();
   if(section==='lineups') loadAdminLineups();
   if(section==='matches') loadAdminMatchCentre();
+  if(section==='chat') loadRTLChatModeration();
   if(section==='staff') loadAdminStaff();
   if(section==='players') loadPlayerAcademies();
 }
@@ -2990,6 +3032,22 @@ document.getElementById('rtl-referee-assignment-form')?.addEventListener('submit
 async function reviewRTLLineup(id,status){try{await rtlRequest('rtl_match_lineups',`?id=eq.${id}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({status})});loadAdminLineups();}catch(e){alert('Unable to update line-up: '+e.message);}}
 async function reviewRTLReport(id,status){try{await rtlRequest('rtl_referee_reports',`?id=eq.${id}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({status,reviewed_by:await rtlCurrentUserId(),reviewed_at:new Date().toISOString()})});loadAdminMatchCentre();}catch(e){alert('Unable to review report: '+e.message);}}
 loadPublicLineups();
+
+// RTL public live chat. Messages are stored in Supabase and refreshed every five seconds.
+const RTL_CHAT_TOKEN_KEY='rtlChatSenderToken';
+function rtlChatSenderToken(){let token=localStorage.getItem(RTL_CHAT_TOKEN_KEY);if(!token){token=crypto.randomUUID();localStorage.setItem(RTL_CHAT_TOKEN_KEY,token);}return token;}
+function rtlChatTime(value){const date=new Date(value);return Number.isNaN(date.getTime())?'':date.toLocaleString([], {dateStyle:'short',timeStyle:'short'});}
+function rtlChatIsModerator(){return ['admin','rtl_staff'].includes(sessionStorage.getItem('rtlStaffRole'))&&!!sessionStorage.getItem('rtlAccessToken');}
+function rtlChatMessageMarkup(row,moderator=false){return `<article class="rtl-chat-message" data-chat-id="${rtlSafe(row.id)}"><div class="rtl-chat-message-head"><strong>${rtlSafe(row.nickname)}</strong><time>${rtlSafe(rtlChatTime(row.created_at))}</time></div><p>${rtlSafe(row.message_text)}</p>${moderator?`<div class="rtl-chat-message-actions"><button type="button" onclick="rtlModerateChatMessage('${rtlSafe(row.id)}','delete')">Delete</button><button type="button" onclick="rtlModerateChatMessage('${rtlSafe(row.id)}','block','${rtlSafe(row.sender_token)}')">Block sender</button></div>`:''}</article>`;}
+async function rtlLoadChat(){const box=document.getElementById('rtl-chat-messages');const status=document.getElementById('rtl-chat-status');if(!box)return;try{const rows=await rtlRequest('rtl_chat_messages','?select=id,nickname,message_text,message_type,created_at,sender_token&is_deleted=eq.false&order=created_at.desc&limit=100');const announcements=rows.filter(x=>x.message_type==='announcement');const messages=rows.filter(x=>x.message_type==='message').reverse();const latest=announcements[0];const announcementBox=document.getElementById('rtl-chat-announcement');if(announcementBox)announcementBox.innerHTML=latest?`<strong>RTL Official Announcement</strong><p>${rtlSafe(latest.message_text)}</p><small>${rtlSafe(rtlChatTime(latest.created_at))}</small>`:'<strong>RTL Official Announcement</strong><p>No official announcements yet.</p>';box.innerHTML=messages.length?messages.map(x=>rtlChatMessageMarkup(x,false)).join(''):'<p class="rtl-event-empty">No messages yet. Start the conversation.</p>';box.scrollTop=box.scrollHeight;if(status)status.textContent=`${messages.length} recent messages · Updates automatically`; }catch(error){if(status)status.textContent='Chat is temporarily unavailable. Please try again shortly.';box.innerHTML='<p class="rtl-event-empty">Unable to load chat messages.</p>';console.error('RTL chat load error:',error);}}
+document.getElementById('rtl-chat-nickname')?.addEventListener('change',e=>localStorage.setItem('rtlChatNickname',e.target.value.trim().slice(0,24)));
+const rtlChatNickname=document.getElementById('rtl-chat-nickname');if(rtlChatNickname)rtlChatNickname.value=localStorage.getItem('rtlChatNickname')||'';
+document.getElementById('rtl-chat-form')?.addEventListener('submit',async e=>{e.preventDefault();const feedback=document.getElementById('rtl-chat-feedback');const nickname=document.getElementById('rtl-chat-nickname').value.trim();const message=document.getElementById('rtl-chat-input').value.trim();if(nickname.length<2){feedback.textContent='Choose a display name with at least 2 characters.';return;}if(!message){feedback.textContent='Write a message first.';return;}const button=e.target.querySelector('button[type="submit"]');button.disabled=true;try{localStorage.setItem('rtlChatNickname',nickname);await rtlRequest('rtl_chat_messages','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({sender_token:rtlChatSenderToken(),nickname,message_text:message,message_type:'message'})});document.getElementById('rtl-chat-input').value='';feedback.textContent='Message sent.';await rtlLoadChat();}catch(error){feedback.textContent='Message not sent: '+error.message;}finally{button.disabled=false;}});
+async function loadRTLChatModeration(){const box=document.getElementById('rtl-chat-admin-list');if(!box||!rtlChatIsModerator())return;box.textContent='Loading messages...';try{const rows=await rtlRequest('rtl_chat_messages','?select=id,nickname,message_text,message_type,created_at,sender_token,is_deleted&order=created_at.desc&limit=100');box.innerHTML=rows.length?rows.map(x=>rtlChatMessageMarkup(x,true)).join(''):'<p>No chat messages yet.</p>';}catch(error){box.textContent='Unable to load chat moderation: '+error.message;}}
+async function rtlModerateChatMessage(id,action,senderToken){if(!rtlChatIsModerator()){alert('You are not authorised to moderate chat.');return;}if(action==='delete'){if(!confirm('Delete this message?'))return;try{await rtlRequest('rtl_chat_messages',`?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({is_deleted:true,deleted_by:await rtlCurrentUserId()})});await Promise.all([loadRTLChatModeration(),rtlLoadChat()]);}catch(error){alert('Unable to delete message: '+error.message);}}else if(action==='block'){if(!confirm('Block this participant from sending further messages?'))return;try{await rtlRequest('rtl_chat_bans','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({sender_token:senderToken,blocked_by:await rtlCurrentUserId()})});await rtlRequest('rtl_chat_messages',`?sender_token=eq.${encodeURIComponent(senderToken)}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({is_deleted:true,deleted_by:await rtlCurrentUserId()})});await Promise.all([loadRTLChatModeration(),rtlLoadChat()]);}catch(error){alert('Unable to block participant: '+error.message);}}}
+document.getElementById('rtl-chat-announcement-form')?.addEventListener('submit',async e=>{e.preventDefault();const feedback=document.getElementById('rtl-chat-admin-feedback');if(!rtlChatIsModerator()){feedback.textContent='You are not authorised to publish announcements.';return;}const text=document.getElementById('rtl-chat-announcement-input').value.trim();if(!text)return;try{await rtlRequest('rtl_chat_messages','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({sender_token:rtlChatSenderToken(),nickname:'RTL Administration',message_text:text,message_type:'announcement'})});document.getElementById('rtl-chat-announcement-input').value='';feedback.textContent='Official announcement published.';await Promise.all([loadRTLChatModeration(),rtlLoadChat()]);}catch(error){feedback.textContent='Unable to publish announcement: '+error.message;}});
+rtlLoadChat();
+window.setInterval(()=>{if(document.visibilityState==='visible')rtlLoadChat();},5000);
 
 // RTL Web Push notifications. Fans opt in from each device/browser.
 const RTL_PUSH_PUBLIC_KEY = 'BL-kUnKGt8EWpOqNIXcV2t5-84vTOPmNGQC_MxZjp43U7z3abd1e5n8vwcwIpe54_aPp1a5jc0Fw_UxIc72oBF0';
