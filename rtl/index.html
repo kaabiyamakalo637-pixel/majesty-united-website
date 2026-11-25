@@ -1585,8 +1585,10 @@ async function loadRTLAcademies() {
         <p>Contact: ${academy.contact_name || 'Not provided'}</p>
         <p>Phone: ${academy.contact_phone || 'Not provided'}</p>
         <p>Status: ${rtlSafe(academy.registration_status)}</p>
-        <button type="button" onclick="setAcademyStatus('${academy.id}','approved')">Approve</button>
-        <button type="button" onclick="setAcademyStatus('${academy.id}','rejected')">Reject</button>
+       ${academy.registration_status === 'pending' ?`
+<button type="button" onclick="setAcademyStatus('${academy.id}','approved')">Approve</button>
+<button type="button" onclick="setAcademyStatus('${academy.id}','rejected')">Reject</button>
+` : ''}
       </article>
     `).join('');
 
