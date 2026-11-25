@@ -2053,15 +2053,72 @@ sessionStorage.setItem('rtlStaffAcademyId', staffRecords[0].academy_id || '');
 loadRTLStandings();
 
 renderTeams('U17');
-  async function loadFixtureAcademies() {
-  const division = async function deleteRTLFixture(fixtureId) {
+async function loadFixtureAcademies() {
+  const division = document.getElementById('fixture-division').value;
+  const group = document.getElementById('fixture-group').value;
+  const home = document.getElementById('fixture-home');
+  const away = document.getElementById('fixture-away');
+
+  if (!home || !away) return;
+  home.innerHTML = '<option value="">Loading...</option>';
+  away.innerHTML = '<option value="">Loading...</option>';
+
+  try {
+    const entriesResponse = await fetch(
+      `${RTL_DATA_URL}/rest/v1/rtl_entries?select=id,academy_id,entry_number&season=eq.2027&division=eq.${encodeURIComponent(division)}&group_name=eq.${encodeURIComponent(group)}`,
+      {
+        headers: {
+          apikey: RTL_DATA_KEY,
+          Authorization: `Bearer ${RTL_DATA_KEY}`
+        }
+      }
+    );
+    if (!entriesResponse.ok) throw new Error(await entriesResponse.text());
+
+    const entries = await entriesResponse.json();
+    if (!entries.length) throw new Error('No academy entries found for this division and group.');
+
+    const ids = [...new Set(entries.map(entry => entry.academy_id).filter(Boolean))];
+    if (!ids.length) throw new Error('The league entries do not contain academy IDs.');
+
+    const academyResponse = await fetch(
+      `${RTL_DATA_URL}/rest/v1/rtl_academies?select=id,academy_name&id=in.(${ids.join(',')})&registration_status=eq.approved`,
+      {
+        headers: {
+          apikey: RTL_DATA_KEY,
+          Authorization: `Bearer ${RTL_DATA_KEY}`
+        }
+      }
+    );
+    if (!academyResponse.ok) throw new Error(await academyResponse.text());
+
+    const academies = await academyResponse.json();
+    const options = entries.map(entry => {
+      const academy = academies.find(item => String(item.id) === String(entry.academy_id));
+      return academy
+        ? `<option value="${entry.id}">${rtlSafe(academy.academy_name)}</option>`
+        : '';
+    }).join('');
+
+    if (!options) throw new Error('No approved academies were found for the selected group.');
+    const placeholder = '<option value="">Select academy</option>';
+    home.innerHTML = placeholder + options;
+    away.innerHTML = placeholder + options;
+  } catch (error) {
+    home.innerHTML = '<option value="">Unable to load academies</option>';
+    away.innerHTML = '<option value="">Unable to load academies</option>';
+    console.error('RTL fixture academy loading error:', error);
+  }
+}
+
+async function deleteRTLFixture(fixtureId) {
   const confirmed = confirm('Are you sure you want to delete this fixture?');
   if (!confirmed) return;
   const token = sessionStorage.getItem('rtlAccessToken');
   if (!token) { alert('Please sign in again.'); return; }
   try {
     const response = await fetch(
-      `${RTL_DATA_URL}/rest/v1/rtl_fixtures?id=eq.${fixtureId}`,
+      `${RTL_DATA_URL}/rest/v1/rtl_fixtures?id=eq.${encodeURIComponent(fixtureId)}`,
       {
         method: 'DELETE',
         headers: {
@@ -2076,69 +2133,6 @@ renderTeams('U17');
     alert('Fixture deleted successfully.');
   } catch (error) {
     alert('Error deleting fixture: ' + error.message);
-  }
-}
-
-document.getElementById('fixture-division').value;
-  const group = document.getElementById('fixture-group').value;
-
-  const home = document.getElementById('fixture-home');
-  const away = document.getElementById('fixture-away');
-
-  home.innerHTML = '<option value="">Loading...</option>';
-  away.innerHTML = '<option value="">Loading...</option>';
-
-  try {
-    const entriesResponse = await fetch(
-      `${RTL_DATA_URL}/rest/v1/rtl_entries?select=id,academy_id,entry_number&season=eq.2027&division=eq.${division}&group_name=eq.${group}`,
-      {
-        headers: {
-          apikey: RTL_DATA_KEY,
-          Authorization: `Bearer ${RTL_DATA_KEY}`
-        }
-      }
-    );
-
-    if (!entriesResponse.ok) throw new Error(await entriesResponse.text());
-
-    const entries = await entriesResponse.json();
-
-    if (!entries.length) throw new Error('No academy entries found.');
-
-    const ids = [...new Set(entries.map(entry => entry.academy_id))];
-
-    const academyResponse = await fetch(
-      `${RTL_DATA_URL}/rest/v1/rtl_academies?select=id,academy_name&id=in.(${ids.join(',')})&registration_status=eq.approved`,
-      {
-        headers: {
-          apikey: RTL_DATA_KEY,
-          Authorization: `Bearer ${RTL_DATA_KEY}`
-        }
-      }
-    );
-
-    if (!academyResponse.ok) throw new Error(await academyResponse.text());
-
-    const academies = await academyResponse.json();
-
-    const options = entries
-      .map(entry => {
-        const academy = academies.find(item => item.id === entry.academy_id);
-        return academy
-          ? `<option value="${entry.id}">${academy.academy_name}</option>`
-          : '';
-      })
-      .join('');
-
-    const placeholder = '<option value="">Select academy</option>';
-
-    home.innerHTML = placeholder + options;
-    away.innerHTML = placeholder + options;
-
-  } catch (error) {
-    home.innerHTML = '<option value="">Unable to load academies</option>';
-    away.innerHTML = '<option value="">Unable to load academies</option>';
-    console.error(error);
   }
 }
 async function loadAdminFixtures() {
