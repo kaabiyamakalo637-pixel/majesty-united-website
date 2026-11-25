@@ -872,6 +872,30 @@ input, select, textarea { font-size: 16px; }
  #results-list .rtl-match-score{min-width:60px;padding:6px 5px;font-size:17px}
  #results-list .rtl-match-meta{font-size:9px;line-height:1.35;gap:3px 8px}
 }
+
+/* RTL mobile results: tighter card spacing while keeping team names readable */
+@media(max-width:600px){
+ #results-list{gap:6px}
+ #results-list .rtl-match-card{padding:8px 10px 7px 12px;margin:0;border-radius:9px}
+ #results-list .rtl-match-date{gap:5px;padding-bottom:5px;margin-bottom:5px}
+ #results-list .rtl-match-date .day{font-size:13px}
+ #results-list .rtl-match-date .month,#results-list .rtl-match-date .year{font-size:9px}
+ #results-list .rtl-match-main{gap:4px}
+ #results-list .rtl-match-topline{gap:5px;min-height:23px}
+ #results-list .rtl-match-tag{font-size:9px;padding:3px 6px}
+ #results-list .rtl-match-status{font-size:9px;padding:4px 7px}
+ #results-list .rtl-match-teams{grid-template-columns:minmax(0,1fr) 54px minmax(0,1fr);gap:5px}
+ #results-list .rtl-match-team{font-size:11px;line-height:1.15;letter-spacing:-.1px}
+ #results-list .rtl-match-score{min-width:54px;padding:5px 3px;font-size:16px;gap:3px}
+ #results-list .rtl-match-meta{font-size:8px;line-height:1.2;gap:2px 7px;margin-top:1px}
+ #results-list .rtl-result-details{margin-top:3px;padding-top:3px}
+ #results-list .rtl-result-details>summary{padding:5px 0;font-size:11px;line-height:1.15}
+}
+@media(max-width:380px){
+ #results-list .rtl-match-teams{grid-template-columns:minmax(0,1fr) 48px minmax(0,1fr);gap:4px}
+ #results-list .rtl-match-team{font-size:10px}
+ #results-list .rtl-match-score{min-width:48px;font-size:15px}
+}
 </style>
 </head>
 <body>
