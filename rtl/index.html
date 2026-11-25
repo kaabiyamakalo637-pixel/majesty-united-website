@@ -1774,7 +1774,7 @@ function rtlToggleMatchSounds(){
   rtlMatchAudioEnabled=!rtlMatchAudioEnabled;
   const button=document.getElementById('rtl-sound-toggle');
   if(button){button.textContent=rtlMatchAudioEnabled?'🔊 Match sounds ON':'🔇 Match sounds OFF';button.setAttribute('aria-pressed',String(rtlMatchAudioEnabled));}
-  if(rtlMatchAudioEnabled){try{const C=window.AudioContext||window.webkitAudioContext;if(C){rtlMatchAudioContext ||= new C();rtlMatchAudioContext.resume();}}catch(e){console.warn('Match audio unavailable:',e);}}
+  if(rtlMatchAudioEnabled){try{const C=window.AudioContext||window.webkitAudioContext;if(C){rtlMatchAudioContext ||= new C();const resume=rtlMatchAudioContext.resume();if(resume&&typeof resume.catch==='function')resume.catch(e=>console.warn('Match audio resume failed:',e));}}catch(e){console.warn('Match audio unavailable:',e);}}
 }
 function rtlTone(freq,duration,when=0,type='sine',gain=.08){
   if(!rtlMatchAudioContext)return;
@@ -1785,6 +1785,10 @@ function rtlTone(freq,duration,when=0,type='sine',gain=.08){
 }
 function rtlPlayMatchSound(kind){
   if(!rtlMatchAudioEnabled||!rtlMatchAudioContext)return;
+  if(rtlMatchAudioContext.state==='suspended'){
+    rtlMatchAudioContext.resume().then(()=>{if(rtlMatchAudioEnabled)rtlPlayMatchSound(kind);}).catch(e=>console.warn('Match sound could not resume:',e));
+    return;
+  }
   if(kind==='goal'){rtlTone(520,.18,0,'sawtooth',.055);rtlTone(660,.2,.16,'sawtooth',.06);rtlTone(780,.42,.34,'sawtooth',.07);rtlTone(390,.55,.42,'triangle',.045);}
   else if(kind==='whistle'){rtlTone(1900,.22,0,'sine',.08);rtlTone(2200,.24,.25,'sine',.08);}
   else if(kind==='halftime'){rtlTone(1900,.2,0,'sine',.08);rtlTone(1900,.2,.32,'sine',.08);}
@@ -1831,13 +1835,14 @@ function rtlRefreshLiveMinutes() {
 if (!window.rtlLiveMinuteTimer) {
   window.rtlLiveMinuteTimer = window.setInterval(rtlRefreshLiveMinutes, 15000);
 }
+// Poll match status frequently so kick-off and match-end sounds are detected promptly.
 if (!window.rtlLiveDataTimer) {
   window.rtlLiveDataTimer = window.setInterval(() => {
     if (document.visibilityState !== 'visible') return;
     if (document.getElementById('live-match-list')) loadRTLFixtures();
     const adminMatches = document.getElementById('rtl-matches-section');
     if (adminMatches && !adminMatches.hidden) loadAdminMatchCentre();
-  }, 30000);
+  }, 5000);
 }
 
 async function loadRTLFixtures() {
