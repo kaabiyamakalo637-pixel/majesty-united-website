@@ -794,34 +794,41 @@ input, select, textarea { font-size: 16px; }
 .rtl-chat-card{max-width:900px;margin:0 auto}.rtl-chat-announcement{padding:16px 18px;margin-bottom:20px;border-left:4px solid var(--accent);background:rgba(206,17,38,.09);border-radius:8px}.rtl-chat-announcement p{margin:6px 0 0;color:var(--muted)}.rtl-chat-heading{display:flex;justify-content:space-between;align-items:center;gap:16px}.rtl-chat-heading h3{margin:8px 0 0}.rtl-chat-messages{height:360px;overflow-y:auto;padding:14px;margin:12px 0 18px;background:#06170f;border:1px solid var(--line);border-radius:10px}.rtl-chat-message{padding:11px 12px;margin-bottom:10px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:8px;overflow-wrap:anywhere}.rtl-chat-message:last-child{margin-bottom:0}.rtl-chat-message-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.rtl-chat-message-head strong{color:#f08ca1}.rtl-chat-message time{font-size:11px;color:var(--muted)}.rtl-chat-message p{margin:5px 0 0;white-space:pre-wrap}.rtl-chat-message-actions{display:flex;gap:8px;margin-top:8px}.rtl-chat-message-actions button{font-size:11px;padding:5px 8px}.rtl-chat-form textarea{resize:vertical}.rtl-chat-form-footer{display:flex;justify-content:space-between;align-items:center;gap:12px}.rtl-chat-form-footer small{color:var(--muted)}
 @media(max-width:600px){.rtl-chat-heading{align-items:flex-start}.rtl-chat-messages{height:320px}.rtl-chat-form-footer{align-items:flex-start;flex-direction:column}}
 
-/* RTL match status colours */
-.rtl-match-card.status-completed,.rtl-live-card.status-completed,.rtl-admin-match-card.status-completed{border-color:rgba(206,17,38,.62);background:linear-gradient(120deg,rgba(206,17,38,.13),rgba(4,18,11,.94))}
-.rtl-match-card.status-live,.rtl-live-card.status-live,.rtl-admin-match-card.status-live{border-color:rgba(55,135,230,.72);background:linear-gradient(120deg,rgba(25,92,170,.2),rgba(4,18,11,.94))}
-.rtl-match-card.status-scheduled,.rtl-live-card.status-scheduled,.rtl-admin-match-card.status-scheduled{border-color:rgba(58,119,40,.72);background:linear-gradient(120deg,rgba(58,119,40,.17),rgba(4,18,11,.94))}
-.rtl-match-card.status-completed:before,.rtl-live-card.status-completed:before{background:#ce1126}
-.rtl-match-card.status-live:before,.rtl-live-card.status-live:before{background:#2688e8}
-.rtl-match-card.status-scheduled:before,.rtl-live-card.status-scheduled:before{background:#3a9b50}
-.rtl-match-card.status-completed .rtl-match-status{color:#ff8793}
-.rtl-match-card.status-live .rtl-match-status{color:#83bdff}
-.rtl-match-card.status-scheduled .rtl-match-status{color:#8bd69a}
-.rtl-status-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin:12px 0;color:var(--muted);font-size:11px}
-.rtl-status-legend span{display:inline-flex;align-items:center;gap:6px}
-.rtl-status-legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
-.rtl-status-legend .done{background:#ce1126}.rtl-status-legend .active{background:#2688e8}.rtl-status-legend .next{background:#3a9b50}
-.nav-menu-toggle{display:none;background:transparent;border:1px solid var(--line);color:#fff;padding:8px 11px;border-radius:7px}
-@media(max-width:800px){
- .nav{position:relative;flex-wrap:wrap}
- .nav-menu-toggle{display:block}
- .nav-links{display:none;order:3;flex:1 0 100%;width:100%;padding:10px 0 4px;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
- .nav-links.is-open{display:grid}
- .nav-links a{padding:10px 8px;border:1px solid rgba(255,255,255,.08);border-radius:7px;background:rgba(255,255,255,.035)}
-}
-@media(max-width:520px){
- .rtl-status-legend{font-size:10px}
- .rtl-live-teams{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
- .rtl-live-score{min-width:66px}
- .rtl-match-tabbar{grid-template-columns:repeat(2,minmax(0,1fr))}
- .rtl-admin-event-actions{flex-wrap:wrap}
+/* RTL Match Centre status colours and compact completed results */
+.rtl-live-card{border-color:rgba(37,99,235,.55);background:linear-gradient(135deg,rgba(18,45,92,.48),rgba(5,17,11,.92))}
+.rtl-live-card:before{background:#2563eb}
+.rtl-live-badge,.rtl-live-minute{background:rgba(37,99,235,.16);color:#8db8ff}
+.rtl-live-dot{background:#60a5fa;box-shadow:0 0 0 4px rgba(96,165,250,.15)}
+
+.rtl-match-card--completed{border-color:rgba(206,17,38,.55);background:linear-gradient(110deg,rgba(206,17,38,.075),rgba(255,255,255,.012))}
+.rtl-match-card--completed:before,.rtl-match-card--scheduled:before{content:"";position:absolute;inset:0 auto 0 0;width:4px}
+.rtl-match-card--completed:before{background:#ce1126}
+.rtl-match-card--scheduled{border-color:rgba(58,119,40,.55);background:linear-gradient(110deg,rgba(58,119,40,.09),rgba(255,255,255,.012))}
+.rtl-match-card--scheduled:before{background:#3a7728}
+.rtl-match-card--completed .rtl-match-status{color:#ff8a98;background:rgba(206,17,38,.13)}
+.rtl-match-card--scheduled .rtl-match-status{color:#9bdd83;background:rgba(58,119,40,.16)}
+.rtl-result-details{margin-top:9px;border-top:1px solid rgba(255,255,255,.08);padding-top:8px}
+.rtl-result-details>summary{display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;list-style:none;color:#f2f5f3;font-size:12px;font-weight:800;padding:7px 2px}
+.rtl-result-details>summary::-webkit-details-marker{display:none}
+.rtl-result-details>summary:after{content:"＋";font-size:17px;color:#ff8793}
+.rtl-result-details[open]>summary:after{content:"−"}
+.rtl-result-details>summary span{color:#9eaaa2;font-size:10px;font-weight:500;text-align:right}
+.rtl-result-details .rtl-match-tabs{margin-top:8px}
+@media(max-width:600px){
+ #results-list{gap:8px;margin-top:10px}
+ #results-list .rtl-match-card{grid-template-columns:48px minmax(0,1fr);gap:8px;padding:8px 9px 8px 8px;border-radius:9px}
+ #results-list .rtl-match-date{padding:6px 2px}
+ #results-list .rtl-match-date .day{font-size:19px}
+ #results-list .rtl-match-date .month{font-size:9px;margin-top:4px}
+ #results-list .rtl-match-date .year{font-size:9px}
+ #results-list .rtl-match-main{gap:6px}
+ #results-list .rtl-match-topline{gap:5px;font-size:9px}
+ #results-list .rtl-match-tag{padding:3px 6px}
+ #results-list .rtl-match-team{font-size:11px;line-height:1.2}
+ #results-list .rtl-match-teams{grid-template-columns:minmax(0,1fr) 58px minmax(0,1fr);gap:5px}
+ #results-list .rtl-match-score{min-width:58px;padding:5px 6px;font-size:17px}
+ #results-list .rtl-match-meta{font-size:9px;gap:4px 8px}
+ #results-list .rtl-result-details{margin-top:5px;padding-top:5px}
 }
 
 </style>
@@ -834,8 +841,7 @@ input, select, textarea { font-size: 16px; }
       <span class="brand-mark">RTL</span>
       <span>RISING TALENTS<small>LEAGUE</small></span>
     </a>
-    <button class="nav-menu-toggle" type="button" aria-expanded="false" aria-controls="rtl-main-nav" onclick="rtlToggleMobileNav(this)">Menu ☰</button>
-    <div class="nav-links" id="rtl-main-nav">
+    <div class="nav-links">
       <a href="#about">About</a>
       <a href="#competition">Competition</a>
       <a href="#fixtures">Fixtures</a>
@@ -1920,38 +1926,6 @@ if (!window.rtlLiveDataTimer) {
   }, 5000);
 }
 
-
-function rtlToggleMobileNav(button){
-  const nav=document.getElementById('rtl-main-nav');
-  if(!nav)return;
-  const open=nav.classList.toggle('is-open');
-  button.setAttribute('aria-expanded',String(open));
-  button.textContent=open?'Close ✕':'Menu ☰';
-}
-function rtlMatchStatusClass(status){
-  const value=String(status||'scheduled').toLowerCase();
-  if(value==='completed')return 'status-completed';
-  if(value==='live'||value==='halftime')return 'status-live';
-  return 'status-scheduled';
-}
-async function rtlRecalculateFixtureScore(fixtureId){
-  const eventMap=await rtlFetchMatchEvents([fixtureId]);
-  const events=eventMap[fixtureId]||[];
-  let home=0,away=0;
-  events.forEach(item=>{
-    const type=String(item.event_type||'').toLowerCase();
-    if(!['goal','penalty','own_goal'].includes(type))return;
-    let side=String(item.team_side||'').toLowerCase();
-    if(type==='own_goal')side=side==='home'?'away':side==='away'?'home':'';
-    if(side==='home')home++;
-    if(side==='away')away++;
-  });
-  await rtlRequest('rtl_fixtures',`?id=eq.${encodeURIComponent(fixtureId)}`,{
-    method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},
-    body:JSON.stringify({home_score:home,away_score:away})
-  });
-  return {home,away};
-}
 async function loadRTLFixtures() {
   const fixtureBox = document.getElementById('fixture-list');
   const resultBox = document.getElementById('results-list');
@@ -1986,22 +1960,22 @@ async function loadRTLFixtures() {
     });
     const completed = matches.filter(m=>String(m.status||'').toLowerCase()==='completed' || (String(m.status||'').toLowerCase()!=='live' && String(m.status||'').toLowerCase()!=='halftime' && m.home_score!==null && m.away_score!==null));
     const upcoming = matches.filter(m=>!live.includes(m) && !completed.includes(m));
-    fixtureBox.innerHTML = `<div class="rtl-status-legend"><span><i class="done"></i> Completed</span><span><i class="active"></i> Live</span><span><i class="next"></i> Scheduled</span></div>` + (upcoming.length ? upcoming.map(match=>`
-      <article class="rtl-match-card ${rtlMatchStatusClass(match.status)}">
+    fixtureBox.innerHTML = upcoming.length ? upcoming.map(match=>`
+      <article class="rtl-match-card rtl-match-card--scheduled">
         ${dateCard(match)}
         <div class="rtl-match-main">
           <div class="rtl-match-topline"><span class="rtl-match-tag">${rtlSafe(stageLabel(match))}</span><span class="rtl-match-status">${rtlSafe(match.status||'Scheduled')}</span></div>
           <div class="rtl-match-teams"><div class="rtl-match-team">${rtlSafe(match.home_academy||'Home team TBC')}</div><span class="rtl-match-vs">VS</span><div class="rtl-match-team away">${rtlSafe(match.away_academy||'Away team TBC')}</div></div>
           <div class="rtl-match-meta"><span>◷ ${rtlSafe(match.kick_off||'Time TBC')}</span><span>⌖ ${rtlSafe(match.venue||'Venue TBC')}</span>${match.referee_name?`<span>Referee: ${rtlSafe(match.referee_name)}</span>`:''}</div>
         </div>
-      </article>`).join('') : empty('◷','No fixtures scheduled','The official match schedule will appear here once fixtures are published.'));
+      </article>`).join('') : empty('◷','No fixtures scheduled','The official match schedule will appear here once fixtures are published.');
     let publicEventMap={}, publicLineupMap={};
     if(matches.length){try{publicEventMap=await rtlFetchMatchEvents(matches.map(m=>m.id));}catch(eventError){console.warn('RTL public match events unavailable:',eventError);}}
     if(matches.length){try{publicLineupMap=await rtlFetchPublicLineups(matches.map(m=>m.id));}catch(lineupError){console.warn('RTL public line-ups unavailable:',lineupError);}}
     rtlCheckMatchdaySounds(matches,publicEventMap);
     if (liveBox) {
       liveBox.innerHTML = live.length ? live.map(match => `
-        <article class="rtl-live-card ${rtlMatchStatusClass(match.status)}">
+        <article class="rtl-live-card">
           <div class="rtl-live-head">
             <span class="rtl-live-division">${rtlSafe(stageLabel(match))}</span>
             <span class="rtl-live-badge">${String(match.status||'').toLowerCase()==='halftime'?'Half-time':'<i class="rtl-live-dot"></i> Live now'}</span>
@@ -2018,13 +1992,15 @@ async function loadRTLFixtures() {
       rtlRefreshLiveMinutes();
     }
     resultBox.innerHTML = completed.length ? completed.map(match=>`
-      <article class="rtl-match-card ${rtlMatchStatusClass(match.status||"completed")}">
+      <article class="rtl-match-card rtl-match-card--completed">
         ${dateCard(match)}
         <div class="rtl-match-main">
           <div class="rtl-match-topline"><span class="rtl-match-tag">${rtlSafe(stageLabel(match))}</span><span class="rtl-match-status">Full time</span></div>
           <div class="rtl-match-teams"><div class="rtl-match-team">${rtlSafe(match.home_academy||'Home team')}</div><div class="rtl-match-score"><span>${rtlSafe(match.home_score)}</span><span>:</span><span>${rtlSafe(match.away_score)}</span></div><div class="rtl-match-team away">${rtlSafe(match.away_academy||'Away team')}</div></div>
-          <div class="rtl-match-meta"><span>◷ ${rtlSafe(match.kick_off||'Kick-off TBC')}</span><span>⌖ ${rtlSafe(match.venue||'Venue TBC')}</span>${match.referee_name?`<span>Referee: ${rtlSafe(match.referee_name)}</span>`:''}</div>
-          ${rtlRenderMatchTabs(match,publicEventMap[match.id]||[],matches,publicLineupMap[match.id]||[])}
+          <div class="rtl-match-meta"><span>◷ ${rtlSafe(match.kick_off||'Kick-off TBC')}</span><span>⌖ ${rtlSafe(match.venue||'Venue TBC')}</span></div>
+          <details class="rtl-result-details"><summary>View match details <span>Match Events · Line-up · Stats · H2H</span></summary>
+            ${rtlRenderMatchTabs(match,publicEventMap[match.id]||[],matches,publicLineupMap[match.id]||[])}
+          </details>
         </div>
       </article>`).join('') : empty('▣','No results recorded','Final scores will appear here after matches are completed and confirmed.');
   } catch (error) {
@@ -2627,7 +2603,6 @@ async function rtlUpdateMatchEvent(event,eventId,fixtureId){
       method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},
       body:JSON.stringify({event_type:String(data.get('event_type')),minute,player_name:String(data.get('player_name')||'').trim()||null,team_side:String(data.get('team_side')||'')||null})
     });
-    await rtlRecalculateFixtureScore(fixtureId);
     message.textContent='Event updated.';
     await loadAdminMatchCentre();
     if(document.getElementById('live-match-list')) await loadRTLFixtures();
@@ -2693,11 +2668,6 @@ async function rtlAddMatchEvent(event,fixtureId){
     message.textContent='Event saved. Updating match timeline...';
     const eventMap=await rtlFetchMatchEvents([fixtureId]);
     const card=form.closest('article');
-    if(['goal','penalty','own_goal'].includes(eventType)){
-      const updatedScore=await rtlRecalculateFixtureScore(fixtureId);
-      const scoreForm=card?.querySelector('.rtl-admin-score-form');
-      if(scoreForm){scoreForm.elements.home_score.value=updatedScore.home;scoreForm.elements.away_score.value=updatedScore.away;}
-    }
     const eventPanel=card?.querySelector('.rtl-live-events');
     if(eventPanel){
       eventPanel.innerHTML=`<h4>Recorded match events</h4>${rtlRenderMatchEvents(eventMap[fixtureId]||[])}`;
@@ -2730,7 +2700,7 @@ async function loadAdminMatchCentre(){
     const otherRows=rows.filter(x=>!['live','halftime'].includes(String(x.status||'').toLowerCase()));
     let adminEventMap={};
     try{adminEventMap=await rtlFetchMatchEvents(rows.map(x=>x.id));}catch(eventError){console.warn('Admin match events unavailable:',eventError);}
-    const card=x=>`<article class="team-slot rtl-admin-match-card ${rtlMatchStatusClass(x.status)}" style="margin:12px 0;padding:17px">
+    const card=x=>`<article class="team-slot" style="margin:12px 0;padding:17px">
       <div class="rtl-live-head"><strong>${rtlSafe(x.division)} | ${rtlSafe(x.group_name||'Group')} </strong>
       ${['live','halftime'].includes(String(x.status||'').toLowerCase())?`<span class="rtl-live-badge">${String(x.status).toLowerCase()==='halftime'?'Half-time':'<i class="rtl-live-dot"></i> Live'}</span>`:`<span class="rtl-live-division">${rtlSafe(x.status||'Scheduled')}</span>`}</div>
       <div class="rtl-live-teams"><div class="rtl-live-team">${rtlSafe(x.home_academy||'Home team')}</div>
