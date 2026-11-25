@@ -440,6 +440,21 @@ footer {
  .rtl-match-meta{font-size:9px}
 }
 
+
+/* Compact league table spacing refinement */
+#standings-list.placeholder{display:grid;grid-template-columns:1fr;align-content:start;gap:12px;margin-top:12px;padding:0;border:0;border-radius:0;background:transparent;min-height:0;height:auto}
+#standings-list .rtl-table-group{display:block;align-self:start;min-height:0;height:auto;margin:0;padding:0;overflow:hidden;border-radius:10px}
+#standings-list .rtl-table-title{min-height:0;padding:11px 15px}
+#standings-list .rtl-standings-table th{padding:9px 6px}
+#standings-list .rtl-standings-table td{padding:9px 6px}
+#standings-list .rtl-standings-note{padding:8px 13px;line-height:1.45}
+@media(max-width:700px){
+ #standings-list.placeholder{gap:10px;margin-top:10px}
+ #standings-list .rtl-table-title{padding:10px 12px}
+ #standings-list .rtl-standings-table th{padding:8px 5px}
+ #standings-list .rtl-standings-table td{padding:8px 5px}
+ #standings-list .rtl-standings-note{padding:8px 10px}
+}
 </style>
 </head>
 <body>
