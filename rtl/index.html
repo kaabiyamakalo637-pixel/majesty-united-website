@@ -1256,13 +1256,22 @@ async function loadAdminFixtures() {
 
     box.innerHTML = fixtures.length
   ? fixtures.map(match => `
-      <div class="team-slot">
+      <div class="team-slot" style="margin:14px 0;padding:16px">
         <strong>${rtlSafe(match.division)} | Group ${rtlSafe(match.group_name)}</strong>
-        <p>${rtlSafe(match.home_academy)} vs ${rtlSafe(match.away_academy)}</p>
-        <small>${rtlSafe(match.match_date)} | ${rtlSafe(match.kick_off)}</small>
-        <small>${rtlSafe(match.venue)}</small>
-        <small>Status: ${rtlSafe(match.status)}</small>
-        <button type="button" onclick="deleteRTLFixture('${match.id}')">Delete Fixture</button>
+        <h3>${rtlSafe(match.home_academy)} vs ${rtlSafe(match.away_academy)}</h3>
+        <div class="admin-grid" style="margin-top:10px">
+          <div><label>Date</label><input type="date" id="fx-date-${match.id}" value="${rtlSafe(match.match_date)}"></div>
+          <div><label>Kick-off</label><input type="time" id="fx-time-${match.id}" value="${rtlSafe(String(match.kick_off || '').slice(0,5))}"></div>
+          <div><label>Venue</label><input type="text" id="fx-venue-${match.id}" value="${rtlSafe(match.venue)}"></div>
+          <div><label>Status</label><select id="fx-status-${match.id}">
+            ${['scheduled','live','completed','postponed','cancelled'].map(status => `<option value="${status}" ${match.status===status?'selected':''}>${status.charAt(0).toUpperCase()+status.slice(1)}</option>`).join('')}
+          </select></div>
+          <div><label>Home score</label><input type="number" min="0" step="1" id="fx-home-score-${match.id}" value="${match.home_score ?? ''}" placeholder="Not played"></div>
+          <div><label>Away score</label><input type="number" min="0" step="1" id="fx-away-score-${match.id}" value="${match.away_score ?? ''}" placeholder="Not played"></div>
+        </div>
+        <p id="fx-message-${match.id}"></p>
+        <button type="button" onclick="saveRTLFixture('${match.id}')">Save Fixture Changes</button>
+        <button type="button" class="secondary" onclick="deleteRTLFixture('${match.id}')">Delete Fixture</button>
       </div>
     `).join('')
   : '<p>No fixtures scheduled yet.</p>';
@@ -1272,6 +1281,51 @@ async function loadAdminFixtures() {
     box.innerHTML = '<p>Unable to load fixtures.</p>';
   }
       }
+
+async function saveRTLFixture(fixtureId) {
+  const message = document.getElementById(`fx-message-${fixtureId}`);
+  const token = sessionStorage.getItem('rtlAccessToken');
+  if (!token) { message.textContent = 'Your session has expired. Sign in again.'; return; }
+  const homeRaw = document.getElementById(`fx-home-score-${fixtureId}`).value;
+  const awayRaw = document.getElementById(`fx-away-score-${fixtureId}`).value;
+  if ((homeRaw === '') !== (awayRaw === '')) {
+    message.textContent = 'Enter both scores, or leave both empty.';
+    return;
+  }
+  const payload = {
+    match_date: document.getElementById(`fx-date-${fixtureId}`).value,
+    kick_off: document.getElementById(`fx-time-${fixtureId}`).value,
+    venue: document.getElementById(`fx-venue-${fixtureId}`).value.trim(),
+    status: document.getElementById(`fx-status-${fixtureId}`).value,
+    home_score: homeRaw === '' ? null : Number(homeRaw),
+    away_score: awayRaw === '' ? null : Number(awayRaw)
+  };
+  if (!payload.match_date || !payload.kick_off || !payload.venue) {
+    message.textContent = 'Date, kick-off time and venue are required.';
+    return;
+  }
+  if (payload.home_score !== null && (!Number.isInteger(payload.home_score) || !Number.isInteger(payload.away_score) || payload.home_score < 0 || payload.away_score < 0)) {
+    message.textContent = 'Scores must be whole numbers of zero or higher.';
+    return;
+  }
+  if (payload.home_score !== null && payload.status === 'scheduled') payload.status = 'completed';
+  message.textContent = 'Saving changes...';
+  try {
+    const response = await fetch(`${RTL_DATA_URL}/rest/v1/rtl_fixtures?id=eq.${fixtureId}`, {
+      method: 'PATCH',
+      headers: { apikey: RTL_DATA_KEY, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) throw new Error(await response.text());
+    message.textContent = 'Fixture updated successfully.';
+    await loadAdminFixtures();
+    await loadRTLFixtures();
+    await loadRTLStandings();
+  } catch (error) {
+    message.textContent = 'Update failed: ' + error.message;
+  }
+}
+
   async function deleteRTLFixture(fixtureId) {
   const confirmed = confirm('Are you sure you want to delete this fixture?');
   if (!confirmed) return;
