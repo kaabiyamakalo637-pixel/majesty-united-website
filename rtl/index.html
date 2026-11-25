@@ -210,19 +210,26 @@ section { padding: 65px 22px; }
   border-radius: 10px;
   background: rgba(255,255,255,.025);
 }
-#fixtures .team-slot p {
-  margin: 8px 0;
-  font-size: 15px;
-}
-#fixtures .team-slot small {
-  display: block;
-  margin-top: 5px;
-  color: var(--muted);
-  font-size: 12px;
-}
-#fixtures .team-slot strong {
-  overflow-wrap: anywhere;
-}
+#fixtures .team-slot p { margin: 8px 0; font-size: 15px; }
+#fixtures .team-slot small { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; }
+#fixtures .team-slot strong { overflow-wrap: anywhere; }
+
+/* Professional league standings */
+#standings-list { display:grid; gap:22px; margin-top:18px; }
+.rtl-table-group { overflow:hidden; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.018); }
+.rtl-table-title { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:15px 18px; background:rgba(255,255,255,.045); border-bottom:1px solid var(--line); }
+.rtl-table-title strong { color:var(--text); font-size:15px; letter-spacing:.3px; }
+.rtl-table-title span { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:1px; }
+.rtl-table-scroll { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.rtl-standings-table { width:100%; min-width:650px; border-collapse:collapse; font-size:13px; font-variant-numeric:tabular-nums; }
+.rtl-standings-table th { padding:12px 10px; color:var(--muted); background:rgba(255,255,255,.025); font-size:11px; font-weight:800; letter-spacing:.7px; text-align:center; white-space:nowrap; }
+.rtl-standings-table th:nth-child(2), .rtl-standings-table td:nth-child(2) { text-align:left; }
+.rtl-standings-table td { padding:14px 10px; border-top:1px solid var(--line); color:var(--muted); text-align:center; white-space:nowrap; }
+.rtl-standings-table td:nth-child(2) { color:var(--text); font-weight:700; white-space:normal; min-width:180px; }
+.rtl-standings-table .rtl-rank { color:var(--accent); font-weight:900; width:42px; }
+.rtl-standings-table .rtl-points { color:var(--text); font-weight:900; }
+.rtl-standings-table tbody tr:first-child { background:rgba(255,255,255,.035); }
+.rtl-standings-note { margin:0; padding:13px 16px; color:var(--muted); font-size:12px; border-top:1px solid var(--line); }
 @media (max-width: 1100px) {
   #fixtures .grid {
     grid-template-columns: minmax(0, 1fr);
@@ -1233,46 +1240,56 @@ matches.forEach(match => {
 
 async function loadRTLStandings() {
   const standingsBox = document.getElementById('standings-list');
-
   try {
     const response = await fetch(
       `${RTL_DATA_URL}/rest/v1/rtl_public_standings?select=*&season=eq.2027&order=division.asc,group_name.asc,points.desc,goal_difference.desc,goals_for.desc`,
       { headers: rtlHeaders }
     );
-
     if (!response.ok) throw new Error(await response.text());
-
     const standings = await response.json();
-    // Only publish standings for entries linked to a real academy.
     const publishedStandings = standings.filter(row => {
       const name = String(row.academy_name || '').trim();
       return name && !/^academy pending$/i.test(name) && !/^no academy assigned/i.test(name);
     });
-
     if (!publishedStandings.length) {
-      standingsBox.innerHTML = '<p>Standings will appear once academies are officially assigned and matches are played.</p>';
+      standingsBox.innerHTML = '<div class="rtl-table-group"><p class="rtl-standings-note">Official standings will appear after academy entries are confirmed and matches are played.</p></div>';
       return;
     }
 
-    standingsBox.innerHTML = publishedStandings.map(row => `
-      <div class="team-slot">
-        <strong>${rtlSafe(row.division)} | Group ${rtlSafe(row.group_name)}</strong>
-        <p>${rtlSafe(row.academy_name)}</p>
-        <small>
-          P: ${rtlSafe(row.played)} |
-          W: ${rtlSafe(row.won)} |
-          D: ${rtlSafe(row.drawn)} |
-          L: ${rtlSafe(row.lost)}
-        </small>
-        <small>
-          GF: ${rtlSafe(row.goals_for)} |
-          GA: ${rtlSafe(row.goals_against)} |
-          GD: ${rtlSafe(row.goal_difference)} |
-          Points: ${rtlSafe(row.points)}
-        </small>
-      </div>
-    `).join('');
+    const groups = new Map();
+    publishedStandings.forEach(row => {
+      const key = `${row.division || ''}|${row.group_name || ''}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(row);
+    });
 
+    standingsBox.innerHTML = Array.from(groups.entries()).map(([key, rows]) => {
+      const [division, groupName] = key.split('|');
+      const tableRows = rows.map((row, index) => `
+        <tr>
+          <td class="rtl-rank">${index + 1}</td>
+          <td>${rtlSafe(row.academy_name)}</td>
+          <td>${rtlSafe(row.played)}</td>
+          <td>${rtlSafe(row.won)}</td>
+          <td>${rtlSafe(row.drawn)}</td>
+          <td>${rtlSafe(row.lost)}</td>
+          <td>${rtlSafe(row.goals_for)}</td>
+          <td>${rtlSafe(row.goals_against)}</td>
+          <td>${rtlSafe(row.goal_difference)}</td>
+          <td class="rtl-points">${rtlSafe(row.points)}</td>
+        </tr>`).join('');
+      return `
+        <section class="rtl-table-group">
+          <div class="rtl-table-title"><strong>${rtlSafe(division)} · Group ${rtlSafe(groupName)}</strong><span>${rows.length} ${rows.length === 1 ? 'team' : 'teams'}</span></div>
+          <div class="rtl-table-scroll">
+            <table class="rtl-standings-table">
+              <thead><tr><th>POS</th><th>CLUB</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th></tr></thead>
+              <tbody>${tableRows}</tbody>
+            </table>
+          </div>
+          <p class="rtl-standings-note">MP Matches played · GF Goals for · GA Goals against · GD Goal difference · PTS Points</p>
+        </section>`;
+    }).join('');
   } catch (error) {
     console.error('RTL standings loading error:', error);
     standingsBox.innerHTML = '<p>League standings are temporarily unavailable.</p>';
