@@ -613,8 +613,21 @@ footer {
         <label><input type="checkbox" id="application-u17" value="U17" style="width:auto;margin-right:8px"> U17</label>
         <label><input type="checkbox" id="application-u19" value="U19" style="width:auto;margin-right:8px"> U19</label>
         <button type="submit">Submit Academy Application</button>
-        <p id="academy-application-message" role="status"></p>
+        <div id="academy-application-message" role="status" aria-live="polite"></div>
       </form>
+      <div class="team-slot" id="academy-application-confirmation" hidden aria-live="polite"></div>
+      <div class="team-slot" id="academy-application-tracker">
+        <h4>Check Your Application Status</h4>
+        <p>Enter the reference number from your confirmation and the contact email used in your application.</p>
+        <form id="rtl-application-status-form">
+          <label for="application-reference">Application Reference</label>
+          <input id="application-reference" required autocomplete="off" placeholder="Paste your application reference">
+          <label for="application-status-email">Contact Email</label>
+          <input id="application-status-email" type="email" required autocomplete="email" placeholder="Enter your contact email">
+          <button type="submit">Check Application Status</button>
+          <p id="academy-application-status-message" role="status" aria-live="polite"></p>
+        </form>
+      </div>
     </div>
 
     <div class="card" id="staff-login">
@@ -1695,18 +1708,20 @@ async function rtlCurrentUserId(){const r=await fetch(`${RTL_DATA_URL}/auth/v1/u
 async function loadRefereePortal(){document.getElementById('referee-portal-welcome').textContent='Welcome '+(sessionStorage.getItem('rtlStaffName')||'');try{const uid=await rtlCurrentUserId();const [assigned,publicFixtures,reports]=await Promise.all([rtlRequest('rtl_fixtures',`?select=*&season=eq.2027&referee_user_id=eq.${uid}&order=match_date.asc`),rtlRequest('rtl_public_fixtures','?select=*'),rtlRequest('rtl_referee_reports',`?select=*&referee_user_id=eq.${uid}&order=submitted_at.desc`)]);const fixtures=assigned.map(f=>({...f,...(publicFixtures.find(p=>p.id===f.id)||{})}));const list=document.getElementById('referee-fixture-list'),sel=document.getElementById('referee-fixture');list.innerHTML=fixtures.length?fixtures.map(f=>`<div class="team-slot"><strong>${rtlSafe(f.division)} | ${rtlSafe(f.home_academy||f.home_entry_id)} vs ${rtlSafe(f.away_academy||f.away_entry_id)}</strong><p>${rtlSafe(f.match_date)} ${rtlSafe(f.kick_off)} | ${rtlSafe(f.venue)}</p></div>`).join(''):'<p>No fixtures assigned to your account.</p>';sel.innerHTML='<option value="">Select assigned fixture</option>'+fixtures.map(f=>`<option value="${f.id}">${rtlSafe(f.match_date)} ${rtlSafe(f.home_academy||f.home_entry_id)} vs ${rtlSafe(f.away_academy||f.away_entry_id)}</option>`).join('');document.getElementById('referee-report-history').innerHTML=reports.length?reports.map(r=>`<p>${rtlSafe(r.submitted_at)} | ${rtlSafe(r.status)} | ${rtlSafe(r.home_score)}-${rtlSafe(r.away_score)}</p>`).join(''):'No reports submitted yet.';}catch(e){document.getElementById('referee-fixture-list').textContent='Unable to load assigned fixtures: '+e.message;}}
 document.getElementById('referee-report-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.getElementById('referee-report-message');try{const uid=await rtlCurrentUserId(),fixture=document.getElementById('referee-fixture').value;await rtlRequest('rtl_referee_reports','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({fixture_id:fixture,referee_user_id:uid,home_score:Number(document.getElementById('referee-home-score').value),away_score:Number(document.getElementById('referee-away-score').value),report_text:document.getElementById('referee-report-text').value.trim(),status:'submitted',submitted_at:new Date().toISOString()})});const eventLines=document.getElementById('referee-events').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);const events=eventLines.map(line=>{const p=line.split(',').map(x=>x.trim());return {fixture_id:fixture,minute:Number(p[0]),event_type:p[1],player_name:p[2]||null,academy_entry_id:p[3]||null};});if(events.length)await rtlRequest('rtl_match_events','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(events)});msg.textContent='Match report submitted.';e.target.reset();loadRefereePortal();}catch(err){msg.textContent='Report submission failed: '+err.message;}});
 
-// Public academy applications use the dedicated application table and its date-limited INSERT policy.
+// Public academy applications. The database UUID is also the private application reference.
 document.getElementById('rtl-public-application-form')?.addEventListener('submit', async event => {
   event.preventDefault();
   const msg = document.getElementById('academy-application-message');
+  const confirmation = document.getElementById('academy-application-confirmation');
   const divisions = ['U17','U19'].filter(d => document.getElementById(d === 'U17' ? 'application-u17' : 'application-u19').checked);
   if (!divisions.length) { msg.textContent = 'Select at least one division.'; return; }
   const submit = event.target.querySelector('button[type="submit"]');
   submit.disabled = true; msg.textContent = 'Submitting application...';
+  confirmation.hidden = true;
   try {
     const response = await fetch(`${RTL_DATA_URL}/rest/v1/rtl_academy_applications`, {
       method: 'POST',
-      headers: { apikey: RTL_DATA_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      headers: { apikey: RTL_DATA_KEY, 'Content-Type': 'application/json', Prefer: 'return=representation' },
       body: JSON.stringify({
         academy_name: document.getElementById('application-academy-name').value.trim(),
         location: document.getElementById('application-location').value.trim(),
@@ -1718,10 +1733,47 @@ document.getElementById('rtl-public-application-form')?.addEventListener('submit
       })
     });
     if (!response.ok) throw new Error(await response.text());
-    msg.textContent = 'Application received. RTL management will review your submission.';
+    const created = await response.json();
+    const application = Array.isArray(created) ? created[0] : created;
+    if (!application?.id) throw new Error('Application was submitted, but the reference number was not returned. Contact RTL management with your academy name.');
+    const reference = application.id;
+    msg.textContent = 'Your application was submitted successfully.';
+    confirmation.hidden = false;
+    confirmation.innerHTML = `<h4>Application Received</h4><p>Thank you. RTL management will review your application.</p><p><strong>Application reference:</strong></p><p class="application-reference-value">${rtlSafe(reference)}</p><p><strong>Current status:</strong> Pending</p><p>Save this reference number. You need it and your contact email to check your application status.</p><button type="button" id="copy-application-reference">Copy Reference Number</button>`;
+    document.getElementById('copy-application-reference')?.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(reference); document.getElementById('copy-application-reference').textContent = 'Reference Copied'; }
+      catch (_) { document.getElementById('copy-application-reference').textContent = 'Select and copy the reference above'; }
+    });
+    document.getElementById('application-reference').value = reference;
+    document.getElementById('application-status-email').value = document.getElementById('application-email').value.trim();
     event.target.reset();
   } catch (error) {
     msg.textContent = 'Application could not be submitted: ' + error.message;
+  } finally { submit.disabled = false; }
+});
+
+document.getElementById('rtl-application-status-form')?.addEventListener('submit', async event => {
+  event.preventDefault();
+  const msg = document.getElementById('academy-application-status-message');
+  const submit = event.target.querySelector('button[type="submit"]');
+  submit.disabled = true; msg.textContent = 'Checking application...';
+  try {
+    const reference = document.getElementById('application-reference').value.trim();
+    const email = document.getElementById('application-status-email').value.trim();
+    const response = await fetch(`${RTL_DATA_URL}/rest/v1/rpc/rtl_check_application_status`, {
+      method: 'POST',
+      headers: { apikey: RTL_DATA_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_application_id: reference, p_contact_email: email })
+    });
+    if (!response.ok) throw new Error(await response.text());
+    const result = await response.json();
+    const application = Array.isArray(result) ? result[0] : result;
+    if (!application) { msg.textContent = 'No application matched those details. Check your reference number and contact email.'; return; }
+    const status = String(application.application_status || 'pending').toLowerCase();
+    const display = status.charAt(0).toUpperCase() + status.slice(1);
+    msg.textContent = `Application status: ${display}. Academy: ${application.academy_name}. Submitted: ${application.submitted_at ? new Date(application.submitted_at).toLocaleDateString() : 'Date unavailable'}.`;
+  } catch (error) {
+    msg.textContent = 'Unable to check status: ' + error.message;
   } finally { submit.disabled = false; }
 });
 
