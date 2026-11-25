@@ -595,6 +595,28 @@ footer {
         <p>Manage their registered teams and player information.</p>
       </article>
     </div>
+    <div class="card" id="academy-registration">
+      <h3>Academy Registration for the 2027 Season</h3>
+      <p>Academies in the Upper River Region may submit an application for U17, U19 or both divisions. Applications are reviewed by RTL management.</p>
+      <form id="rtl-public-application-form">
+        <label for="application-academy-name">Academy Name</label>
+        <input id="application-academy-name" required maxlength="120">
+        <label for="application-location">Location</label>
+        <input id="application-location" required maxlength="120">
+        <label for="application-contact">Contact Person</label>
+        <input id="application-contact" required maxlength="120">
+        <label for="application-phone">Contact Phone</label>
+        <input id="application-phone" type="tel" required maxlength="40">
+        <label for="application-email">Contact Email</label>
+        <input id="application-email" type="email" required maxlength="160">
+        <label>Division(s) Applying For</label>
+        <label><input type="checkbox" id="application-u17" value="U17" style="width:auto;margin-right:8px"> U17</label>
+        <label><input type="checkbox" id="application-u19" value="U19" style="width:auto;margin-right:8px"> U19</label>
+        <button type="submit">Submit Academy Application</button>
+        <p id="academy-application-message" role="status"></p>
+      </form>
+    </div>
+
     <div class="card" id="staff-login">
   <h3>RTL Staff Login</h3>
   <p>Secure access for administrators, referees and academy staff.</p>
@@ -778,24 +800,9 @@ footer {
   </button>
 
   <div class="card">
-    <h3>Register New Academy</h3>
-
-    <form id="rtl-academy-form">
-      <label>Academy Name</label>
-      <input id="academy-name" type="text" required>
-
-      <label>Location</label>
-      <input id="academy-location" type="text" required>
-
-      <label>Contact Person</label>
-      <input id="academy-contact" type="text" required>
-
-      <label>Contact Phone</label>
-      <input id="academy-phone" type="tel" required>
-
-      <button type="submit">Register Academy</button>
-      <p id="academy-message"></p>
-    </form>
+    <h3>Academy Applications</h3>
+    <p>Review public applications. Approving an application creates the academy record. Team entries are assigned separately under Team Entries.</p>
+    <div id="rtl-academy-application-list">Loading applications...</div>
   </div>
 
   <div class="card">
@@ -1594,6 +1601,7 @@ function showRTLPortal(role) {
     const heading = document.querySelector('#rtl-admin-dashboard h2');
     if(heading) heading.textContent = role === 'admin' ? 'RTL Administration Dashboard' : 'RTL Staff Operations Dashboard';
     openRTLSection('dashboard');
+    loadRTLAcademyApplications();
   }
   else if(role==='academy_staff') loadAcademyPortal();
   else if(role==='referee') loadRefereePortal();
@@ -1687,14 +1695,73 @@ async function rtlCurrentUserId(){const r=await fetch(`${RTL_DATA_URL}/auth/v1/u
 async function loadRefereePortal(){document.getElementById('referee-portal-welcome').textContent='Welcome '+(sessionStorage.getItem('rtlStaffName')||'');try{const uid=await rtlCurrentUserId();const [assigned,publicFixtures,reports]=await Promise.all([rtlRequest('rtl_fixtures',`?select=*&season=eq.2027&referee_user_id=eq.${uid}&order=match_date.asc`),rtlRequest('rtl_public_fixtures','?select=*'),rtlRequest('rtl_referee_reports',`?select=*&referee_user_id=eq.${uid}&order=submitted_at.desc`)]);const fixtures=assigned.map(f=>({...f,...(publicFixtures.find(p=>p.id===f.id)||{})}));const list=document.getElementById('referee-fixture-list'),sel=document.getElementById('referee-fixture');list.innerHTML=fixtures.length?fixtures.map(f=>`<div class="team-slot"><strong>${rtlSafe(f.division)} | ${rtlSafe(f.home_academy||f.home_entry_id)} vs ${rtlSafe(f.away_academy||f.away_entry_id)}</strong><p>${rtlSafe(f.match_date)} ${rtlSafe(f.kick_off)} | ${rtlSafe(f.venue)}</p></div>`).join(''):'<p>No fixtures assigned to your account.</p>';sel.innerHTML='<option value="">Select assigned fixture</option>'+fixtures.map(f=>`<option value="${f.id}">${rtlSafe(f.match_date)} ${rtlSafe(f.home_academy||f.home_entry_id)} vs ${rtlSafe(f.away_academy||f.away_entry_id)}</option>`).join('');document.getElementById('referee-report-history').innerHTML=reports.length?reports.map(r=>`<p>${rtlSafe(r.submitted_at)} | ${rtlSafe(r.status)} | ${rtlSafe(r.home_score)}-${rtlSafe(r.away_score)}</p>`).join(''):'No reports submitted yet.';}catch(e){document.getElementById('referee-fixture-list').textContent='Unable to load assigned fixtures: '+e.message;}}
 document.getElementById('referee-report-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.getElementById('referee-report-message');try{const uid=await rtlCurrentUserId(),fixture=document.getElementById('referee-fixture').value;await rtlRequest('rtl_referee_reports','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({fixture_id:fixture,referee_user_id:uid,home_score:Number(document.getElementById('referee-home-score').value),away_score:Number(document.getElementById('referee-away-score').value),report_text:document.getElementById('referee-report-text').value.trim(),status:'submitted',submitted_at:new Date().toISOString()})});const eventLines=document.getElementById('referee-events').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);const events=eventLines.map(line=>{const p=line.split(',').map(x=>x.trim());return {fixture_id:fixture,minute:Number(p[0]),event_type:p[1],player_name:p[2]||null,academy_entry_id:p[3]||null};});if(events.length)await rtlRequest('rtl_match_events','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(events)});msg.textContent='Match report submitted.';e.target.reset();loadRefereePortal();}catch(err){msg.textContent='Report submission failed: '+err.message;}});
 
-// Academy registration and approval controls, restricted by existing admin RLS.
-document.getElementById('rtl-academy-form')?.addEventListener('submit', async event => {
-  event.preventDefault(); const msg=document.getElementById('academy-message');
+// Public academy applications use the dedicated application table and its date-limited INSERT policy.
+document.getElementById('rtl-public-application-form')?.addEventListener('submit', async event => {
+  event.preventDefault();
+  const msg = document.getElementById('academy-application-message');
+  const divisions = ['U17','U19'].filter(d => document.getElementById(d === 'U17' ? 'application-u17' : 'application-u19').checked);
+  if (!divisions.length) { msg.textContent = 'Select at least one division.'; return; }
+  const submit = event.target.querySelector('button[type="submit"]');
+  submit.disabled = true; msg.textContent = 'Submitting application...';
   try {
-    await rtlRequest('rtl_academies','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({academy_name:document.getElementById('academy-name').value.trim(),location:document.getElementById('academy-location').value.trim(),contact_name:document.getElementById('academy-contact').value.trim(),contact_phone:document.getElementById('academy-phone').value.trim(),registration_status:'pending'})});
-    msg.textContent='Academy registered for review.'; event.target.reset(); loadRTLAcademies();
-  } catch(error) { msg.textContent='Unable to register academy: '+error.message; }
+    const response = await fetch(`${RTL_DATA_URL}/rest/v1/rtl_academy_applications`, {
+      method: 'POST',
+      headers: { apikey: RTL_DATA_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify({
+        academy_name: document.getElementById('application-academy-name').value.trim(),
+        location: document.getElementById('application-location').value.trim(),
+        contact_name: document.getElementById('application-contact').value.trim(),
+        contact_phone: document.getElementById('application-phone').value.trim(),
+        contact_email: document.getElementById('application-email').value.trim(),
+        requested_divisions: divisions,
+        application_status: 'pending'
+      })
+    });
+    if (!response.ok) throw new Error(await response.text());
+    msg.textContent = 'Application received. RTL management will review your submission.';
+    event.target.reset();
+  } catch (error) {
+    msg.textContent = 'Application could not be submitted: ' + error.message;
+  } finally { submit.disabled = false; }
 });
+
+async function loadRTLAcademyApplications() {
+  const box = document.getElementById('rtl-academy-application-list');
+  if (!box) return;
+  box.textContent = 'Loading applications...';
+  try {
+    const rows = await rtlRequest('rtl_academy_applications', '?select=*&order=submitted_at.desc');
+    if (!rows.length) { box.textContent = 'No academy applications received yet.'; return; }
+    box.innerHTML = rows.map(a => `
+      <article class="team-slot">
+        <strong>${rtlSafe(a.academy_name)}</strong>
+        <p>Location: ${rtlSafe(a.location || 'Not provided')} | Contact: ${rtlSafe(a.contact_name || 'Not provided')}</p>
+        <p>Phone: ${rtlSafe(a.contact_phone || 'Not provided')} | Email: ${rtlSafe(a.contact_email || 'Not provided')}</p>
+        <p>Requested divisions: ${rtlSafe((a.requested_divisions || []).join(', ') || 'Not specified')}</p>
+        <p>Status: <strong>${rtlSafe(a.application_status)}</strong> | Submitted: ${rtlSafe(a.submitted_at || '')}</p>
+        ${a.admin_notes ? `<p>Management notes: ${rtlSafe(a.admin_notes)}</p>` : ''}
+        ${a.application_status === 'pending' ? `<button type="button" onclick="reviewAcademyApplication('${a.id}','approved')">Approve and create academy</button> <button type="button" onclick="reviewAcademyApplication('${a.id}','rejected')">Reject</button>` : ''}
+      </article>`).join('');
+  } catch (error) { box.textContent = 'Unable to load applications: ' + error.message; }
+}
+
+async function reviewAcademyApplication(id, decision) {
+  if (decision === 'approved' && !confirm('Approve this academy and create its academy record?')) return;
+  if (decision === 'rejected' && !confirm('Reject this academy application?')) return;
+  try {
+    const rows = await rtlRequest('rtl_academy_applications', `?select=*&id=eq.${id}&application_status=eq.pending`);
+    const application = rows[0];
+    if (!application) throw new Error('This application is no longer pending. Refresh the list.');
+    if (decision === 'approved') {
+      const existing = await rtlRequest('rtl_academies', `?select=id&academy_name=eq.${encodeURIComponent(application.academy_name)}`);
+      if (!existing.length) {
+        await rtlRequest('rtl_academies', '', { method: 'POST', headers: { 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify({ academy_name: application.academy_name, location: application.location, contact_name: application.contact_name, contact_phone: application.contact_phone, registration_status: 'approved' }) });
+      }
+    }
+    await rtlRequest('rtl_academy_applications', `?id=eq.${id}&application_status=eq.pending`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify({ application_status: decision, reviewed_at: new Date().toISOString(), reviewed_by: await rtlCurrentUserId() }) });
+    await Promise.all([loadRTLAcademyApplications(), loadRTLAcademies()]);
+  } catch (error) { alert('Unable to review application: ' + error.message); }
+}
 async function setAcademyStatus(id,status){try{await rtlRequest('rtl_academies',`?id=eq.${id}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({registration_status:status})});loadRTLAcademies();}catch(e){alert('Could not update academy: '+e.message);}}
 async function loadRefereeAssignmentOptions(){try{const [fixtures,staff]=await Promise.all([rtlRequest('rtl_public_fixtures','?select=id,division,match_date,home_academy,away_academy&season=eq.2027&order=match_date.asc'),rtlRequest('rtl_staff','?select=user_id,full_name&role=eq.referee&active=eq.true&order=full_name.asc')]);document.getElementById('assign-fixture').innerHTML='<option value="">Select fixture</option>'+fixtures.map(f=>`<option value="${f.id}">${rtlSafe(f.match_date)} | ${rtlSafe(f.division)} | ${rtlSafe(f.home_academy)} vs ${rtlSafe(f.away_academy)}</option>`).join('');document.getElementById('assign-referee').innerHTML='<option value="">Select referee</option>'+staff.map(x=>`<option value="${x.user_id}">${rtlSafe(x.full_name)}</option>`).join('');}catch(e){document.getElementById('referee-assignment-message').textContent='Unable to load options: '+e.message;}}
 document.getElementById('rtl-referee-assignment-form')?.addEventListener('submit',async e=>{e.preventDefault();const m=document.getElementById('referee-assignment-message');try{const uid=document.getElementById('assign-referee').value;const staff=await rtlRequest('rtl_staff',`?select=full_name&user_id=eq.${uid}`);await rtlRequest('rtl_fixtures',`?id=eq.${document.getElementById('assign-fixture').value}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({referee_user_id:uid,referee_assigned_at:new Date().toISOString(),referee_public_name:staff[0]?.full_name||null})});m.textContent='Referee assigned successfully.';loadAdminFixtures();}catch(err){m.textContent='Assignment failed: '+err.message;}});
