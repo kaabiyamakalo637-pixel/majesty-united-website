@@ -341,51 +341,77 @@ footer {
   h1 { letter-spacing: -1px; }
 }
 
-/* RTL academy lineup: mobile-first matchday workspace */
-.match-sheet{background:#07150f;color:#edf5ef;border:1px solid rgba(130,190,157,.2);padding:clamp(10px,2.4vw,18px);border-radius:16px;margin:14px 0;box-shadow:0 12px 30px rgba(0,0,0,.16)}
-.match-sheet>h3{color:#f5f8f5;background:transparent;padding:0;margin:0 0 16px;font-size:clamp(21px,4vw,28px)}
-.match-sheet .sheet-panel{background:#0b2016;border:1px solid rgba(130,190,157,.18);padding:12px;border-radius:14px;margin:12px 0}
-.match-sheet label{display:block;color:#d6e5da;font-size:13px;font-weight:700;margin:12px 0 7px}
-.match-sheet input,.match-sheet select{width:100%;min-height:48px;color:#f4f8f5;background:#102b1e;border:1px solid rgba(150,195,166,.28);border-radius:10px;padding:11px 12px;font-size:15px;margin:0}
-.match-sheet button{background:#bd0715;border:1px solid #d31a27;color:#fff;border-radius:10px;min-height:48px;padding:12px 18px;font-weight:800}
-.lineup-step{display:flex;align-items:center;gap:9px;margin:16px 0 8px;color:#f3f7f4;font-size:17px;font-weight:800}
-.lineup-step span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#bd0715;color:#fff;font-size:13px;flex:none}
-.lineup-intro{color:#9fb4a6;font-size:13px;line-height:1.5;margin:0 0 12px}
-.lineup-selection-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:9px 0}
-.lineup-counter{background:#10291d;border:1px solid rgba(150,195,166,.18);border-radius:9px;padding:7px 5px;text-align:center}
-.lineup-counter strong{display:block;color:#fff;font-size:20px}.lineup-counter small{color:#a7b9ad;font-size:10px;text-transform:uppercase;letter-spacing:.6px}
-.player-row{display:grid;grid-template-columns:38px minmax(0,1fr) 40px;gap:8px;align-items:center;padding:7px 1px;border-bottom:1px solid rgba(150,195,166,.14)}
-.player-photo,.player-placeholder{width:38px;height:42px;object-fit:cover;border-radius:8px;background:#183527;border:1px solid rgba(150,195,166,.18)}
-.player-placeholder{display:grid;place-items:center;color:#c6d8cc;font-weight:800;font-size:13px}
-.player-meta{min-width:0}.player-meta strong{display:block;color:#f1f6f2;font-size:14px;line-height:1.25}.player-meta small{display:block;color:#9fb4a6;font-size:12px;margin-top:4px}
-.player-number{background:#193b29;color:#fff;font-size:18px;text-align:center;padding:10px 2px;font-weight:800;border-radius:8px}
-.player-row select{grid-column:1/-1;min-height:42px;font-size:14px;margin:0}
-.sheet-status{display:inline-block;padding:4px 7px;background:#173c2a;color:#8ee0b2;border-radius:6px;font-weight:800;font-size:10px;letter-spacing:.35px}
-.lineup-pitch-wrap{background:#0b2016;border:1px solid rgba(130,190,157,.18);padding:10px;border-radius:14px;margin:12px 0}
-.lineup-pitch{background:repeating-linear-gradient(180deg,rgba(255,255,255,.025) 0 48px,rgba(0,0,0,.025) 48px 96px),linear-gradient(180deg,#12643c,#08452c);border:1px solid rgba(255,255,255,.65);border-radius:12px;padding:14px 7px;margin:0 auto;position:relative;overflow:hidden;min-height:510px;max-width:620px}
-.lineup-pitch:before{content:"";position:absolute;inset:8px;border:1px solid rgba(255,255,255,.42);border-radius:8px;pointer-events:none}
-.lineup-pitch:after{content:"";position:absolute;top:50%;left:8px;right:8px;border-top:1px solid rgba(255,255,255,.55);pointer-events:none;box-shadow:0 0 0 1px rgba(0,0,0,.05)}
-#lineup-pitch-rows{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:space-around;gap:13px;min-height:480px}
-.pitch-row{display:flex;justify-content:center;align-items:center;gap:5px;flex-wrap:nowrap}
-.pitch-slot{flex:1 1 0;min-width:0;max-width:116px;text-align:center;background:rgba(0,20,10,.72);border:1px solid rgba(255,255,255,.45);border-radius:9px;padding:5px 3px;box-shadow:0 3px 8px rgba(0,0,0,.18)}
-.pitch-slot small{display:block;color:#fff;font-size:10px;font-weight:800;margin-bottom:5px}
-.pitch-slot select{font-size:10px;line-height:1.15;padding:5px 2px;margin:0;background:#0d3824;color:#fff;border:1px solid rgba(255,255,255,.35);min-width:0;min-height:44px;border-radius:7px;text-align:center}
-.lineup-official-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 6px}
-.lineup-official-choices select{width:100%;min-height:50px}
-.form-help{font-size:12px;color:#9fb4a6;margin:8px 0 14px;line-height:1.5}
-.publish-choice{display:flex;align-items:center;gap:10px;margin:16px 0;padding:12px;border:1px solid rgba(150,195,166,.2);border-radius:10px;color:#d6e5da;font-size:13px}
+/* RTL academy lineup: compact, mobile-first matchday workspace */
+.match-sheet{background:#07150f;color:#edf5ef;border:1px solid rgba(130,190,157,.2);padding:clamp(10px,2vw,18px);border-radius:16px;margin:12px 0;box-shadow:0 12px 30px rgba(0,0,0,.16)}
+.match-sheet>h3{color:#f5f8f5;background:transparent;padding:0;margin:0 0 6px;font-size:clamp(20px,3.5vw,26px)}
+.match-sheet .lineup-intro{color:#9fb4a6;font-size:12px;line-height:1.4;margin:0 0 8px}
+.match-sheet label{display:block;color:#d6e5da;font-size:12px;font-weight:750;margin:8px 0 5px}
+.match-sheet input,.match-sheet select{width:100%;min-height:42px;color:#f4f8f5;background:#102b1e;border:1px solid rgba(150,195,166,.28);border-radius:9px;padding:9px 10px;font-size:14px;margin:0}
+.match-sheet button{background:#bd0715;border:1px solid #d31a27;color:#fff;border-radius:9px;min-height:42px;padding:9px 13px;font-weight:800}
+.lineup-step{display:flex;align-items:center;gap:8px;margin:12px 0 7px;color:#f3f7f4;font-size:14px;font-weight:800}
+.lineup-step span{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#bd0715;color:#fff;font-size:11px;flex:none}
+.lineup-selection-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:8px 0}
+.lineup-counter{background:#10291d;border:1px solid rgba(150,195,166,.18);border-radius:9px;padding:6px 4px;text-align:center}
+.lineup-counter strong{display:block;color:#fff;font-size:18px}.lineup-counter small{color:#a7b9ad;font-size:9px;text-transform:uppercase;letter-spacing:.45px}
+#academy-lineup-form #lineup-eligible-players{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:7px;margin:8px 0;background:#091b12}
+#academy-lineup-form #lineup-eligible-players .player-row{display:grid;grid-template-columns:30px minmax(0,1fr);gap:5px;align-items:center;padding:7px;background:#10291d;border:1px solid rgba(150,195,166,.16);border-radius:9px;min-width:0}
+#academy-lineup-form #lineup-eligible-players .player-photo,#academy-lineup-form #lineup-eligible-players .player-placeholder{width:30px;height:34px;border-radius:6px}
+#academy-lineup-form #lineup-eligible-players .player-meta strong{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#academy-lineup-form #lineup-eligible-players .player-meta small{font-size:10px;margin-top:2px}
+#academy-lineup-form #lineup-eligible-players .player-number{grid-column:1/-1;grid-row:1;justify-self:end;font-size:12px;padding:2px 6px;border-radius:5px}
+.player-pick-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:2px}
+.player-pick-actions button{min-height:34px;padding:5px 3px;font-size:10px;letter-spacing:.1px;background:#193b29;border:1px solid rgba(150,195,166,.22);color:#d7e6dc}
+.player-pick-actions button.is-active[data-pick="starter"]{background:#176b42;border-color:#58c58a;color:#fff}
+.player-pick-actions button.is-active[data-pick="substitute"]{background:#294d79;border-color:#7fb5ef;color:#fff}
+.lineup-status{display:none!important}
+.match-sheet .sheet-panel{background:#0b2016;border:1px solid rgba(130,190,157,.18);padding:8px;border-radius:10px;margin:8px 0}
+#lineup-starters .player-row,#lineup-subs .player-row{grid-template-columns:30px minmax(0,1fr) 34px;gap:6px;padding:5px}
+#lineup-starters .player-photo,#lineup-subs .player-photo,#lineup-starters .player-placeholder,#lineup-subs .player-placeholder{width:30px;height:34px}
+#lineup-starters .player-meta strong,#lineup-subs .player-meta strong{font-size:12px}
+#lineup-starters .player-meta small,#lineup-subs .player-meta small{font-size:10px;margin-top:2px}
+#lineup-starters .player-number,#lineup-subs .player-number{font-size:14px;padding:6px 2px}
+.sheet-status{font-size:9px;padding:3px 5px}
+.lineup-pitch-wrap{background:#0b2016;border:1px solid rgba(130,190,157,.18);padding:7px;border-radius:12px;margin:8px 0}
+.lineup-pitch{background:repeating-linear-gradient(180deg,rgba(255,255,255,.035) 0 42px,rgba(0,0,0,.025) 42px 84px),linear-gradient(180deg,#12643c,#08452c);border:1px solid rgba(255,255,255,.7);border-radius:9px;padding:10px 5px;margin:0 auto;position:relative;overflow:hidden;min-height:390px;max-width:540px}
+.lineup-pitch:before{content:"";position:absolute;inset:6px;border:1px solid rgba(255,255,255,.5);border-radius:6px;pointer-events:none}
+.lineup-pitch:after{content:"";position:absolute;top:50%;left:6px;right:6px;border-top:1px solid rgba(255,255,255,.58);pointer-events:none}
+#lineup-pitch-rows{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:space-around;gap:8px;min-height:368px}
+.pitch-row{display:flex;justify-content:center;align-items:center;gap:4px;flex-wrap:nowrap}
+.pitch-slot{flex:1 1 0;min-width:0;max-width:108px;text-align:center;background:rgba(0,20,10,.82);border:1px solid rgba(255,255,255,.48);border-radius:7px;padding:3px 2px;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+.pitch-slot small{display:block;color:#d5f3df;font-size:9px;font-weight:900;margin-bottom:3px}
+.pitch-slot select{font-size:10px;line-height:1.15;padding:4px 2px;margin:0;background:#0d3824;color:#fff;border:1px solid rgba(255,255,255,.35);min-width:0;min-height:38px;border-radius:6px;text-align:center;white-space:normal}
+.lineup-official-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 4px}
+.lineup-official-choices select{width:100%;min-height:42px}
+.form-help{font-size:11px;color:#9fb4a6;margin:6px 0 10px;line-height:1.4}
+.publish-choice{display:flex;align-items:center;gap:8px;margin:10px 0;padding:9px;border:1px solid rgba(150,195,166,.2);border-radius:9px;color:#d6e5da;font-size:12px}
 .publish-choice input{width:20px;min-height:20px;margin:0;flex:none}
-.lineup-submit{width:100%;min-height:54px;font-size:16px;margin-top:8px}
-.public-lineup-card{background:#0b2117;border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}
-.public-lineup-pitch{background:linear-gradient(180deg,#07552f,#063d27);border:2px solid #fff;border-radius:10px;padding:14px 8px;display:flex;flex-direction:column;gap:14px}
-.public-lineup-row{display:flex;justify-content:space-evenly;gap:5px}
-.public-player{max-width:22%;text-align:center;color:#fff;font-size:11px;font-weight:700;text-shadow:0 1px 2px #000}
-.public-player .shirt{display:block;margin:auto auto 4px;width:28px;height:28px;border-radius:50%;background:#fff;color:#063d27;line-height:28px;text-shadow:none;font-size:12px}
+.lineup-submit{width:100%;min-height:48px;font-size:14px;margin-top:6px;position:sticky;bottom:8px;z-index:5;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.lineup-editing-banner{padding:8px 10px;margin:8px 0;background:#173c2a;border:1px solid #58c58a;border-radius:8px;color:#dff8e8;font-size:12px}
+.lineup-history-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid rgba(150,195,166,.15)}
+.lineup-history-item p{margin:3px 0;color:#9fb4a6;font-size:11px}
+.lineup-history-item button{min-height:38px;padding:7px 10px;white-space:nowrap;font-size:12px}
+.public-lineup-card{background:#0b2117;border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0}
+.public-lineup-pitch{background:linear-gradient(180deg,#07552f,#063d27);border:2px solid #fff;border-radius:10px;padding:12px 6px;display:flex;flex-direction:column;gap:10px}
+.public-lineup-row{display:flex;justify-content:space-evenly;gap:4px}
+.public-player{max-width:24%;text-align:center;color:#fff;font-size:10px;font-weight:700;text-shadow:0 1px 2px #000;overflow-wrap:anywhere}
+.public-player .shirt{display:block;margin:auto auto 3px;width:26px;height:26px;border-radius:50%;background:#fff;color:#063d27;line-height:26px;text-shadow:none;font-size:11px}
 @media(max-width:520px){
- .match-sheet .sheet-panel{padding:9px}.lineup-official-choices{grid-template-columns:1fr;gap:4px}
- .lineup-pitch{min-height:470px;padding:12px 4px}.lineup-pitch:before{inset:6px}#lineup-pitch-rows{min-height:440px;gap:10px}
- .pitch-row{gap:3px}.pitch-slot{padding:4px 2px;border-radius:7px}.pitch-slot small{font-size:9px}.pitch-slot select{font-size:10px;padding:5px 1px;min-height:44px}
- .player-row{grid-template-columns:36px minmax(0,1fr) 38px;gap:7px}.player-photo,.player-placeholder{width:36px;height:40px}.player-number{font-size:16px}
+ .match-sheet{padding:10px}
+ .match-sheet .sheet-panel{padding:7px}
+ .lineup-official-choices{grid-template-columns:1fr 1fr;gap:6px}
+ .lineup-pitch{min-height:370px;padding:8px 3px}
+ #lineup-pitch-rows{min-height:350px;gap:7px}
+ .pitch-row{gap:2px}
+ .pitch-slot{padding:3px 1px;border-radius:6px}
+ .pitch-slot small{font-size:8px}
+ .pitch-slot select{font-size:9px;padding:4px 1px;min-height:38px}
+ .lineup-history-item{align-items:center}
+}
+@media(max-width:360px){
+ #academy-lineup-form #lineup-eligible-players{grid-template-columns:1fr}
+ .lineup-official-choices{grid-template-columns:1fr}
+ .lineup-pitch{min-height:350px}
+ #lineup-pitch-rows{min-height:330px}
 }
 
 /* Final RTL League Centre refinement */
@@ -1014,14 +1040,14 @@ footer {
   </div>
   <div class="card match-sheet">
     <h3>Matchday Line-up</h3>
-    <p class="lineup-intro">Prepare your team for the selected fixture. Choose your starting eleven, set the formation and confirm the match officials before submitting.</p>
+    <p class="lineup-intro">Select your match, tap players into the XI or bench, then assign positions on the pitch.</p>
     <form id="academy-lineup-form">
       <div class="lineup-step"><span>1</span> Match details</div>
       <label for="academy-lineup-fixture">Fixture</label><select id="academy-lineup-fixture" required><option value="">Select your fixture</option></select>
       <label for="academy-lineup-entry">Team entry</label><select id="academy-lineup-entry" required><option value="">Select your team</option></select>
       <label for="academy-lineup-coach">Coach name</label><input id="academy-lineup-coach" autocomplete="name" placeholder="Enter coach full name" required>
       <div class="lineup-step"><span>2</span> Select your squad</div>
-      <p class="lineup-intro">Set each active player as a starter, substitute or not selected. You need exactly 11 starters.</p>
+      <p class="lineup-intro">Tap Starter or Sub. Tap again to remove a player. Select 11 starters.</p>
       <div class="lineup-selection-summary"><div class="lineup-counter"><strong id="lineup-starter-count">0/11</strong><small>Starting XI</small></div><div class="lineup-counter"><strong id="lineup-sub-count">0</strong><small>Substitutes</small></div><div class="lineup-counter"><strong id="lineup-available-count">0</strong><small>Available</small></div></div>
       <div id="lineup-eligible-players" class="sheet-panel"><p>Registered players will appear here.</p></div>
       <div class="lineup-step"><span>3</span> Formation and pitch</div>
@@ -1029,8 +1055,8 @@ footer {
       <select id="lineup-formation" required>
         <option value="4-2-3-1">4-2-3-1</option><option value="4-4-2">4-4-2</option><option value="4-3-3">4-3-3</option><option value="5-3-2">5-3-2</option><option value="3-5-2">3-5-2</option><option value="3-4-3">3-4-3</option><option value="4-1-4-1">4-1-4-1</option><option value="4-4-1-1">4-4-1-1</option>
       </select>
-      <p class="lineup-intro">Assign each starter to a position. The goalkeeper must occupy the GK slot.</p>
-      <div class="lineup-pitch-wrap"><div id="lineup-pitch" class="lineup-pitch"><div id="lineup-pitch-rows"></div></div></div>
+      <p class="lineup-intro">Tap each pitch position and choose the player. Shirt number and name appear in the selected position.</p>
+      <div class="lineup-pitch-wrap"><div id="lineup-pitch" class="lineup-pitch"><div id="lineup-pitch-rows"></div></div><p class="form-help">Full-pitch view · tap a position to assign or change its player.</p></div>
       <div class="lineup-step"><span>4</span> Match leadership</div>
       <div class="lineup-official-choices">
         <div><label for="lineup-captain">Team captain <span aria-hidden="true">*</span></label><select id="lineup-captain" required><option value="">Choose captain</option></select></div>
@@ -1861,7 +1887,7 @@ function renderAcademyRoster(){
   box.innerHTML=rtlAcademyRoster.length?rtlAcademyRoster.map(p=>`<div class="player-row">${rosterPhoto(p.photo_url,p.full_name)}<div class="player-meta"><strong>${rtlSafe(p.full_name)}</strong><small>${rtlSafe(p.position||'Position not set')} · ${p.date_of_birth?rtlSafe(p.date_of_birth):'Date of birth not set'}</small><span class="sheet-status">${p.active?'Active':'Inactive'}</span></div><div class="player-number">${rtlSafe(p.shirt_number)}</div><button type="button" onclick="toggleRosterPlayer('${p.id}',${!p.active})">${p.active?'Deactivate':'Activate'}</button></div>`).join(''):'<p>No players registered yet. Add your squad above.</p>';
   if(eligible){
     const active=rtlAcademyRoster.filter(p=>p.active);
-    eligible.innerHTML=active.length?active.map(p=>`<div class="player-row" data-player-id="${p.id}">${rosterPhoto(p.photo_url,p.full_name)}<div class="player-meta"><strong>${rtlSafe(p.full_name)}</strong><small>${rtlSafe(p.position||'Position not set')}</small></div><div class="player-number">${rtlSafe(p.shirt_number)}</div><select class="lineup-status" aria-label="Select match status for ${rtlSafe(p.full_name)}"><option value="">Not selected</option><option value="starter">Starting XI</option><option value="substitute">Substitute</option></select></div>`).join(''):'<p>No active eligible players. Register players first.</p>';
+    eligible.innerHTML=active.length?active.map(p=>`<div class="player-row" data-player-id="${p.id}">${rosterPhoto(p.photo_url,p.full_name)}<div class="player-meta"><strong>${rtlSafe(p.full_name)}</strong><small>${rtlSafe(p.position||'Position not set')}</small></div><div class="player-number">${rtlSafe(p.shirt_number)}</div><select class="lineup-status" aria-label="Match status for ${rtlSafe(p.full_name)}"><option value="">Not selected</option><option value="starter">Starting XI</option><option value="substitute">Substitute</option></select><div class="player-pick-actions"><button type="button" data-pick="starter" onclick="setLineupPlayerStatus('${p.id}','starter')">STARTER</button><button type="button" data-pick="substitute" onclick="setLineupPlayerStatus('${p.id}','substitute')">SUB</button></div></div>`).join(''):'<p>No active eligible players. Register players first.</p>';
     eligible.querySelectorAll('.lineup-status').forEach(sel=>sel.addEventListener('change',renderSelectedLineup));
   }
   renderSelectedLineup();
@@ -1878,6 +1904,21 @@ const RTL_FORMATIONS={
  '4-1-4-1':[['GK'],['LB','CB','CB','RB'],['DM'],['LM','CM','CM','RM'],['ST']],
  '4-4-1-1':[['GK'],['LB','CB','CB','RB'],['LM','CM','CM','RM'],['AM'],['ST']]
 };
+function setLineupPlayerStatus(playerId,status){
+ const row=document.querySelector(`#lineup-eligible-players .player-row[data-player-id="${playerId}"]`);
+ if(!row)return;
+ const select=row.querySelector('.lineup-status');
+ if(!select)return;
+ select.value=select.value===status?'':status;
+ row.querySelectorAll('.player-pick-actions button').forEach(button=>button.classList.toggle('is-active',button.dataset.pick===select.value));
+ renderSelectedLineup();
+}
+function syncLineupPlayerPickButtons(){
+ document.querySelectorAll('#lineup-eligible-players .player-row').forEach(row=>{
+  const status=row.querySelector('.lineup-status')?.value||'';
+  row.querySelectorAll('.player-pick-actions button').forEach(button=>button.classList.toggle('is-active',button.dataset.pick===status));
+ });
+}
 function selectedLineupPlayers(status){
  return [...document.querySelectorAll('#lineup-eligible-players .player-row')].filter(row=>row.querySelector('.lineup-status')?.value===status).map(row=>rtlAcademyRoster.find(p=>p.id===row.dataset.playerId)).filter(Boolean);
 }
@@ -1893,7 +1934,7 @@ function renderSelectedLineup(){
  const rows=document.getElementById('lineup-pitch-rows');
  if(rows){
   const shape=RTL_FORMATIONS[formation]||RTL_FORMATIONS['4-2-3-1'];
-  rows.innerHTML=shape.map((line,r)=>`<div class="pitch-row">${line.map((pos,i)=>{const slot=`${r}-${i}`;return `<div class="pitch-slot"><small>${pos}</small><select class="pitch-player" data-slot="${slot}"><option value="">Select player</option>${starters.map(p=>`<option value="${p.id}" ${rtlPitchAssignments[slot]===p.id?'selected':''}>${rtlSafe(p.shirt_number)} ${rtlSafe(p.full_name)}</option>`).join('')}</select></div>`;}).join('')}</div>`).join('');
+  rows.innerHTML=shape.map((line,r)=>`<div class="pitch-row">${line.map((pos,i)=>{const slot=`${r}-${i}`;return `<div class="pitch-slot"><small>${pos}</small><select class="pitch-player" data-slot="${slot}"><option value="">Select player</option>${starters.map(p=>`<option value="${p.id}" ${rtlPitchAssignments[slot]===p.id?'selected':''}>#${rtlSafe(p.shirt_number)} · ${rtlSafe(p.full_name)}</option>`).join('')}</select></div>`;}).join('')}</div>`).join('');
   rows.querySelectorAll('.pitch-player').forEach(sel=>sel.addEventListener('change',()=>{const chosen=sel.value;Object.keys(rtlPitchAssignments).forEach(k=>{if(k!==sel.dataset.slot&&rtlPitchAssignments[k]===chosen)rtlPitchAssignments[k]='';});rtlPitchAssignments[sel.dataset.slot]=chosen;renderSelectedLineup();}));
  }
  const chosen=[...document.querySelectorAll('.pitch-player')].map(x=>({slot:x.dataset.slot,player:rtlAcademyRoster.find(p=>p.id===x.value)})).filter(x=>x.player);
@@ -1972,6 +2013,7 @@ async function editAcademyLineup(id){
    const select=el.querySelector('.lineup-status');if(select)select.value=saved?.selection_status||'none';
   });
   rtlPitchAssignments=Object.fromEntries(players.filter(x=>x.selection_status==='starter'&&x.position_slot).map(x=>[x.position_slot,x.player_id]));
+  syncLineupPlayerPickButtons();
   renderSelectedLineup();
   const captain=document.getElementById('lineup-captain'),keeper=document.getElementById('lineup-goalkeeper');
   if(captain)captain.value=row.captain_player_id||'';if(keeper)keeper.value=row.goalkeeper_player_id||'';
