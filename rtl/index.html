@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2060,15 +2061,23 @@ async function loadRTLFixtures() {
     });
     const completed = matches.filter(m=>String(m.status||'').toLowerCase()==='completed' || (String(m.status||'').toLowerCase()!=='live' && String(m.status||'').toLowerCase()!=='halftime' && m.home_score!==null && m.away_score!==null));
     const upcoming = matches.filter(m=>!live.includes(m) && !completed.includes(m));
-    fixtureBox.innerHTML = upcoming.length ? upcoming.map(match=>`
-      <article class="rtl-match-card rtl-match-card--scheduled">
+    fixtureBox.innerHTML = upcoming.length ? upcoming.map(match=>{
+      const fixtureStatus=String(match.status||'scheduled').toLowerCase();
+      const isLive=fixtureStatus==='live'||fixtureStatus==='halftime';
+      const statusClass=isLive?'rtl-match-card--live':'rtl-match-card--scheduled';
+      const statusLabel=fixtureStatus==='halftime'?'Half-time':isLive?'Live now':(match.status||'Scheduled');
+      return `
+      <article class="rtl-match-card ${statusClass}">
         ${dateCard(match)}
         <div class="rtl-match-main">
-          <div class="rtl-match-topline"><span class="rtl-match-tag">${rtlSafe(stageLabel(match))}</span><span class="rtl-match-status">${rtlSafe(match.status||'Scheduled')}</span></div>
+          <div class="rtl-match-topline"><span class="rtl-match-tag">${rtlSafe(stageLabel(match))}</span><span class="rtl-match-status">${rtlSafe(statusLabel)}</span></div>
           <div class="rtl-match-teams"><div class="rtl-match-team">${rtlSafe(match.home_academy||'Home team TBC')}</div><span class="rtl-match-vs">VS</span><div class="rtl-match-team away">${rtlSafe(match.away_academy||'Away team TBC')}</div></div>
+          ${isLive?`<div class="rtl-live-minute" data-rtl-live-minute data-match-date="${rtlSafe(match.match_date)}" data-kick-off="${rtlSafe(match.kick_off)}" data-match-status="${rtlSafe(match.status)}">${rtlLiveMinute(match)}</div>`:''}
           <div class="rtl-match-meta"><span>◷ ${rtlSafe(match.kick_off||'Time TBC')}</span><span>⌖ ${rtlSafe(match.venue||'Venue TBC')}</span>${match.referee_name?`<span>Referee: ${rtlSafe(match.referee_name)}</span>`:''}</div>
         </div>
-      </article>`).join('') : empty('◷','No fixtures scheduled','The official match schedule will appear here once fixtures are published.');
+      </article>`;
+    }).join('') : empty('◷','No fixtures scheduled','The official match schedule will appear here once fixtures are published.');
+    rtlRefreshLiveMinutes();
     let publicEventMap={}, publicLineupMap={};
     if(matches.length){try{publicEventMap=await rtlFetchMatchEvents(matches.map(m=>m.id));}catch(eventError){console.warn('RTL public match events unavailable:',eventError);}}
     if(matches.length){try{publicLineupMap=await rtlFetchPublicLineups(matches.map(m=>m.id));}catch(lineupError){console.warn('RTL public line-ups unavailable:',lineupError);}}
@@ -3231,4 +3240,3 @@ async function rtlEnablePushNotifications() {
 
 </body>
 </html>
-
