@@ -378,6 +378,162 @@ footer{background:#030a13;border-top:2px solid #087b43}
 .hero p { margin: 26px auto 0; text-align: center; }
 .hero .actions { justify-content: center; }
 @media(max-width:600px) { .hero h1 { font-size: clamp(34px, 9vw, 48px); letter-spacing: -1px; } .hero-subtitle { font-size: 14px; letter-spacing: 2px; } }
+
+/* RTL 2027 PREMIUM GAMBIAN IDENTITY */
+:root {
+  --bg: #071321;
+  --panel: #101f32;
+  --panel2: #162a40;
+  --text: #ffffff;
+  --muted: #c2ccd8;
+  --accent: #ce1126;
+  --red: #ce1126;
+  --blue: #0c1c8c;
+  --green: #3a7728;
+  --white: #ffffff;
+  --line: rgba(255,255,255,.13);
+}
+
+html,
+body {
+  background-color: #071321;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 5% 12%, rgba(206,17,38,.13), transparent 32%),
+    radial-gradient(ellipse at 95% 35%, rgba(12,28,140,.20), transparent 36%),
+    radial-gradient(ellipse at 50% 90%, rgba(58,119,40,.09), transparent 38%),
+    linear-gradient(180deg,#08182a 0%,#06111f 48%,#091a2b 100%);
+  background-attachment: fixed;
+}
+
+header {
+  background: rgba(5,14,25,.96);
+  border-bottom: 1px solid rgba(255,255,255,.15);
+  box-shadow: 0 8px 28px rgba(0,0,0,.3);
+}
+
+.hero {
+  background:
+    radial-gradient(ellipse at 80% 10%,rgba(12,28,140,.34),transparent 35%),
+    radial-gradient(ellipse at 12% 85%,rgba(206,17,38,.20),transparent 34%),
+    linear-gradient(125deg,#10243a,#071321 65%,#10251e);
+}
+
+section:nth-of-type(even) {
+  background: linear-gradient(
+    115deg,
+    rgba(12,28,140,.09),
+    rgba(255,255,255,.015),
+    rgba(58,119,40,.07)
+  );
+}
+
+.feature {
+  background:
+    linear-gradient(120deg,#0b1929,#101f32 55%,#0b1b27);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.card,
+.feature-card,
+.admin-section {
+  background: linear-gradient(145deg,#142940,#0b192a);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 12px 32px rgba(0,0,0,.24);
+}
+
+.info-box {
+  background: linear-gradient(135deg,#172e48,#102238);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.team-slot {
+  background: linear-gradient(145deg,#132941,#0c1b2c);
+  border: 1px solid rgba(255,255,255,.14);
+}
+
+button,
+.btn {
+  background: #ce1126;
+  border: 1px solid #ce1126;
+  color: #fff;
+}
+
+.btn.secondary {
+  background: transparent;
+  border-color: rgba(255,255,255,.4);
+  color: #fff;
+}
+
+.division-switch button {
+  background: #142b45;
+  color: #fff;
+}
+
+.division-switch button.active {
+  background: #ce1126;
+  border-color: #ce1126;
+  color: #fff;
+}
+
+input,
+select,
+textarea {
+  background: #102238;
+  color: #fff;
+  border-color: rgba(255,255,255,.2);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #ce1126;
+  outline-offset: 2px;
+}
+
+.eyebrow {
+  color: #ff7180;
+}
+
+.card-number,
+.info-box strong {
+  color: #ff5367;
+}
+
+.status {
+  color: #fff;
+  border-color: rgba(58,119,40,.7);
+  background: rgba(58,119,40,.15);
+}
+
+footer {
+  background: #040c16;
+  border-top: 3px solid transparent;
+  border-image: linear-gradient(
+    90deg,#ce1126 0 25%,#fff 25% 35%,
+    #0c1c8c 35% 65%,#fff 65% 75%,#3a7728 75%
+  ) 1;
+}
+
+.hero:after {
+  background: linear-gradient(
+    90deg,
+    #ce1126 0 25%,
+    #fff 25% 35%,
+    #0c1c8c 35% 65%,
+    #fff 65% 75%,
+    #3a7728 75%
+  );
+}
+
+@media(max-width:600px) {
+  body {
+    background-attachment: scroll;
+  }
+}
 </style>
 </head>
 <body>
