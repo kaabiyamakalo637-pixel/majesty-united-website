@@ -1607,7 +1607,7 @@ function rtlLiveMinute(match) {
 
 function rtlEventPresentation(event) {
   const type=String(event.event_type||'').toLowerCase().replace(/[ -]/g,'_');
-  const map={goal:['⚽','Goal'],own_goal:['🥅','Own goal'],penalty:['⚽','Penalty goal'],penalty_missed:['❌','Penalty missed'],yellow_card:['🟨','Yellow card'],red_card:['🟥','Red card'],second_yellow:['🟨','Second yellow'],substitution:['🔄','Substitution'],half_time:['⏸','Half-time'],full_time:['🏁','Full-time'],kick_off:['▶','Kick-off'],injury_time:['⏱','Added time']};
+  const map={goal:['⚽','Goal'],own_goal:['🥅','Own goal'],penalty:['⚽','Penalty'],penalty_missed:['❌','Penalty missed'],yellow_card:['🟨','Yellow card'],red_card:['🟥','Red card'],second_yellow:['🟨','Second yellow'],substitution:['🔄','Substitution'],half_time:['⏸','Half-time'],full_time:['🏁','Full-time'],kick_off:['▶','Kick-off'],injury_time:['⏱','Added time']};
   return map[type]||['•',String(event.event_type||'Match event').replace(/_/g,' ')];
 }
 function rtlRenderMatchEvents(events) {
@@ -2284,19 +2284,54 @@ document.getElementById('rtl-entry-form')?.addEventListener('submit',async e=>{e
 async function loadAdminLineups(){const box=document.getElementById('rtl-admin-lineup-list');try{const rows=await rtlRequest('rtl_match_lineups','?select=*&order=submitted_at.desc');box.innerHTML=rows.length?rows.map(x=>`<div class="team-slot"><strong>${rtlSafe(x.status)} | ${rtlSafe(x.coach_name)}</strong><p>Formation: ${rtlSafe(x.formation||'Not set')} | Public request: ${x.public_requested?'Yes':'No'}</p><p>Fixture: ${rtlSafe(x.fixture_id)} | Entry: ${rtlSafe(x.academy_entry_id)}</p><small>Submitted: ${rtlSafe(x.submitted_at||x.created_at)}</small><button type="button" onclick="reviewRTLLineup('${x.id}','approved')">Approve</button><button type="button" onclick="reviewRTLLineup('${x.id}','correction_required')">Request correction</button></div>`).join(''):'<p>No line-ups submitted yet.</p>';}catch(e){box.textContent='Unable to load line-ups: '+e.message;}}
 async function rtlAddMatchEvent(event,fixtureId){
   event.preventDefault();
-  const form=event.currentTarget,button=form.querySelector('button'),message=form.querySelector('.rtl-event-message');
+  const form=event.currentTarget;
+  const button=form.querySelector('button[type="submit"]');
+  const message=form.querySelector('.rtl-event-message');
   const data=new FormData(form);
   const minute=Number(data.get('minute'));
   const eventType=String(data.get('event_type')||'').trim();
   const playerName=String(data.get('player_name')||'').trim();
   if(!Number.isInteger(minute)||minute<0||minute>130){message.textContent='Enter a match minute between 0 and 130.';return;}
-  button.disabled=true;message.textContent='Saving match event...';
+  if(!eventType){message.textContent='Select an event type.';return;}
+  if(button.disabled)return;
+  button.disabled=true;
+  const originalLabel=button.textContent;
+  button.textContent='Saving...';
+  message.textContent='Saving match event. Please wait.';
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),15000);
   try{
-    await rtlRequest('rtl_match_events','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({fixture_id:fixtureId,minute,event_type:eventType,player_name:playerName||null})});
-    message.textContent='Event added successfully.';
-    await loadAdminMatchCentre();
-    if(document.getElementById('live-match-list')) await loadRTLFixtures();
-  }catch(error){message.textContent='Could not add event: '+error.message;button.disabled=false;}
+    const response=await fetch(`${RTL_DATA_URL}/rest/v1/rtl_match_events`,{
+      method:'POST',
+      headers:{...rtlAuthHeaders({'Content-Type':'application/json',Prefer:'return=minimal'})},
+      body:JSON.stringify({fixture_id:fixtureId,minute,event_type:eventType,player_name:playerName||null}),
+      signal:controller.signal
+    });
+    if(!response.ok){
+      const detail=await response.text();
+      throw new Error(`Database error ${response.status}: ${detail||response.statusText}`);
+    }
+    message.textContent='Event saved. Updating match timeline...';
+    const eventMap=await rtlFetchMatchEvents([fixtureId]);
+    const card=form.closest('article');
+    const eventPanel=card?.querySelector('.rtl-live-events');
+    if(eventPanel){
+      eventPanel.innerHTML=`<h4>Recorded match events</h4>${rtlRenderMatchEvents(eventMap[fixtureId]||[])}`;
+    }
+    message.textContent='Event saved and added to the match timeline.';
+    form.reset();
+    if(document.getElementById('live-match-list')){
+      try{await loadRTLFixtures();}catch(refreshError){console.warn('Public live centre refresh failed:',refreshError);}
+    }
+  }catch(error){
+    message.textContent=error.name==='AbortError'
+      ? 'The request timed out. Check the match timeline before trying again, to avoid adding the same event twice.'
+      : 'Could not save event: '+error.message;
+  }finally{
+    clearTimeout(timeout);
+    button.disabled=false;
+    button.textContent=originalLabel;
+  }
 }
 
 async function loadAdminMatchCentre(){
@@ -2321,7 +2356,7 @@ async function loadAdminMatchCentre(){
       <p>${rtlSafe(x.match_date)} | ${rtlSafe(x.kick_off)} | ${rtlSafe(x.venue||'Venue TBC')}</p>
       <div class="rtl-live-events"><h4>Recorded match events</h4>${rtlRenderMatchEvents(adminEventMap[x.id]||[])}</div>
       <form class="rtl-admin-event-form" onsubmit="rtlAddMatchEvent(event,'${x.id}')">
-        <label>Event type<select name="event_type" required><option value="goal">Goal</option><option value="own_goal">Own goal</option><option value="yellow_card">Yellow card</option><option value="red_card">Red card</option><option value="second_yellow">Second yellow</option><option value="substitution">Substitution</option><option value="penalty_missed">Penalty missed</option><option value="half_time">Half-time</option><option value="full_time">Full-time</option></select></label>
+        <label>Event type<select name="event_type" required><option value="goal">Goal</option><option value="own_goal">Own Goal</option><option value="penalty">Penalty</option><option value="yellow_card">Yellow card</option><option value="red_card">Red card</option><option value="second_yellow">Second yellow</option><option value="substitution">Substitution</option><option value="penalty_missed">Penalty missed</option><option value="half_time">Half-time</option><option value="full_time">Full-time</option></select></label>
         <label>Minute<input name="minute" type="number" min="0" max="130" required placeholder="e.g. 67"></label>
         <label class="event-wide">Player / event details<input name="player_name" maxlength="160" placeholder="Player name, or OFF: Name | ON: Name"></label>
         <button type="submit">Add Match Event</button><p class="rtl-event-message" aria-live="polite"></p>
