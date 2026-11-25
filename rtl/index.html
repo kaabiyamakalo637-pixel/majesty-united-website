@@ -1608,6 +1608,7 @@ async function loadPublicLineups() {
 
 
 function rtlLiveMinute(match) {
+  if (String(match.status || '').toLowerCase() === 'halftime') return 'HALF-TIME';
   const date = String(match.match_date || '').slice(0,10);
   const time = String(match.kick_off || '00:00').slice(0,8);
   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return 'LIVE';
@@ -1640,7 +1641,8 @@ function rtlRefreshLiveMinutes() {
   document.querySelectorAll('[data-rtl-live-minute]').forEach(node => {
     const date = node.getAttribute('data-match-date');
     const time = node.getAttribute('data-kick-off');
-    node.textContent = rtlLiveMinute({match_date:date,kick_off:time});
+    const status = node.getAttribute('data-match-status');
+    node.textContent = rtlLiveMinute({match_date:date,kick_off:time,status});
   });
 }
 
@@ -1682,8 +1684,13 @@ async function loadRTLFixtures() {
     const officialMap = new Map(officials.map(item=>[item.fixture_id,item.referee_name]));
     matches.forEach(match=>{match.referee_name=officialMap.get(match.id)||null;});
     
-    const live = matches.filter(m=>String(m.status||'').toLowerCase()==='live' && Number.isFinite(Date.parse(`${String(m.match_date||'').slice(0,10)}T${String(m.kick_off||'00:00').slice(0,5)}:00Z`)) && Date.now() >= Date.parse(`${String(m.match_date||'').slice(0,10)}T${String(m.kick_off||'00:00').slice(0,5)}:00Z`));
-    const completed = matches.filter(m=>String(m.status||'').toLowerCase()==='completed' || (String(m.status||'').toLowerCase()!=='live' && m.home_score!==null && m.away_score!==null));
+    const live = matches.filter(m=>{
+      const status=String(m.status||'').toLowerCase();
+      if(status==='halftime') return true;
+      const kickoff=Date.parse(`${String(m.match_date||'').slice(0,10)}T${String(m.kick_off||'00:00').slice(0,5)}:00Z`);
+      return status==='live' && Number.isFinite(kickoff) && Date.now()>=kickoff;
+    });
+    const completed = matches.filter(m=>String(m.status||'').toLowerCase()==='completed' || (String(m.status||'').toLowerCase()!=='live' && String(m.status||'').toLowerCase()!=='halftime' && m.home_score!==null && m.away_score!==null));
     const upcoming = matches.filter(m=>!live.includes(m) && !completed.includes(m));
     fixtureBox.innerHTML = upcoming.length ? upcoming.map(match=>`
       <article class="rtl-match-card">
@@ -1701,14 +1708,14 @@ async function loadRTLFixtures() {
         <article class="rtl-live-card">
           <div class="rtl-live-head">
             <span class="rtl-live-division">${rtlSafe(stageLabel(match))}</span>
-            <span class="rtl-live-badge"><i class="rtl-live-dot"></i> Live now</span>
+            <span class="rtl-live-badge">${String(match.status||'').toLowerCase()==='halftime'?'Half-time':'<i class="rtl-live-dot"></i> Live now'}</span>
           </div>
           <div class="rtl-live-teams">
             <div class="rtl-live-team">${rtlSafe(match.home_academy||'Home team')}</div>
             <div class="rtl-live-score"><span>${rtlSafe(match.home_score??0)}</span><span>:</span><span>${rtlSafe(match.away_score??0)}</span></div>
             <div class="rtl-live-team">${rtlSafe(match.away_academy||'Away team')}</div>
           </div>
-          <div class="rtl-live-minute" data-rtl-live-minute data-match-date="${rtlSafe(match.match_date)}" data-kick-off="${rtlSafe(match.kick_off)}">${rtlLiveMinute(match)}</div>
+          <div class="rtl-live-minute" data-rtl-live-minute data-match-date="${rtlSafe(match.match_date)}" data-kick-off="${rtlSafe(match.kick_off)}" data-match-status="${rtlSafe(match.status)}">${rtlLiveMinute(match)}</div>
           <div class="rtl-live-meta"><span>${rtlSafe(match.match_date||'Date TBC')}</span><span>${rtlSafe(match.venue||'Venue TBC')}</span>${match.referee_name?`<span>Referee: ${rtlSafe(match.referee_name)}</span>`:''}</div>
           <div class="rtl-live-events"><h4>Match events</h4>${rtlRenderMatchEvents(publicEventMap[match.id]||[])}</div>
         </article>`).join('') : '<p class="rtl-live-empty">No live matches at the moment. Live scores will appear here during matchdays.</p>';
@@ -2349,12 +2356,12 @@ async function rtlSaveLiveScore(event,fixtureId){
   try{
     await rtlRequest('rtl_fixtures',`?id=eq.${encodeURIComponent(fixtureId)}`,{
       method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},
-      body:JSON.stringify({home_score:Number(home),away_score:Number(away)})
+      body:JSON.stringify({home_score:Number(home),away_score:Number(away),status:String(data.get('status')||'live')})
     });
     message.textContent='Score updated successfully.';
     await Promise.all([loadAdminMatchCentre(),loadRTLFixtures(),loadRTLStandings()]);
   }catch(error){message.textContent='Score update failed: '+error.message;}
-  finally{button.disabled=false;button.textContent='Save Match Score';}
+  finally{button.disabled=false;button.textContent='Save Score & Match Status';}
 }
 
 async function rtlAddMatchEvent(event,fixtureId){
@@ -2417,22 +2424,23 @@ async function loadAdminMatchCentre(){
       rtlRequest('rtl_public_fixtures','?select=*&season=eq.2027&order=match_date.asc'),
       rtlRequest('rtl_referee_reports','?select=*&order=submitted_at.desc')
     ]);
-    const liveRows=rows.filter(x=>String(x.status||'').toLowerCase()==='live');
-    const otherRows=rows.filter(x=>String(x.status||'').toLowerCase()!=='live');
+    const liveRows=rows.filter(x=>['live','halftime'].includes(String(x.status||'').toLowerCase()));
+    const otherRows=rows.filter(x=>!['live','halftime'].includes(String(x.status||'').toLowerCase()));
     let adminEventMap={};
     try{adminEventMap=await rtlFetchMatchEvents(rows.map(x=>x.id));}catch(eventError){console.warn('Admin match events unavailable:',eventError);}
     const card=x=>`<article class="team-slot" style="margin:12px 0;padding:17px">
       <div class="rtl-live-head"><strong>${rtlSafe(x.division)} | ${rtlSafe(x.group_name||'Group')} </strong>
-      ${String(x.status||'').toLowerCase()==='live'?'<span class="rtl-live-badge"><i class="rtl-live-dot"></i> Live</span>':`<span class="rtl-live-division">${rtlSafe(x.status||'Scheduled')}</span>`}</div>
+      ${['live','halftime'].includes(String(x.status||'').toLowerCase())?`<span class="rtl-live-badge">${String(x.status).toLowerCase()==='halftime'?'Half-time':'<i class="rtl-live-dot"></i> Live'}</span>`:`<span class="rtl-live-division">${rtlSafe(x.status||'Scheduled')}</span>`}</div>
       <div class="rtl-live-teams"><div class="rtl-live-team">${rtlSafe(x.home_academy||'Home team')}</div>
       <div class="rtl-live-score"><span>${rtlSafe(x.home_score??0)}</span><span>:</span><span>${rtlSafe(x.away_score??0)}</span></div>
       <div class="rtl-live-team">${rtlSafe(x.away_academy||'Away team')}</div></div>
-      ${String(x.status||'').toLowerCase()==='live'?`<div class="rtl-admin-live-minute" data-rtl-live-minute data-match-date="${rtlSafe(x.match_date)}" data-kick-off="${rtlSafe(x.kick_off)}">${rtlLiveMinute(x)}</div>`:''}
+      ${['live','halftime'].includes(String(x.status||'').toLowerCase())?`<div class="rtl-admin-live-minute" data-rtl-live-minute data-match-date="${rtlSafe(x.match_date)}" data-kick-off="${rtlSafe(x.kick_off)}" data-match-status="${rtlSafe(x.status)}">${rtlLiveMinute(x)}</div>`:''}
       <p>${rtlSafe(x.match_date)} | ${rtlSafe(x.kick_off)} | ${rtlSafe(x.venue||'Venue TBC')}</p>
       <form class="rtl-admin-score-form" onsubmit="rtlSaveLiveScore(event,'${x.id}')">
         <label>Home score<input name="home_score" type="number" min="0" step="1" value="${rtlSafe(x.home_score??0)}" required></label>
         <label>Away score<input name="away_score" type="number" min="0" step="1" value="${rtlSafe(x.away_score??0)}" required></label>
-        <button type="submit">Save Match Score</button>
+        <label class="event-wide">Match status<select name="status">${[['scheduled','Scheduled'],['live','Live'],['halftime','Half-time'],['completed','Full-time'],['postponed','Postponed'],['cancelled','Cancelled']].map(([value,label])=>`<option value="${value}" ${String(x.status||'scheduled').toLowerCase()===value?'selected':''}>${label}</option>`).join('')}</select></label>
+        <button type="submit">Save Score & Match Status</button>
         <p class="rtl-event-message" aria-live="polite"></p>
       </form>
       <div class="rtl-live-events"><h4>Recorded match events</h4>${rtlRenderAdminMatchEvents(adminEventMap[x.id]||[],x.id)}</div>
