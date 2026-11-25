@@ -370,6 +370,14 @@ input,select,textarea{background:#10263d;border-color:rgba(255,255,255,.2)}
 footer{background:#030a13;border-top:2px solid #087b43}
 @media(max-width:600px){.rtl-crest{width:58px;height:58px}.nav{padding:10px 14px}.brand{font-size:14px}.hero{padding:62px 18px 48px}.hero h1{font-size:clamp(32px,8vw,44px);letter-spacing:-.8px}.hero:after{margin-top:34px}}
 
+
+/* RTL hero headline hierarchy */
+.hero-message { max-width: 1000px; margin: 0 auto; text-align: center; }
+.hero h1 { max-width: none; margin: 0 auto 16px; text-align: center; font-size: clamp(42px, 6.2vw, 76px); line-height: 1.02; letter-spacing: -1.8px; font-weight: 900; }
+.hero-subtitle { color: #d5deea; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(15px, 2.1vw, 23px); font-weight: 600; letter-spacing: clamp(2px, .55vw, 6px); line-height: 1.5; text-align: center; }
+.hero p { margin: 26px auto 0; text-align: center; }
+.hero .actions { justify-content: center; }
+@media(max-width:600px) { .hero h1 { font-size: clamp(34px, 9vw, 48px); letter-spacing: -1px; } .hero-subtitle { font-size: 14px; letter-spacing: 2px; } }
 </style>
 </head>
 <body>
@@ -377,7 +385,7 @@ footer{background:#030a13;border-top:2px solid #087b43}
 <header>
   <nav class="nav">
     <a class="brand" href="#home">
-      <img class="rtl-crest" src="/rtl-crest.webp" alt="Rising Talents League crest">
+      <img class="rtl-crest" src="/rtl/assets/rtl-crest.webp" alt="Rising Talents League crest">
       <span>RISING TALENTS<small>LEAGUE</small></span>
     </a>
     <div class="nav-links">
@@ -395,7 +403,10 @@ footer{background:#030a13;border-top:2px solid #087b43}
 <section class="hero" id="home">
   <div class="hero-inner">
     <div class="eyebrow">The 2027 Season</div>
-    <h1>UNITED BY FOOTBALL.<br>ONE PLATFORM FOR EVERY TALENT.</h1>
+    <div class="hero-message">
+      <h1>UNITED BY FOOTBALL.</h1>
+      <div class="hero-subtitle">ONE PLATFORM FOR EVERY TALENT</div>
+    </div>
     <p>
       Developing Talent. Building Futures. A competitive youth football platform identifying and promoting outstanding talent across the Upper River Region of The Gambia.
     </p>
