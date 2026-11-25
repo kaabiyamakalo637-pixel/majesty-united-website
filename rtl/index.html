@@ -448,6 +448,12 @@ footer {
 #standings-list .rtl-standings-table th{padding:9px 6px}
 #standings-list .rtl-standings-table td{padding:9px 6px}
 #standings-list .rtl-standings-note{padding:8px 13px;line-height:1.45}
+/* Final League Centre spacing and single standings key */
+#fixtures{padding-bottom:30px}
+#live{padding-top:30px}
+.rtl-standings-key{display:flex;flex-wrap:wrap;gap:7px 14px;margin-top:12px;padding:11px 14px;border-top:1px solid rgba(255,255,255,.07);color:var(--muted);font-size:10px;line-height:1.5}
+.rtl-standings-key span{white-space:nowrap}
+@media(max-width:700px){#fixtures{padding-bottom:24px}#live{padding-top:24px}.rtl-standings-key{gap:6px 11px;padding:9px 10px;font-size:9px}}
 @media(max-width:700px){
  #standings-list.placeholder{gap:10px;margin-top:10px}
  #standings-list .rtl-table-title{padding:10px 12px}
@@ -1323,9 +1329,11 @@ async function loadRTLStandings() {
               <tbody>${tableRows}</tbody>
             </table>
           </div>
-          <p class="rtl-standings-note">MP Played · W Wins · D Draws · L Losses · GF Goals for · GA Goals against · GD Goal difference · PTS Points</p>
         </section>`;
-    }).join('');
+    }).join('') + `
+      <div class="rtl-standings-key" aria-label="Standings abbreviations">
+        <span><strong>MP</strong> Matches played</span><span><strong>W</strong> Wins</span><span><strong>D</strong> Draws</span><span><strong>L</strong> Losses</span><span><strong>GF</strong> Goals for</span><span><strong>GA</strong> Goals against</span><span><strong>GD</strong> Goal difference</span><span><strong>PTS</strong> Points</span>
+      </div>`;
   } catch (error) {
     console.error('RTL standings loading error:', error);
     standingsBox.innerHTML = '<p>League standings are temporarily unavailable.</p>';
