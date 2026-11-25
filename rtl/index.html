@@ -191,6 +191,46 @@ section { padding: 65px 22px; }
   font-weight: 800;
   letter-spacing: 2px;
 }
+
+/* Public fixtures, results and standings layout */
+#fixtures .grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+}
+#fixtures .card {
+  min-width: 0;
+  height: 100%;
+}
+#fixtures .team-slot {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  margin-top: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255,255,255,.025);
+}
+#fixtures .team-slot p {
+  margin: 8px 0;
+  font-size: 15px;
+}
+#fixtures .team-slot small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+}
+#fixtures .team-slot strong {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1100px) {
+  #fixtures .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #fixtures .card {
+    height: auto;
+  }
+}
 .division-switch {
   display: flex;
   gap: 10px;
@@ -1161,7 +1201,7 @@ matches.forEach(match => {
     fixtureBox.innerHTML = upcoming.length
       ? upcoming.map(match => `
           <div class="team-slot">
-            <strong>${rtlSafe(match.division)} | ${rtlSafe(match.stage)}</strong>
+            <strong>${rtlSafe(match.division)} | ${String(match.stage || '').toLowerCase() === 'group' ? 'Group ' + rtlSafe(match.group_name || 'TBC') : rtlSafe(match.stage || 'Stage TBC')}</strong>
             <p>${rtlSafe(match.home_academy)} vs ${rtlSafe(match.away_academy)}</p>
             <small>${rtlSafe(match.match_date || 'Date TBC')} |
               ${rtlSafe(match.kick_off || 'Time TBC')}</small>
@@ -1174,7 +1214,7 @@ matches.forEach(match => {
     resultBox.innerHTML = completed.length
       ? completed.map(match => `
           <div class="team-slot">
-            <strong>${rtlSafe(match.division)} | ${rtlSafe(match.stage)}</strong>
+            <strong>${rtlSafe(match.division)} | ${String(match.stage || '').toLowerCase() === 'group' ? 'Group ' + rtlSafe(match.group_name || 'TBC') : rtlSafe(match.stage || 'Stage TBC')}</strong>
             <p>${rtlSafe(match.home_academy)}
               <strong>${rtlSafe(match.home_score)} - ${rtlSafe(match.away_score)}</strong>
               ${rtlSafe(match.away_academy)}</p>
@@ -1203,13 +1243,18 @@ async function loadRTLStandings() {
     if (!response.ok) throw new Error(await response.text());
 
     const standings = await response.json();
+    // Only publish standings for entries linked to a real academy.
+    const publishedStandings = standings.filter(row => {
+      const name = String(row.academy_name || '').trim();
+      return name && !/^academy pending$/i.test(name) && !/^no academy assigned/i.test(name);
+    });
 
-    if (!standings.length) {
-      standingsBox.innerHTML = '<p>No league standings available yet.</p>';
+    if (!publishedStandings.length) {
+      standingsBox.innerHTML = '<p>Standings will appear once academies are officially assigned and matches are played.</p>';
       return;
     }
 
-    standingsBox.innerHTML = standings.map(row => `
+    standingsBox.innerHTML = publishedStandings.map(row => `
       <div class="team-slot">
         <strong>${rtlSafe(row.division)} | Group ${rtlSafe(row.group_name)}</strong>
         <p>${rtlSafe(row.academy_name)}</p>
