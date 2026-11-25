@@ -1839,9 +1839,9 @@ if (!window.rtlLiveMinuteTimer) {
 if (!window.rtlLiveDataTimer) {
   window.rtlLiveDataTimer = window.setInterval(() => {
     if (document.visibilityState !== 'visible') return;
+    // Keep public live-centre data fresh. Do not rebuild the admin match forms
+    // while staff are editing them, because replacing the form interrupts mobile selects.
     if (document.getElementById('live-match-list')) loadRTLFixtures();
-    const adminMatches = document.getElementById('rtl-matches-section');
-    if (adminMatches && !adminMatches.hidden) loadAdminMatchCentre();
   }, 5000);
 }
 
