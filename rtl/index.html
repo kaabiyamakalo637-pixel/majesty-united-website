@@ -2350,6 +2350,10 @@ if (!loginResponse.ok) {
       sessionStorage.setItem('rtlStaffName', staffRecords[0].full_name);
 sessionStorage.setItem('rtlStaffAcademyId', staffRecords[0].academy_id || '');
       message.textContent = `Welcome ${staffRecords[0].full_name}.`;
+      // Release the mobile keyboard before hiding the login form.
+      if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+      }
       document.getElementById('rtl-login-form').hidden = true;
       showRTLPortal(staffRecords[0].role);
     } catch (error) {
@@ -2744,7 +2748,16 @@ function showRTLPortal(role) {
       ? document.getElementById('rtl-academy-portal')
       : document.getElementById('rtl-referee-portal');
   if (portalTarget) {
-    requestAnimationFrame(() => portalTarget.scrollIntoView({behavior:'smooth', block:'start'}));
+    // Mobile browsers may reset the viewport while the on-screen keyboard closes.
+    // Scroll after that transition, then focus the portal heading without another scroll.
+    setTimeout(() => {
+      portalTarget.scrollIntoView({behavior:'smooth', block:'start'});
+      const heading = portalTarget.querySelector('h2, h3');
+      if (heading) {
+        heading.setAttribute('tabindex', '-1');
+        heading.focus({preventScroll:true});
+      }
+    }, 400);
   }
 }
 function rtlLogout(){ sessionStorage.clear(); location.reload(); }
