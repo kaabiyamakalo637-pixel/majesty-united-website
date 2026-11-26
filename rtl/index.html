@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+window.addEventListener('error', function(event) {
+  const box = document.getElementById('rtl-login-message');
+  if (box) box.textContent = 'JavaScript error: ' + event.message + ' | Line ' + event.lineno;
+});
+window.addEventListener('unhandledrejection', function(event) {
+  const box = document.getElementById('rtl-login-message');
+  if (box) box.textContent = 'Login error: ' + event.reason;
+});
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#101820">
