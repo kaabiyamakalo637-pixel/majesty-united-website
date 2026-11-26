@@ -15,7 +15,7 @@ window.addEventListener('unhandledrejection', function(event) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#101820">
-<title>Rising Talents League | RTL</title>
+<title>Rising Talents League | United by Football</title>
 <style>
 :root {
   --bg: #071b12;
@@ -1298,6 +1298,116 @@ html, body {
   .rtl-update-row { font-size: 12px; }
 }
 
+
+
+/* RTL official crest and homepage identity */
+.brand-crest {
+  display: block;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  object-fit: contain;
+}
+.hero-identity {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+.hero-crest {
+  display: block;
+  width: 112px;
+  height: 112px;
+  object-fit: contain;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 10px 22px rgba(0,0,0,.28));
+}
+.hero-edition {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+.edition-label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.hero h1 {
+  max-width: 780px;
+  margin: 8px 0 14px;
+  font-size: clamp(48px, 8vw, 88px);
+  line-height: .98;
+  letter-spacing: -2.8px;
+}
+.hero-supporting-line {
+  margin: 0 0 7px;
+  color: #ffffff;
+  font-size: clamp(16px, 2.2vw, 21px);
+  font-weight: 850;
+  letter-spacing: 2px;
+  line-height: 1.35;
+}
+.hero-official-slogan {
+  margin: 0 0 16px;
+  color: #f08ba0;
+  font-size: clamp(14px, 1.8vw, 17px);
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+.hero-description {
+  margin-top: 0;
+}
+@media (max-width: 1100px) {
+  .brand-crest {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+  }
+  .hero-crest {
+    width: 96px;
+    height: 96px;
+  }
+}
+@media (max-width: 600px) {
+  .brand-crest {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+  .hero {
+    padding-top: 46px;
+    padding-bottom: 44px;
+  }
+  .hero-identity {
+    gap: 13px;
+    margin-bottom: 17px;
+  }
+  .hero-crest {
+    width: 76px;
+    height: 76px;
+  }
+  .edition-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+  }
+  .hero h1 {
+    font-size: clamp(42px, 12vw, 60px);
+    line-height: 1;
+    letter-spacing: -1.5px;
+  }
+  .hero-supporting-line {
+    font-size: 14px;
+    letter-spacing: 1.1px;
+  }
+  .hero-official-slogan {
+    font-size: 13px;
+    letter-spacing: .6px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1306,7 +1416,7 @@ html, body {
   <nav class="nav" style="position:relative">
     <button type="button" class="nav-menu-toggle" id="rtl-mobile-menu-toggle" aria-expanded="false" aria-controls="rtl-main-nav-links">☰ Menu</button>
     <a class="brand" href="#home">
-      <span class="brand-mark">RTL</span>
+      <img class="brand-crest" src="rtl-crest.webp" alt="Rising Talents League official crest">
       <span>RISING TALENTS<small>LEAGUE</small></span>
     </a>
     <div class="nav-links" id="rtl-main-nav-links">
@@ -1328,9 +1438,17 @@ html, body {
 <main>
 <section class="hero" id="home">
   <div class="hero-inner">
-    <div class="eyebrow">The 2027 Season</div>
-    <h1>DEVELOPING TALENT.<br>BUILDING FUTURES.</h1>
-    <p>
+    <div class="hero-identity">
+      <img class="hero-crest" src="rtl-crest.webp" alt="Rising Talents League official crest">
+      <div class="hero-edition">
+        <div class="eyebrow">The 2027 Season</div>
+        <span class="edition-label">1st Edition</span>
+      </div>
+    </div>
+    <h1>UNITED BY<br>FOOTBALL.</h1>
+    <p class="hero-supporting-line">ONE PLATFORM FOR EVERY TALENT.</p>
+    <p class="hero-official-slogan">Developing Talent. Building Futures.</p>
+    <p class="hero-description">
       A competitive youth football platform created to identify,
       develop and promote outstanding football talent across
       the Upper River Region of The Gambia.
