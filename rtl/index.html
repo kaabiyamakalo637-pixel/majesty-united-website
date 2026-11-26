@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -979,6 +978,19 @@ input, select, textarea { font-size: 16px; }
  .rtl-live-meta{gap:4px 8px;margin-top:7px;font-size:9px}
  .rtl-live-events{margin-top:10px;padding-top:9px}
 }
+
+
+/* RTL matchday control centre refinement */
+.rtl-quick-event-panel{background:linear-gradient(145deg,rgba(12,38,29,.96),rgba(5,17,14,.98));border:1px solid rgba(103,190,145,.2);box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.rtl-quick-event-panel h4{font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:#c8e7d5}
+.rtl-quick-event-grid{gap:9px}
+.rtl-quick-event-btn{min-height:58px;border:1px solid rgba(126,190,153,.2);background:linear-gradient(180deg,#174a34,#103524);font-size:13px;transition:transform .15s ease,background .15s ease,border-color .15s ease}
+.rtl-quick-event-btn:hover{background:linear-gradient(180deg,#206344,#174a34);border-color:rgba(150,224,178,.55);transform:translateY(-1px)}
+.rtl-admin-details{background:rgba(10,28,21,.72);border-color:rgba(126,190,153,.16)}
+.rtl-admin-details>summary{padding:16px;font-size:13px}
+.rtl-live-badge{background:rgba(37,99,235,.18);color:#9fc1ff}
+.rtl-admin-live-minute{display:inline-flex;margin:8px 0;padding:7px 12px;border-radius:7px;background:rgba(37,99,235,.14);color:#9fc1ff;font-weight:900;font-variant-numeric:tabular-nums}
+@media(max-width:600px){.rtl-quick-event-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.rtl-quick-event-btn{min-height:56px;font-size:12px}.rtl-admin-details>summary{padding:15px 12px}}
 
 </style>
 </head>
@@ -2767,6 +2779,7 @@ async function rtlUpdateMatchEvent(event,eventId,fixtureId){
       body:JSON.stringify({event_type:String(data.get('event_type')),minute,player_name:String(data.get('player_name')||'').trim()||null,team_side:String(data.get('team_side')||'')||null})
     });
     const updatedScore=await rtlRecalculateMatchScore(fixtureId);
+    await rtlSyncMatchStatusFromEvents(fixtureId);
     message.textContent=`Event updated. Score is now ${updatedScore.home}-${updatedScore.away}.`;
     await loadAdminMatchCentre();
     if(document.getElementById('live-match-list')) await loadRTLFixtures();
@@ -2780,12 +2793,27 @@ async function rtlDeleteMatchEvent(eventId,fixtureId){
   try{
     await rtlRequest('rtl_match_events',`?id=eq.${encodeURIComponent(eventId)}`,{method:'DELETE',headers:{Prefer:'return=minimal'}});
     await rtlRecalculateMatchScore(fixtureId);
+    await rtlSyncMatchStatusFromEvents(fixtureId);
     await loadAdminMatchCentre();
     if(document.getElementById('live-match-list')) await loadRTLFixtures();
     if(typeof loadRTLStandings==='function') await loadRTLStandings();
     if(typeof loadRTLStandings==='function') await loadRTLStandings();
   }catch(error){alert('Could not delete event: '+error.message);}
 }
+async function rtlSyncMatchStatusFromEvents(fixtureId){
+  const eventMap=await rtlFetchMatchEvents([fixtureId]);
+  const events=eventMap[fixtureId]||[];
+  const types=events.map(item=>String(item.event_type||'').toLowerCase());
+  const status=types.includes('full_time')?'completed':types.includes('half_time')?'halftime':null;
+  if(status){
+    await rtlRequest('rtl_fixtures',`?id=eq.${encodeURIComponent(fixtureId)}`,{
+      method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify({status})
+    });
+  }
+  return {events,status};
+}
+
 async function rtlRecalculateMatchScore(fixtureId){
   const eventMap=await rtlFetchMatchEvents([fixtureId]);
   const events=eventMap[fixtureId]||[];
@@ -2875,6 +2903,7 @@ async function rtlAddMatchEvent(event,fixtureId){
     }
     message.textContent='Event saved. Updating score and match timeline...';
     const updatedScore=await rtlRecalculateMatchScore(fixtureId);
+    await rtlSyncMatchStatusFromEvents(fixtureId);
     const eventMap=await rtlFetchMatchEvents([fixtureId]);
     const card=form.closest('article');
     const eventPanel=card?.querySelector('.rtl-live-events');
