@@ -2738,7 +2738,14 @@ function showRTLPortal(role) {
   else if(role==='academy_staff') loadAcademyPortal();
   else if(role==='referee') loadRefereePortal();
   else { alert('This staff role is not supported. Contact RTL administration.'); rtlLogout(); }
-  document.getElementById('staff-login').scrollIntoView({behavior:'smooth',block:'start'});
+  const portalTarget = role === 'admin' || role === 'rtl_staff'
+    ? document.getElementById('rtl-admin-dashboard')
+    : role === 'academy_staff'
+      ? document.getElementById('rtl-academy-portal')
+      : document.getElementById('rtl-referee-portal');
+  if (portalTarget) {
+    requestAnimationFrame(() => portalTarget.scrollIntoView({behavior:'smooth', block:'start'}));
+  }
 }
 function rtlLogout(){ sessionStorage.clear(); location.reload(); }
 async function loadAdminEntries(){
