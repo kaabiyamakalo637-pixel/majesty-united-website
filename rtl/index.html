@@ -1614,6 +1614,43 @@ html, body {
 }
 </style>
 
+<style>
+
+/* RTL hero headline: single-line condensed football typography */
+.rtl-hero-title {
+  width: 100%;
+  max-width: none !important;
+  white-space: nowrap;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif !important;
+  font-stretch: condensed;
+  font-style: italic;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(27px, 8.2vw, 88px) !important;
+  line-height: 1;
+  letter-spacing: .015em !important;
+  margin: 8px 0 22px !important;
+  text-shadow: 0 8px 35px rgba(0,0,0,.28);
+}
+@media (min-width: 900px) {
+  .rtl-hero-title {
+    font-size: clamp(58px, 6.4vw, 92px) !important;
+  }
+}
+@media (max-width: 600px) {
+  .rtl-hero-title {
+    font-size: clamp(26px, 8.2vw, 48px) !important;
+    letter-spacing: 0 !important;
+    margin-bottom: 18px !important;
+  }
+}
+@media (max-width: 360px) {
+  .rtl-hero-title {
+    font-size: 25px !important;
+  }
+}
+
+</style>
 </head>
 <body>
 
@@ -1651,7 +1688,7 @@ html, body {
         <span class="edition-label" id="rtl-hero-edition-label">1ST EDITION</span>
       </div>
     </div>
-    <h1>UNITED BY<br>FOOTBALL.</h1>
+    <h1 class="rtl-hero-title">UNITED BY FOOTBALL.</h1>
     <p class="hero-supporting-line">ONE PLATFORM FOR EVERY TALENT.</p>
     <p class="hero-official-slogan">Developing Talent. Building Futures.</p>
     <p class="hero-description">
