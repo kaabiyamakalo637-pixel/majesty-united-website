@@ -107,6 +107,7 @@ header {
   color: var(--muted);
 }
 .nav-links a:hover { color: var(--accent); }
+.nav-menu-toggle { display: none; }
 .hero {
   padding: 95px 22px 85px;
   background:
@@ -331,6 +332,9 @@ footer {
 }
 @media(max-width:800px) {
   .nav-links { display: none; }
+  .nav-links.is-open { display: flex; position: absolute; top: 100%; left: 0; right: 0; z-index: 20; flex-direction: column; align-items: stretch; gap: 0; padding: 8px 16px 14px; background: rgba(7,27,18,.99); border-bottom: 1px solid var(--line); box-shadow: 0 12px 24px rgba(0,0,0,.28); }
+  .nav-links.is-open a { display: block; padding: 13px 8px; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .nav-menu-toggle { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--text); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
   .grid { grid-template-columns: 1fr 1fr; }
   .team-grid { grid-template-columns: repeat(2,1fr); }
   .pathway { grid-template-columns: 1fr 1fr; }
@@ -739,7 +743,24 @@ input, select, textarea { font-size: 16px; }
 @media(max-width:600px){.rtl-live-card{padding:15px}.rtl-live-teams{gap:7px}.rtl-live-score{gap:7px;padding:8px 10px;font-size:24px}.rtl-live-team{font-size:13px}.rtl-live-minute{margin-top:13px}}
 
 .rtl-admin-score-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;padding:12px;border:1px solid rgba(255,255,255,.1);border-radius:10px}
+/* Consolidated RTL admin score-entry refinement */
+.rtl-admin-score-form{background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border-color:rgba(255,255,255,.16);align-items:end}
+.rtl-admin-score-form .rtl-score-form-title{grid-column:1/-1;margin:0 0 3px;font-size:15px}
+.rtl-admin-score-form label{display:flex;flex-direction:column;gap:6px;min-width:0}
+.rtl-admin-score-form .rtl-score-team-label{display:flex;flex-direction:column;gap:2px;color:var(--text);font-size:12px;font-weight:700}
+.rtl-admin-score-form .rtl-score-team-label small{color:var(--muted);font-size:10px;font-weight:500}
+.rtl-admin-score-form .rtl-score-input{margin:0;text-align:center;font-size:22px;font-weight:800;min-height:52px}
+.rtl-admin-score-form select{margin:0;min-height:44px}
+.rtl-admin-score-form button{min-height:46px;font-weight:800}
+.rtl-admin-score-form .rtl-event-message{margin:2px 0 0;font-size:12px}
+.rtl-announcement-history{margin:14px 0 20px;padding:12px;background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:10px}
+.rtl-announcement-history-item{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.09)}
+.rtl-announcement-history-item:last-child{border-bottom:0}
+.rtl-announcement-history-item p{margin:5px 0 0;overflow-wrap:anywhere}
+@media(max-width:520px){.rtl-admin-score-form{gap:9px;padding:10px}.rtl-admin-score-form .rtl-score-input{min-height:48px;font-size:20px}.rtl-chat-messages{height:270px;padding:9px}.rtl-announcement-history{padding:9px}.rtl-chat-message{padding:9px}.rtl-chat-message-head{align-items:flex-start;flex-direction:column;gap:3px}}
+
 .rtl-admin-score-form label{font-size:11px;color:var(--muted)}
+.rtl-score-team-label{display:block;font-size:12px;font-weight:800;color:var(--text);margin-bottom:5px}.rtl-score-team-label small{display:block;font-size:10px;font-weight:500;color:var(--muted);margin-top:2px}.rtl-score-input{font-size:24px!important;font-weight:850!important;text-align:center;min-height:54px}.rtl-score-form-title{grid-column:1/-1;margin:0;font-size:13px;font-weight:800}.rtl-announcement-history{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}.rtl-announcement-history-item{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08)}.rtl-announcement-history-item p{margin:5px 0}.rtl-announcement-history-item small{color:var(--muted);font-size:11px}
 .rtl-admin-score-form button,.rtl-admin-score-form .rtl-event-message{grid-column:1/-1}
 .rtl-admin-event-item{margin:9px 0;padding:10px;border:1px solid rgba(255,255,255,.09);border-radius:9px;background:rgba(255,255,255,.025)}
 .rtl-admin-event-item .rtl-event{padding:4px 0;background:transparent}
@@ -789,6 +810,13 @@ input, select, textarea { font-size: 16px; }
 .rtl-public-bench span{padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.07);font-size:10px;color:#e8f1ea}
 @media(max-width:520px){.rtl-match-tabbar{gap:4px}.rtl-match-tab{font-size:10px;padding:9px 2px}.rtl-match-tabpanel{padding:9px}.rtl-match-event-row{grid-template-columns:40px minmax(0,1fr) auto;gap:7px}}
 
+
+
+/* RTL live status and clock clarity */
+.rtl-match-card--live .rtl-live-minute,.rtl-fixture-live-clock{display:inline-flex;align-items:center;width:max-content;margin:2px 0 0;padding:5px 9px;border-radius:6px;background:rgba(37,99,235,.17);color:#8db8ff;font-size:11px;font-weight:900;font-variant-numeric:tabular-nums}
+.rtl-match-card--live .rtl-match-status{color:#8db8ff;background:rgba(37,99,235,.17)}
+.rtl-live-card--active:before{background:#2563eb}
+@media(max-width:600px){.rtl-fixture-live-clock{font-size:10px;padding:4px 8px}}
 
 /* RTL public live chat */
 .rtl-chat-card{max-width:900px;margin:0 auto}.rtl-chat-announcement{padding:16px 18px;margin-bottom:20px;border-left:4px solid var(--accent);background:rgba(206,17,38,.09);border-radius:8px}.rtl-chat-announcement p{margin:6px 0 0;color:var(--muted)}.rtl-chat-heading{display:flex;justify-content:space-between;align-items:center;gap:16px}.rtl-chat-heading h3{margin:8px 0 0}.rtl-chat-messages{height:360px;overflow-y:auto;padding:14px;margin:12px 0 18px;background:#06170f;border:1px solid var(--line);border-radius:10px}.rtl-chat-message{padding:11px 12px;margin-bottom:10px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:8px;overflow-wrap:anywhere}.rtl-chat-message:last-child{margin-bottom:0}.rtl-chat-message-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.rtl-chat-message-head strong{color:#f08ca1}.rtl-chat-message time{font-size:11px;color:var(--muted)}.rtl-chat-message p{margin:5px 0 0;white-space:pre-wrap}.rtl-chat-message-actions{display:flex;gap:8px;margin-top:8px}.rtl-chat-message-actions button{font-size:11px;padding:5px 8px}.rtl-chat-form textarea{resize:vertical}.rtl-chat-form-footer{display:flex;justify-content:space-between;align-items:center;gap:12px}.rtl-chat-form-footer small{color:var(--muted)}
@@ -937,12 +965,13 @@ input, select, textarea { font-size: 16px; }
 <body>
 
 <header>
-  <nav class="nav">
+  <nav class="nav" style="position:relative">
+    <button type="button" class="nav-menu-toggle" id="rtl-mobile-menu-toggle" aria-expanded="false" aria-controls="rtl-main-nav-links">☰ Menu</button>
     <a class="brand" href="#home">
       <span class="brand-mark">RTL</span>
       <span>RISING TALENTS<small>LEAGUE</small></span>
     </a>
-    <div class="nav-links">
+    <div class="nav-links" id="rtl-main-nav-links">
       <a href="#about">About</a>
       <a href="#competition">Competition</a>
       <a href="#fixtures">Fixtures</a>
@@ -1104,12 +1133,12 @@ input, select, textarea { font-size: 16px; }
     <div class="section-heading">
       <div class="eyebrow">RTL Community</div>
       <h2>Live Chat</h2>
-      <p>Join the conversation. Support your teams. Respect every player, official and supporter.</p>
+      <p>Registered users can join the conversation. Support your teams. Respect every player, official and supporter.</p>
     </div>
     <div class="feature-card rtl-chat-card">
-      <div class="rtl-chat-announcement" id="rtl-chat-announcement"><strong>RTL Official Announcement</strong><p>No official announcements yet.</p></div>
+      <div class="rtl-chat-announcement" id="rtl-chat-announcement"><strong>RTL Official Announcement</strong><p>No official announcements yet.</p></div><div class="rtl-announcement-history" id="rtl-public-announcement-history"><h3>Announcement History</h3><p class="rtl-event-empty">Loading announcements...</p></div>
       <div class="rtl-chat-heading"><div><span class="status">PUBLIC CHAT ROOM</span><h3>Matchday Community</h3><p id="rtl-chat-status" class="rtl-event-empty">Loading messages...</p></div><button type="button" class="btn secondary" onclick="rtlLoadChat()">Refresh</button></div>
-      <label for="rtl-chat-nickname">Your display name</label>
+      <p class="rtl-event-empty" id="rtl-chat-signin-note">Registered RTL users must sign in before sending messages.</p><label for="rtl-chat-nickname">Your display name</label>
       <input id="rtl-chat-nickname" maxlength="24" placeholder="Choose a nickname" autocomplete="nickname">
       <div id="rtl-chat-messages" class="rtl-chat-messages" aria-live="polite"><p class="rtl-event-empty">Loading the conversation...</p></div>
       <form id="rtl-chat-form" class="rtl-chat-form">
@@ -1561,7 +1590,7 @@ input, select, textarea { font-size: 16px; }
   <h2>Live Chat Moderation</h2><button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button>
   <p>Manage public messages and publish official RTL announcements. Moderation actions are recorded against your staff account.</p>
   <form id="rtl-chat-announcement-form"><label for="rtl-chat-announcement-input">Official announcement</label><textarea id="rtl-chat-announcement-input" rows="3" maxlength="500" placeholder="Write an official RTL update..." required></textarea><button type="submit">Publish Announcement</button><p id="rtl-chat-admin-feedback" role="status" aria-live="polite"></p></form>
-  <h3>Recent Chat Messages</h3><div id="rtl-chat-admin-list">Loading messages...</div>
+  <h3>Announcement History</h3><div id="rtl-chat-announcement-history">Loading announcements...</div><h3>Recent Chat Messages</h3><div id="rtl-chat-admin-list">Loading messages...</div>
 </div>
 <div id="rtl-staff-section" class="card admin-section" hidden><h2>Staff Management</h2><button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button>
   <p>Create secure login accounts for Academy Staff, Referees, RTL Staff and additional Administrators. Only Admins may access this section.</p>
@@ -1828,7 +1857,9 @@ async function loadPublicLineups() {
 
 
 function rtlLiveMinute(match) {
-  if (String(match.status || '').toLowerCase() === 'halftime') return 'HALF-TIME';
+  const status = String(match.status || '').toLowerCase();
+  if (status === 'halftime') return 'HALF-TIME';
+  if (status === 'completed') return 'FULL-TIME';
   const date = String(match.match_date || '').slice(0,10);
   const time = String(match.kick_off || '00:00').slice(0,8);
   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return 'LIVE';
@@ -2024,10 +2055,13 @@ if (!window.rtlLiveDataTimer) {
     // Keep public live-centre data fresh. Do not rebuild the admin match forms
     // while staff are editing them, because replacing the form interrupts mobile selects.
     if (document.getElementById('live-match-list')) loadRTLFixtures();
-  }, 5000);
+  }, 10000);
 }
 
+let rtlFixturesLoading = false;
 async function loadRTLFixtures() {
+  if (rtlFixturesLoading) return;
+  rtlFixturesLoading = true;
   const fixtureBox = document.getElementById('fixture-list');
   const resultBox = document.getElementById('results-list');
   const liveBox = document.getElementById('live-match-list');
@@ -2053,13 +2087,10 @@ async function loadRTLFixtures() {
     const officialMap = new Map(officials.map(item=>[item.fixture_id,item.referee_name]));
     matches.forEach(match=>{match.referee_name=officialMap.get(match.id)||null;});
     
-    const live = matches.filter(m=>{
-      const status=String(m.status||'').toLowerCase();
-      if(status==='halftime') return true;
-      const kickoff=Date.parse(`${String(m.match_date||'').slice(0,10)}T${String(m.kick_off||'00:00').slice(0,5)}:00Z`);
-      return status==='live' && Number.isFinite(kickoff) && Date.now()>=kickoff;
-    });
-    const completed = matches.filter(m=>String(m.status||'').toLowerCase()==='completed' || (String(m.status||'').toLowerCase()!=='live' && String(m.status||'').toLowerCase()!=='halftime' && m.home_score!==null && m.away_score!==null));
+    // Trust the authoritative match status from Supabase. Do not hide a live
+    // match because the device clock, timezone or kick-off value differs.
+    const live = matches.filter(m=>['live','halftime'].includes(String(m.status||'').toLowerCase()));
+    const completed = matches.filter(m=>String(m.status||'').toLowerCase()==='completed');
     const upcoming = matches.filter(m=>!live.includes(m) && !completed.includes(m));
     fixtureBox.innerHTML = upcoming.length ? upcoming.map(match=>{
       const fixtureStatus=String(match.status||'scheduled').toLowerCase();
@@ -2072,19 +2103,20 @@ async function loadRTLFixtures() {
         <div class="rtl-match-main">
           <div class="rtl-match-topline"><span class="rtl-match-tag">${rtlSafe(stageLabel(match))}</span><span class="rtl-match-status">${rtlSafe(statusLabel)}</span></div>
           <div class="rtl-match-teams"><div class="rtl-match-team">${rtlSafe(match.home_academy||'Home team TBC')}</div><span class="rtl-match-vs">VS</span><div class="rtl-match-team away">${rtlSafe(match.away_academy||'Away team TBC')}</div></div>
-          ${isLive?`<div class="rtl-live-minute" data-rtl-live-minute data-match-date="${rtlSafe(match.match_date)}" data-kick-off="${rtlSafe(match.kick_off)}" data-match-status="${rtlSafe(match.status)}">${rtlLiveMinute(match)}</div>`:''}
+          ${isLive?`<div class="rtl-live-minute rtl-fixture-live-clock" data-rtl-live-minute data-match-date="${rtlSafe(match.match_date)}" data-kick-off="${rtlSafe(match.kick_off)}" data-match-status="${rtlSafe(match.status)}">${rtlLiveMinute(match)}</div>`:''}
           <div class="rtl-match-meta"><span>◷ ${rtlSafe(match.kick_off||'Time TBC')}</span><span>⌖ ${rtlSafe(match.venue||'Venue TBC')}</span>${match.referee_name?`<span>Referee: ${rtlSafe(match.referee_name)}</span>`:''}</div>
         </div>
       </article>`;
     }).join('') : empty('◷','No fixtures scheduled','The official match schedule will appear here once fixtures are published.');
     rtlRefreshLiveMinutes();
-    let publicEventMap={}, publicLineupMap={};
-    if(matches.length){try{publicEventMap=await rtlFetchMatchEvents(matches.map(m=>m.id));}catch(eventError){console.warn('RTL public match events unavailable:',eventError);}}
+    let publicEventMap={}, publicLineupMap={}, publicEventsLoaded=true;
+    if(matches.length){try{publicEventMap=await rtlFetchMatchEvents(matches.map(m=>m.id));}catch(eventError){publicEventsLoaded=false;console.warn('RTL public match events unavailable:',eventError);}}
     if(matches.length){try{publicLineupMap=await rtlFetchPublicLineups(matches.map(m=>m.id));}catch(lineupError){console.warn('RTL public line-ups unavailable:',lineupError);}}
-    rtlCheckMatchdaySounds(matches,publicEventMap);
+    // Never reset the seen-event baseline after a temporary events API failure.
+    if(publicEventsLoaded) rtlCheckMatchdaySounds(matches,publicEventMap);
     if (liveBox) {
       liveBox.innerHTML = live.length ? live.map(match => `
-        <article class="rtl-live-card">
+        <article class="rtl-live-card rtl-live-card--active">
           <div class="rtl-live-head">
             <span class="rtl-live-division">${rtlSafe(stageLabel(match))}</span>
             <span class="rtl-live-badge">${String(match.status||'').toLowerCase()==='halftime'?'Half-time':'<i class="rtl-live-dot"></i> Live now'}</span>
@@ -2117,6 +2149,8 @@ async function loadRTLFixtures() {
     fixtureBox.innerHTML=empty('!','Fixtures unavailable','Please check again shortly.');
     resultBox.innerHTML=empty('!','Results unavailable','Please check again shortly.');
     if (liveBox) liveBox.innerHTML='<p class="rtl-live-empty">Live match information is temporarily unavailable.</p>';
+  } finally {
+    rtlFixturesLoading = false;
   }
 }
 
@@ -2712,7 +2746,8 @@ async function rtlUpdateMatchEvent(event,eventId,fixtureId){
       method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},
       body:JSON.stringify({event_type:String(data.get('event_type')),minute,player_name:String(data.get('player_name')||'').trim()||null,team_side:String(data.get('team_side')||'')||null})
     });
-    message.textContent='Event updated.';
+    const updatedScore=await rtlRecalculateMatchScore(fixtureId);
+    message.textContent=`Event updated. Score is now ${updatedScore.home}-${updatedScore.away}.`;
     await loadAdminMatchCentre();
     if(document.getElementById('live-match-list')) await loadRTLFixtures();
   }catch(error){message.textContent='Update failed: '+error.message;}
@@ -2722,10 +2757,29 @@ async function rtlDeleteMatchEvent(eventId,fixtureId){
   if(!confirm('Delete this match event? This action cannot be undone.')) return;
   try{
     await rtlRequest('rtl_match_events',`?id=eq.${encodeURIComponent(eventId)}`,{method:'DELETE',headers:{Prefer:'return=minimal'}});
+    await rtlRecalculateMatchScore(fixtureId);
     await loadAdminMatchCentre();
     if(document.getElementById('live-match-list')) await loadRTLFixtures();
   }catch(error){alert('Could not delete event: '+error.message);}
 }
+async function rtlRecalculateMatchScore(fixtureId){
+  const eventMap=await rtlFetchMatchEvents([fixtureId]);
+  const events=eventMap[fixtureId]||[];
+  let home=0,away=0;
+  for(const item of events){
+    const type=String(item.event_type||'').toLowerCase();
+    if(!['goal','penalty','own_goal'].includes(type))continue;
+    if(!['home','away'].includes(item.team_side))continue;
+    const credited=type==='own_goal'?(item.team_side==='home'?'away':'home'):item.team_side;
+    if(credited==='home')home++;else away++;
+  }
+  await rtlRequest('rtl_fixtures',`?id=eq.${encodeURIComponent(fixtureId)}`,{
+    method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},
+    body:JSON.stringify({home_score:home,away_score:away})
+  });
+  return {home,away};
+}
+
 async function rtlSaveLiveScore(event,fixtureId){
   event.preventDefault();
   const form=event.currentTarget,message=form.querySelector('.rtl-event-message'),button=form.querySelector('button[type="submit"]');
@@ -2740,7 +2794,7 @@ async function rtlSaveLiveScore(event,fixtureId){
     message.textContent='Score updated successfully.';
     await Promise.all([loadAdminMatchCentre(),loadRTLFixtures(),loadRTLStandings()]);
   }catch(error){message.textContent='Score update failed: '+error.message;}
-  finally{button.disabled=false;button.textContent='Save Score & Match Status';}
+  finally{button.disabled=false;button.textContent='Update Score & Status';}
 }
 
 async function rtlAddMatchEvent(event,fixtureId){
@@ -2774,14 +2828,15 @@ async function rtlAddMatchEvent(event,fixtureId){
       const detail=await response.text();
       throw new Error(`Database error ${response.status}: ${detail||response.statusText}`);
     }
-    message.textContent='Event saved. Updating match timeline...';
+    message.textContent='Event saved. Updating score and match timeline...';
+    const updatedScore=await rtlRecalculateMatchScore(fixtureId);
     const eventMap=await rtlFetchMatchEvents([fixtureId]);
     const card=form.closest('article');
     const eventPanel=card?.querySelector('.rtl-live-events');
     if(eventPanel){
       eventPanel.innerHTML=`<h4>Recorded match events</h4>${rtlRenderMatchEvents(eventMap[fixtureId]||[])}`;
     }
-    message.textContent='Event saved and added to the match timeline.';
+    message.textContent=`Event saved. Score updated to ${updatedScore.home}-${updatedScore.away}.`; 
     form.reset();
     if(document.getElementById('live-match-list')){
       try{await loadRTLFixtures();}catch(refreshError){console.warn('Public live centre refresh failed:',refreshError);}
@@ -2818,10 +2873,11 @@ async function loadAdminMatchCentre(){
       ${['live','halftime'].includes(String(x.status||'').toLowerCase())?`<div class="rtl-admin-live-minute" data-rtl-live-minute data-match-date="${rtlSafe(x.match_date)}" data-kick-off="${rtlSafe(x.kick_off)}" data-match-status="${rtlSafe(x.status)}">${rtlLiveMinute(x)}</div>`:''}
       <p>${rtlSafe(x.match_date)} | ${rtlSafe(x.kick_off)} | ${rtlSafe(x.venue||'Venue TBC')}</p>
       <form class="rtl-admin-score-form" onsubmit="rtlSaveLiveScore(event,'${x.id}')">
-        <label>Home score<input name="home_score" type="number" min="0" step="1" value="${rtlSafe(x.home_score??0)}" required></label>
-        <label>Away score<input name="away_score" type="number" min="0" step="1" value="${rtlSafe(x.away_score??0)}" required></label>
+        <h4 class="rtl-score-form-title">Update Match Score</h4>
+        <label><span class="rtl-score-team-label">${rtlSafe(x.home_academy||'Home Team')}<small>Home score</small></span><input class="rtl-score-input" name="home_score" type="number" min="0" step="1" value="${rtlSafe(x.home_score??0)}" required></label>
+        <label><span class="rtl-score-team-label">${rtlSafe(x.away_academy||'Away Team')}<small>Away score</small></span><input class="rtl-score-input" name="away_score" type="number" min="0" step="1" value="${rtlSafe(x.away_score??0)}" required></label>
         <label class="event-wide">Match status<select name="status">${[['scheduled','Scheduled'],['live','Live'],['halftime','Half-time'],['completed','Full-time'],['postponed','Postponed'],['cancelled','Cancelled']].map(([value,label])=>`<option value="${value}" ${String(x.status||'scheduled').toLowerCase()===value?'selected':''}>${label}</option>`).join('')}</select></label>
-        <button type="submit">Save Score & Match Status</button>
+        <button type="submit">Update Score & Status</button>
         <p class="rtl-event-message" aria-live="polite"></p>
       </form>
       <div class="rtl-live-events"><h4>Recorded match events</h4>${rtlRenderAdminMatchEvents(adminEventMap[x.id]||[],x.id)}</div>
@@ -3188,15 +3244,32 @@ function rtlChatSenderToken(){let token=localStorage.getItem(RTL_CHAT_TOKEN_KEY)
 function rtlChatTime(value){const date=new Date(value);return Number.isNaN(date.getTime())?'':date.toLocaleString([], {dateStyle:'short',timeStyle:'short'});}
 function rtlChatIsModerator(){return ['admin','rtl_staff'].includes(sessionStorage.getItem('rtlStaffRole'))&&!!sessionStorage.getItem('rtlAccessToken');}
 function rtlChatMessageMarkup(row,moderator=false){return `<article class="rtl-chat-message" data-chat-id="${rtlSafe(row.id)}"><div class="rtl-chat-message-head"><strong>${rtlSafe(row.nickname)}</strong><time>${rtlSafe(rtlChatTime(row.created_at))}</time></div><p>${rtlSafe(row.message_text)}</p>${moderator?`<div class="rtl-chat-message-actions"><button type="button" onclick="rtlModerateChatMessage('${rtlSafe(row.id)}','delete')">Delete</button><button type="button" onclick="rtlModerateChatMessage('${rtlSafe(row.id)}','block','${rtlSafe(row.sender_token)}')">Block sender</button></div>`:''}</article>`;}
-async function rtlLoadChat(){const box=document.getElementById('rtl-chat-messages');const status=document.getElementById('rtl-chat-status');if(!box)return;try{const rows=await rtlRequest('rtl_chat_messages','?select=id,nickname,message_text,message_type,created_at,sender_token,is_deleted&order=created_at.desc&limit=100');const visibleRows=rows.filter(x=>x.is_deleted!==true);const announcements=visibleRows.filter(x=>x.message_type==='announcement');const messages=visibleRows.filter(x=>x.message_type==='message').reverse();const latest=announcements[0];const announcementBox=document.getElementById('rtl-chat-announcement');if(announcementBox)announcementBox.innerHTML=latest?`<strong>RTL Official Announcement</strong><p>${rtlSafe(latest.message_text)}</p><small>${rtlSafe(rtlChatTime(latest.created_at))}</small>`:'<strong>RTL Official Announcement</strong><p>No official announcements yet.</p>';box.innerHTML=messages.length?messages.map(x=>rtlChatMessageMarkup(x,false)).join(''):'<p class="rtl-event-empty">No messages yet. Start the conversation.</p>';box.scrollTop=box.scrollHeight;if(status)status.textContent=`${messages.length} recent messages · Updates automatically`; }catch(error){if(status)status.textContent='Chat is temporarily unavailable. Please try again shortly.';box.innerHTML='<p class="rtl-event-empty">Unable to load chat messages.</p>';console.error('RTL chat load error:',error);}}
+async function rtlLoadChat(){const box=document.getElementById('rtl-chat-messages');const status=document.getElementById('rtl-chat-status');if(!box)return;try{const rows=await rtlRequest('rtl_chat_messages','?select=id,nickname,message_text,message_type,created_at,sender_token,is_deleted&order=created_at.desc&limit=100');const visibleRows=rows.filter(x=>x.is_deleted!==true);const announcements=visibleRows.filter(x=>x.message_type==='announcement');const messages=visibleRows.filter(x=>x.message_type==='message').reverse();const latest=announcements[0];const announcementBox=document.getElementById('rtl-chat-announcement');if(announcementBox)announcementBox.innerHTML=latest?`<strong>RTL Official Announcement</strong><p>${rtlSafe(latest.message_text)}</p><small>${rtlSafe(rtlChatTime(latest.created_at))}</small>`:'<strong>RTL Official Announcement</strong><p>No official announcements yet.</p>';const history=document.getElementById('rtl-public-announcement-history');if(history)history.innerHTML='<h3>Announcement History</h3>'+(announcements.length?announcements.map(x=>`<article class="rtl-announcement-history-item"><small>${rtlSafe(rtlChatTime(x.created_at))}</small><p>${rtlSafe(x.message_text)}</p></article>`).join(''):'<p class="rtl-event-empty">No previous announcements.</p>');box.innerHTML=messages.length?messages.map(x=>rtlChatMessageMarkup(x,false)).join(''):'<p class="rtl-event-empty">No messages yet. Start the conversation.</p>';box.scrollTop=box.scrollHeight;if(status)status.textContent=`${messages.length} recent messages · Updates automatically`; }catch(error){if(status)status.textContent='Chat is temporarily unavailable. Please try again shortly.';box.innerHTML='<p class="rtl-event-empty">Unable to load chat messages.</p>';console.error('RTL chat load error:',error);}}
 document.getElementById('rtl-chat-nickname')?.addEventListener('change',e=>localStorage.setItem('rtlChatNickname',e.target.value.trim().slice(0,24)));
 const rtlChatNickname=document.getElementById('rtl-chat-nickname');if(rtlChatNickname)rtlChatNickname.value=localStorage.getItem('rtlChatNickname')||'';
-document.getElementById('rtl-chat-form')?.addEventListener('submit',async e=>{e.preventDefault();const feedback=document.getElementById('rtl-chat-feedback');const nickname=document.getElementById('rtl-chat-nickname').value.trim();const message=document.getElementById('rtl-chat-input').value.trim();if(nickname.length<2){feedback.textContent='Choose a display name with at least 2 characters.';return;}if(!message){feedback.textContent='Write a message first.';return;}const button=e.target.querySelector('button[type="submit"]');button.disabled=true;try{localStorage.setItem('rtlChatNickname',nickname);await rtlRequest('rtl_chat_messages','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({sender_token:rtlChatSenderToken(),nickname,message_text:message,message_type:'message'})});document.getElementById('rtl-chat-input').value='';feedback.textContent='Message sent.';await rtlLoadChat();}catch(error){feedback.textContent='Message not sent: '+error.message;}finally{button.disabled=false;}});
-async function loadRTLChatModeration(){const box=document.getElementById('rtl-chat-admin-list');if(!box||!rtlChatIsModerator())return;box.textContent='Loading messages...';try{const rows=await rtlRequest('rtl_chat_messages','?select=id,nickname,message_text,message_type,created_at,sender_token,is_deleted&order=created_at.desc&limit=100');box.innerHTML=rows.length?rows.map(x=>rtlChatMessageMarkup(x,true)).join(''):'<p>No chat messages yet.</p>';}catch(error){box.textContent='Unable to load chat moderation: '+error.message;}}
+document.getElementById('rtl-chat-form')?.addEventListener('submit',async e=>{e.preventDefault();const feedback=document.getElementById('rtl-chat-feedback');const nickname=document.getElementById('rtl-chat-nickname').value.trim();const message=document.getElementById('rtl-chat-input').value.trim();if(!sessionStorage.getItem('rtlAccessToken')){feedback.textContent='Please sign in with your registered RTL account to join the live chat.';return;}if(nickname.length<2){feedback.textContent='Choose a display name with at least 2 characters.';return;}if(!message){feedback.textContent='Write a message first.';return;}const button=e.target.querySelector('button[type="submit"]');button.disabled=true;try{await rtlCurrentUserId();localStorage.setItem('rtlChatNickname',nickname);await rtlRequest('rtl_chat_messages','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({sender_token:rtlChatSenderToken(),nickname,message_text:message,message_type:'message'})});document.getElementById('rtl-chat-input').value='';feedback.textContent='Message sent.';await rtlLoadChat();}catch(error){feedback.textContent='Please sign in with your registered account. '+error.message;}finally{button.disabled=false;}});
+async function loadRTLChatModeration(){const box=document.getElementById('rtl-chat-admin-list');if(!box||!rtlChatIsModerator())return;box.textContent='Loading messages...';try{const rows=await rtlRequest('rtl_chat_messages','?select=id,nickname,message_text,message_type,created_at,sender_token,is_deleted&order=created_at.desc&limit=100');const visible=rows.filter(x=>x.is_deleted!==true);const announcements=visible.filter(x=>x.message_type==='announcement');const history=document.getElementById('rtl-chat-announcement-history');if(history)history.innerHTML=announcements.length?announcements.map(x=>`<article class="rtl-announcement-history-item"><small>${rtlSafe(rtlChatTime(x.created_at))}</small><p>${rtlSafe(x.message_text)}</p></article>`).join(''):'<p>No announcements published yet.</p>';box.innerHTML=rows.length?rows.map(x=>rtlChatMessageMarkup(x,true)).join(''):'<p>No chat messages yet.</p>';}catch(error){box.textContent='Unable to load chat moderation: '+error.message;}}
 async function rtlModerateChatMessage(id,action,senderToken){if(!rtlChatIsModerator()){alert('You are not authorised to moderate chat.');return;}if(action==='delete'){if(!confirm('Delete this message?'))return;try{await rtlRequest('rtl_chat_messages',`?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({is_deleted:true,deleted_by:await rtlCurrentUserId()})});await Promise.all([loadRTLChatModeration(),rtlLoadChat()]);}catch(error){alert('Unable to delete message: '+error.message);}}else if(action==='block'){if(!confirm('Block this participant from sending further messages?'))return;try{await rtlRequest('rtl_chat_bans','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({sender_token:senderToken,blocked_by:await rtlCurrentUserId()})});await rtlRequest('rtl_chat_messages',`?sender_token=eq.${encodeURIComponent(senderToken)}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({is_deleted:true,deleted_by:await rtlCurrentUserId()})});await Promise.all([loadRTLChatModeration(),rtlLoadChat()]);}catch(error){alert('Unable to block participant: '+error.message);}}}
 document.getElementById('rtl-chat-announcement-form')?.addEventListener('submit',async e=>{e.preventDefault();const feedback=document.getElementById('rtl-chat-admin-feedback');if(!rtlChatIsModerator()){feedback.textContent='You are not authorised to publish announcements.';return;}const text=document.getElementById('rtl-chat-announcement-input').value.trim();if(!text)return;try{await rtlRequest('rtl_chat_messages','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({sender_token:rtlChatSenderToken(),nickname:'RTL Administration',message_text:text,message_type:'announcement'})});document.getElementById('rtl-chat-announcement-input').value='';feedback.textContent='Official announcement published.';await Promise.all([loadRTLChatModeration(),rtlLoadChat()]);}catch(error){feedback.textContent='Unable to publish announcement: '+error.message;}});
 rtlLoadChat();
 window.setInterval(()=>{if(document.visibilityState==='visible')rtlLoadChat();},5000);
+
+// Responsive navigation. Close the menu after choosing a section.
+(function initRTLMobileNavigation(){
+  const toggle=document.getElementById('rtl-mobile-menu-toggle');
+  const links=document.getElementById('rtl-main-nav-links');
+  if(!toggle||!links)return;
+  const close=()=>{links.classList.remove('is-open');toggle.setAttribute('aria-expanded','false');toggle.textContent='☰ Menu';};
+  toggle.addEventListener('click',()=>{
+    const open=!links.classList.contains('is-open');
+    links.classList.toggle('is-open',open);
+    toggle.setAttribute('aria-expanded',String(open));
+    toggle.textContent=open?'✕ Close':'☰ Menu';
+  });
+  links.querySelectorAll('a').forEach(link=>link.addEventListener('click',close));
+  window.addEventListener('resize',()=>{if(window.innerWidth>800)close();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape')close();});
+})();
 
 // RTL Web Push notifications. Fans opt in from each device/browser.
 const RTL_PUSH_PUBLIC_KEY = 'BL-kUnKGt8EWpOqNIXcV2t5-84vTOPmNGQC_MxZjp43U7z3abd1e5n8vwcwIpe54_aPp1a5jc0Fw_UxIc72oBF0';
@@ -3213,6 +3286,17 @@ async function rtlPushRequest(payload) {
   if(!response.ok) throw new Error(result.error||result.message||'Notification service request failed.');
   return result;
 }
+function rtlRefreshPushNotificationStatus(){
+  const button=document.getElementById('rtl-push-toggle');
+  const message=document.getElementById('rtl-push-message');
+  if(!button||!message)return;
+  if(!('Notification' in window)){button.textContent='🔔 Notifications unavailable';message.textContent='This browser does not support web push notifications.';return;}
+  if(Notification.permission==='denied'){button.textContent='🔔 Notifications blocked';message.textContent='Notifications are blocked in your browser settings. Allow them for this site, then try again.';return;}
+  if(Notification.permission==='granted'){button.textContent='🔔 Check Notifications';message.textContent='Browser permission is granted. Tap to confirm this device subscription.';return;}
+  button.textContent='🔔 Enable Match Notifications';
+  message.textContent='Get match alerts on this device. Your browser will ask for permission.';
+}
+rtlRefreshPushNotificationStatus();
 async function rtlEnablePushNotifications() {
   const button=document.getElementById('rtl-push-toggle');
   const message=document.getElementById('rtl-push-message');
