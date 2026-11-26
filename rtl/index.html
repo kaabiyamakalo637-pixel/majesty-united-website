@@ -1,10 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+window.addEventListener('error', function(event) {
+  const box = document.getElementById('rtl-login-message');
+  if (box) box.textContent = 'JavaScript error: ' + event.message + ' | Line ' + event.lineno;
+});
+window.addEventListener('unhandledrejection', function(event) {
+  const box = document.getElementById('rtl-login-message');
+  if (box) box.textContent = 'Login error: ' + event.reason;
+});
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#101820">
-<title>Rising Talents League | RTL</title>
+<title>Rising Talents League | United by Football</title>
 <style>
 :root {
   --bg: #071b12;
@@ -992,6 +1003,653 @@ input, select, textarea { font-size: 16px; }
 .rtl-admin-live-minute{display:inline-flex;margin:8px 0;padding:7px 12px;border-radius:7px;background:rgba(37,99,235,.14);color:#9fc1ff;font-weight:900;font-variant-numeric:tabular-nums}
 @media(max-width:600px){.rtl-quick-event-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.rtl-quick-event-btn{min-height:56px;font-size:12px}.rtl-admin-details>summary{padding:15px 12px}}
 
+
+
+/* RTL responsive redesign: visible staff access and compact mobile layouts */
+.nav-login-link{
+  flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  min-height:40px;padding:8px 13px;border-radius:7px;background:var(--accent);
+  border:1px solid var(--accent);color:#fff;font-size:12px;font-weight:800;
+  white-space:nowrap;letter-spacing:.2px
+}
+.nav-login-link:hover{filter:brightness(1.12);color:#fff}
+#staff-login{scroll-margin-top:92px}
+#rtl-admin-dashboard,#rtl-academy-portal,#rtl-referee-portal{scroll-margin-top:86px}
+@media(max-width:800px){
+  .nav{display:flex;flex-wrap:nowrap;justify-content:space-between;gap:8px;padding:9px 12px}
+  .nav .brand{order:1;flex:1 1 auto}
+  .nav .nav-login-link{order:2;min-height:38px;padding:7px 10px;font-size:11px}
+  .nav .nav-menu-toggle{order:3;min-height:38px;padding:7px 9px;font-size:11px;white-space:nowrap}
+  .nav-links{display:none}
+  .nav-links.is-open{display:flex;position:absolute;top:100%;left:0;right:0;z-index:30;flex-direction:column;align-items:stretch;gap:0;padding:6px 12px 10px;background:rgba(7,27,18,.99);border-bottom:1px solid var(--line);box-shadow:0 12px 24px rgba(0,0,0,.3);max-height:calc(100vh - 64px);overflow-y:auto}
+  .nav-links.is-open a{display:block;padding:10px 8px;border-bottom:1px solid rgba(255,255,255,.07);font-size:13px}
+  .nav-links.is-open a:last-child{border-bottom:0}
+  .nav .brand-mark{width:36px;height:36px;flex:0 0 36px;font-size:15px}
+  .nav .brand{gap:7px;font-size:12px;letter-spacing:.3px}
+  .nav .brand small{font-size:8px;letter-spacing:1.2px}
+  section{padding:30px 13px}
+  .hero{padding:42px 15px 38px}
+  .hero p{font-size:14px;line-height:1.5}
+  .section-heading{margin-bottom:18px}
+  .section-heading h2{font-size:25px}
+  .card{padding:16px;border-radius:10px}
+  .admin-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:14px}
+  .admin-grid .card{padding:12px}
+  .admin-grid .card h3{font-size:15px;line-height:1.3;margin:3px 0 6px}
+  .admin-grid .card p{font-size:11px;line-height:1.4;margin:5px 0 9px}
+  .admin-grid .card button{width:100%;min-height:38px;padding:7px 6px;font-size:11px;line-height:1.25}
+  .admin-section{margin-top:12px;padding:12px}
+  .admin-section h2{font-size:19px;margin:5px 0 9px}
+  .admin-section h3{font-size:15px;margin:12px 0 6px}
+  .admin-section p{font-size:12px;line-height:1.45}
+  .admin-section form{margin-top:8px}
+  .admin-section input,.admin-section select,.admin-section textarea{margin:4px 0 9px;padding:9px 10px}
+  .admin-section button{min-height:40px;padding:8px 11px;font-size:12px}
+  .info-strip,.pathway{gap:9px}
+  .info-box{padding:12px}
+  .info-box strong{font-size:20px}
+  footer{padding:20px 14px}
+}
+@media(max-width:420px){
+  .nav{gap:6px;padding:8px 9px}
+  .nav .brand{font-size:11px;gap:6px}
+  .nav .brand-mark{width:33px;height:33px;flex-basis:33px}
+  .nav .nav-login-link{padding:6px 8px;font-size:10px;min-height:36px}
+  .nav .nav-menu-toggle{padding:6px 7px;font-size:10px;min-height:36px}
+  .hero{padding:34px 13px 30px}
+  .hero h1{font-size:clamp(30px,9vw,42px);letter-spacing:-.8px}
+  .admin-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .admin-grid .card{padding:10px}
+  .admin-grid .card h3{font-size:13px}
+  .admin-grid .card p{font-size:10px}
+  .admin-grid .card button{font-size:10px;padding:7px 4px}
+  .admin-section{padding:10px}
+}
+@media(max-width:350px){
+  .nav .brand span:last-child{max-width:86px;line-height:1.2}
+  .nav .nav-login-link{font-size:9px;padding:5px 6px}
+  .nav .nav-menu-toggle{font-size:9px;padding:5px 6px}
+  .admin-grid{grid-template-columns:1fr}
+}
+
+
+
+/* RTL dashboard responsive layout v4 */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+#rtl-admin-dashboard,
+#rtl-academy-portal,
+#rtl-referee-portal,
+#rtl-admin-grid {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+#rtl-admin-grid.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 14px;
+  width: 100%;
+}
+#rtl-admin-grid > article.card {
+  min-width: 0;
+  height: 100%;
+  padding: 18px;
+  overflow-wrap: anywhere;
+}
+#rtl-admin-grid > article.card h3 {
+  font-size: clamp(16px, 1.7vw, 20px);
+  line-height: 1.4;
+  margin: 0 0 12px;
+}
+#rtl-admin-grid > article.card p {
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0 0 14px;
+}
+#rtl-admin-grid > article.card button {
+  max-width: 100%;
+  white-space: normal;
+}
+.rtl-table-scroll {
+  max-width: 100%;
+}
+
+/* Tablet: two dashboard columns */
+@media (max-width: 1100px) {
+  #rtl-admin-grid.admin-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  #rtl-admin-grid > article.card {
+    padding: 16px;
+  }
+  .nav, .nav-links, .container, main, section {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+/* Phones: one dashboard column and tighter spacing */
+@media (max-width: 600px) {
+  #rtl-admin-grid.admin-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  #rtl-admin-grid > article.card {
+    padding: 14px;
+  }
+  #rtl-admin-grid > article.card h3 {
+    font-size: 17px;
+    margin-bottom: 8px;
+  }
+  #rtl-admin-grid > article.card p {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  #rtl-admin-dashboard > h2 {
+    font-size: 23px;
+    line-height: 1.25;
+  }
+  #rtl-admin-dashboard > p {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+
+/* Keep wide data tables scrollable inside their own panels */
+.rtl-table-scroll,
+.table-wrap,
+.table-responsive {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+
+
+/* RTL tablet and mobile header navigation fix */
+@media (max-width: 1100px) {
+  header, .nav {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  .nav {
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+  }
+  .nav .brand {
+    order: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 7px;
+    font-size: 12px;
+    letter-spacing: .3px;
+  }
+  .nav .brand-mark {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    font-size: 15px;
+  }
+  .nav .brand small {
+    font-size: 8px;
+    letter-spacing: 1.2px;
+  }
+  .nav .nav-login-link {
+    order: 2;
+    flex: 0 0 auto;
+    min-height: 38px;
+    padding: 7px 10px;
+    font-size: 11px;
+  }
+  .nav .nav-menu-toggle {
+    order: 3;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 7px 9px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .nav-links {
+    display: none;
+  }
+  .nav-links.is-open {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 6px 12px 10px;
+    background: rgba(7,27,18,.99);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 12px 24px rgba(0,0,0,.3);
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+  .nav-links.is-open a {
+    display: block;
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    font-size: 13px;
+  }
+  .nav-links.is-open a:last-child {
+    border-bottom: 0;
+  }
+}
+@media (max-width: 420px) {
+  .nav {
+    gap: 6px;
+    padding: 8px 9px;
+  }
+  .nav .nav-login-link {
+    padding: 6px 8px;
+    font-size: 10px;
+    min-height: 36px;
+  }
+  .nav .nav-menu-toggle {
+    padding: 6px 7px;
+    font-size: 10px;
+    min-height: 36px;
+  }
+}
+
+
+
+/* RTL administration overview */
+.rtl-admin-overview { margin: 20px 0 24px; }
+.rtl-admin-overview > h3 { margin: 0 0 12px; font-size: 19px; }
+.rtl-overview-stats { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
+.rtl-stat-card { min-width: 0; padding: 15px; border: 1px solid var(--line); border-radius: 10px; background: rgba(16,43,30,.72); }
+.rtl-stat-card span { display: block; color: var(--muted); font-size: 12px; line-height: 1.4; }
+.rtl-stat-card strong { display: block; margin-top: 7px; font-size: 27px; line-height: 1.15; }
+.rtl-recent-updates { margin-top: 14px; padding: 15px; border: 1px solid var(--line); border-radius: 10px; background: rgba(16,43,30,.45); }
+.rtl-recent-updates h3 { margin: 0 0 10px; font-size: 16px; }
+.rtl-update-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 9px 0; border-top: 1px solid rgba(255,255,255,.08); font-size: 13px; }
+.rtl-update-row:first-child { border-top: 0; }
+.rtl-update-row span:last-child { color: var(--muted); text-align: right; white-space: nowrap; }
+@media (max-width: 1100px) { .rtl-overview-stats { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; } }
+@media (max-width: 600px) {
+  .rtl-admin-overview { margin: 15px 0 18px; }
+  .rtl-stat-card { padding: 12px; }
+  .rtl-stat-card span { font-size: 11px; }
+  .rtl-stat-card strong { font-size: 23px; }
+  .rtl-recent-updates { padding: 12px; }
+  .rtl-update-row { font-size: 12px; }
+}
+
+
+
+/* RTL official crest and homepage identity */
+.brand-crest {
+  display: block;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  object-fit: contain;
+}
+.hero-identity {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+.hero-crest {
+  display: block;
+  width: 112px;
+  height: 112px;
+  object-fit: contain;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 10px 22px rgba(0,0,0,.28));
+}
+.hero-edition {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+.edition-label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.hero h1 {
+  max-width: 780px;
+  margin: 8px 0 14px;
+  font-size: clamp(48px, 8vw, 88px);
+  line-height: .98;
+  letter-spacing: -2.8px;
+}
+.hero-supporting-line {
+  margin: 0 0 7px;
+  color: #ffffff;
+  font-size: clamp(16px, 2.2vw, 21px);
+  font-weight: 850;
+  letter-spacing: 2px;
+  line-height: 1.35;
+}
+.hero-official-slogan {
+  margin: 0 0 16px;
+  color: #f08ba0;
+  font-size: clamp(14px, 1.8vw, 17px);
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+.hero-description {
+  margin-top: 0;
+}
+@media (max-width: 1100px) {
+  .brand-crest {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+  }
+  .hero-crest {
+    width: 96px;
+    height: 96px;
+  }
+}
+@media (max-width: 600px) {
+  .brand-crest {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+  .hero {
+    padding-top: 46px;
+    padding-bottom: 44px;
+  }
+  .hero-identity {
+    gap: 13px;
+    margin-bottom: 17px;
+  }
+  .hero-crest {
+    width: 76px;
+    height: 76px;
+  }
+  .edition-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+  }
+  .hero h1 {
+    font-size: clamp(42px, 12vw, 60px);
+    line-height: 1;
+    letter-spacing: -1.5px;
+  }
+  .hero-supporting-line {
+    font-size: 14px;
+    letter-spacing: 1.1px;
+  }
+  .hero-official-slogan {
+    font-size: 13px;
+    letter-spacing: .6px;
+  }
+}
+
+
+
+/* RTL cinematic homepage hero refinement */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(72px, 9vw, 118px) 24px clamp(76px, 9vw, 112px);
+  background:
+    radial-gradient(ellipse at 82% 46%, rgba(180, 0, 22, .22), transparent 34%),
+    radial-gradient(ellipse at 12% 100%, rgba(12, 92, 55, .18), transparent 38%),
+    linear-gradient(112deg, #020b14 0%, #061522 53%, #020b12 100%);
+  border-bottom: 1px solid rgba(236, 67, 91, .24);
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: .18;
+  background-image:
+    linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 48%, #000 100%);
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: max(2%, calc((100vw - 1180px) / 2));
+  top: 50%;
+  width: clamp(260px, 36vw, 470px);
+  aspect-ratio: 1;
+  transform: translateY(-50%) rotate(-8deg);
+  background: url("rtl-crest.webp") center / contain no-repeat;
+  opacity: .20;
+  filter: drop-shadow(0 0 38px rgba(204, 0, 35, .32));
+  pointer-events: none;
+}
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+}
+.hero-inner > * {
+  max-width: min(690px, 68%);
+}
+.hero-identity {
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.hero-crest {
+  width: 104px;
+  height: 104px;
+  padding: 5px;
+  border: 1px solid rgba(255,255,255,.20);
+  border-radius: 50%;
+  background: rgba(0,0,0,.24);
+  box-shadow: 0 0 0 7px rgba(255,255,255,.025), 0 14px 34px rgba(0,0,0,.36);
+}
+.hero-edition .eyebrow {
+  color: #f18ba0;
+  font-size: 13px;
+  letter-spacing: 3.5px;
+}
+.edition-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 3px;
+  color: #d9e1e8;
+  background: rgba(255,255,255,.045);
+  font-size: 10px;
+  letter-spacing: 2.2px;
+}
+.hero h1 {
+  position: relative;
+  max-width: 680px;
+  margin: 0 0 22px;
+  color: #fff;
+  font-size: clamp(54px, 7.5vw, 92px);
+  font-weight: 950;
+  line-height: .91;
+  letter-spacing: -3.8px;
+  text-shadow: 0 8px 35px rgba(0,0,0,.28);
+}
+.hero h1::after {
+  content: "";
+  display: block;
+  width: 84px;
+  height: 5px;
+  margin-top: 22px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #c90025, #f08ba0);
+}
+.hero-supporting-line {
+  margin: 0 0 9px;
+  color: #f3f5f7;
+  font-size: clamp(15px, 1.9vw, 20px);
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+.hero-official-slogan {
+  margin: 0 0 20px;
+  color: #f18ba0;
+  font-size: clamp(15px, 1.7vw, 18px);
+  font-weight: 850;
+  letter-spacing: .7px;
+}
+.hero-description {
+  max-width: 600px !important;
+  color: #aab7c1 !important;
+  font-size: clamp(15px, 1.55vw, 18px) !important;
+  line-height: 1.75;
+}
+.hero .actions {
+  margin-top: 30px;
+  gap: 14px;
+}
+.hero .btn {
+  min-height: 48px;
+  padding: 14px 22px;
+  border-radius: 5px;
+  font-weight: 800;
+  letter-spacing: .2px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.18);
+}
+@media (max-width: 700px) {
+  .hero {
+    padding: 58px 18px 58px;
+  }
+  .hero::after {
+    right: -92px;
+    top: 42%;
+    width: 280px;
+    opacity: .10;
+  }
+  .hero-inner > * {
+    max-width: 100%;
+  }
+  .hero-identity {
+    margin-bottom: 24px;
+  }
+  .hero-crest {
+    width: 82px;
+    height: 82px;
+  }
+  .hero h1 {
+    font-size: clamp(46px, 11.5vw, 68px);
+    line-height: .96;
+    letter-spacing: -2px;
+    margin-bottom: 18px;
+  }
+  .hero h1::after {
+    width: 62px;
+    height: 4px;
+    margin-top: 16px;
+  }
+  .hero-supporting-line {
+    font-size: 13px;
+    letter-spacing: 1.2px;
+    line-height: 1.5;
+  }
+  .hero-official-slogan {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .hero-description {
+    font-size: 14px !important;
+    line-height: 1.7;
+  }
+}
+
+</style>
+
+<style>
+/* Competition identity editor and dynamic hero label */
+.hero-tournament-name {
+  color: #fff;
+  font-size: clamp(13px, 1.6vw, 18px);
+  font-weight: 850;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+#rtl-competition-settings-form {
+  display: grid;
+  gap: 10px;
+  max-width: 680px;
+}
+#rtl-competition-settings-form input {
+  width: 100%;
+  max-width: 100%;
+}
+#rtl-competition-settings-preview {
+  color: #f08ba0;
+  font-weight: 800;
+  letter-spacing: .5px;
+}
+@media(max-width:600px) {
+  .hero-tournament-name { font-size: 12px; letter-spacing: 1px; }
+}
+</style>
+
+<style>
+
+/* RTL hero headline: single-line condensed football typography */
+.rtl-hero-title {
+  width: 100%;
+  max-width: none !important;
+  white-space: nowrap;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif !important;
+  font-stretch: condensed;
+  font-style: italic;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(27px, 8.2vw, 88px) !important;
+  line-height: 1;
+  letter-spacing: .015em !important;
+  margin: 8px 0 22px !important;
+  text-shadow: 0 8px 35px rgba(0,0,0,.28);
+}
+@media (min-width: 900px) {
+  .rtl-hero-title {
+    font-size: clamp(58px, 6.4vw, 92px) !important;
+  }
+}
+@media (max-width: 600px) {
+  .rtl-hero-title {
+    font-size: clamp(26px, 8.2vw, 48px) !important;
+    letter-spacing: 0 !important;
+    margin-bottom: 18px !important;
+  }
+}
+@media (max-width: 360px) {
+  .rtl-hero-title {
+    font-size: 25px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1000,7 +1658,7 @@ input, select, textarea { font-size: 16px; }
   <nav class="nav" style="position:relative">
     <button type="button" class="nav-menu-toggle" id="rtl-mobile-menu-toggle" aria-expanded="false" aria-controls="rtl-main-nav-links">☰ Menu</button>
     <a class="brand" href="#home">
-      <span class="brand-mark">RTL</span>
+      <img class="brand-crest" src="rtl-crest.webp" alt="Rising Talents League official crest">
       <span>RISING TALENTS<small>LEAGUE</small></span>
     </a>
     <div class="nav-links" id="rtl-main-nav-links">
@@ -1009,18 +1667,31 @@ input, select, textarea { font-size: 16px; }
       <a href="#fixtures">Fixtures</a>
       <a href="#live">Live Centre</a>
       <a href="#rtl-live-chat">Live Chat</a>
+      <a href="#rtl-newsroom">Newsroom</a>
+      <a href="#rtl-promotions">Partners</a>
+      <a href="#rtl-hosted-events">Tournaments</a>
       <a href="#fan-vote">Fan Vote</a>
       <a href="#pathway">Talent Pathway</a>
     </div>
+    <a class="nav-login-link" id="rtl-header-access" href="#staff-login">Admin Login</a>
   </nav>
 </header>
 
 <main>
 <section class="hero" id="home">
   <div class="hero-inner">
-    <div class="eyebrow">The 2027 Season</div>
-    <h1>DEVELOPING TALENT.<br>BUILDING FUTURES.</h1>
-    <p>
+    <div class="hero-identity">
+      <img class="hero-crest" src="rtl-crest.webp" alt="Rising Talents League official crest">
+      <div class="hero-edition">
+        <div class="hero-tournament-name" id="rtl-hero-tournament-name">Rising Talents League</div>
+        <div class="eyebrow" id="rtl-hero-season-label">THE 2027 SEASON</div>
+        <span class="edition-label" id="rtl-hero-edition-label">1ST EDITION</span>
+      </div>
+    </div>
+    <h1 class="rtl-hero-title">UNITED BY FOOTBALL.</h1>
+    <p class="hero-supporting-line">ONE PLATFORM FOR EVERY TALENT.</p>
+    <p class="hero-official-slogan">Developing Talent. Building Futures.</p>
+    <p class="hero-description">
       A competitive youth football platform created to identify,
       develop and promote outstanding football talent across
       the Upper River Region of The Gambia.
@@ -1219,6 +1890,26 @@ input, select, textarea { font-size: 16px; }
   </div>
 </section>
 
+<section id="rtl-newsroom"><div class="container"><div class="section-heading"><div class="eyebrow">Official Media</div><h2>RTL Newsroom</h2><p>Official news, match reports, interviews and media updates from Rising Talents League.</p></div><div id="rtl-public-news-list" class="grid"><article class="card"><h3>Loading newsroom</h3><p>Published RTL coverage will appear here.</p></article></div><article class="card" style="max-width:760px;margin:24px auto"><h3>Apply for media accreditation</h3><p>Journalists and media organisations may submit an application for review.</p><form id="rtl-journalist-application-form"><label>Full name</label><input id="rtl-journalist-name" required maxlength="120"><label>Organisation</label><input id="rtl-journalist-org" maxlength="160"><label>Email</label><input id="rtl-journalist-email" type="email" required maxlength="200"><label>Phone</label><input id="rtl-journalist-phone" maxlength="60"><label>Portfolio or work sample URL</label><input id="rtl-journalist-portfolio" type="url"><button type="submit">Submit accreditation application</button><p id="rtl-journalist-application-feedback" role="status"></p></form></article>
+<article class="card" style="max-width:900px;margin:24px auto">
+  <h3>Accredited Journalist Desk</h3>
+  <p>Sign in with your approved RTL journalist account to prepare stories and submit them for editorial review.</p>
+  <div id="rtl-journalist-desk-status" role="status">Sign in with your accredited journalist account to open your desk.</div>
+  <form id="rtl-journalist-login-form"><label>Journalist email</label><input id="rtl-journalist-login-email" type="email" required><label>Password</label><input id="rtl-journalist-login-password" type="password" required><button type="submit">Sign in to Journalist Desk</button><button type="button" id="rtl-journalist-logout" hidden>Sign out</button></form>
+  <form id="rtl-journalist-article-form" hidden>
+    <label>Article title</label><input id="rtl-article-title" required maxlength="180">
+    <label>URL slug</label><input id="rtl-article-slug" required maxlength="200" pattern="[a-z0-9-]+">
+    <label>Short summary</label><textarea id="rtl-article-summary" maxlength="500" required></textarea>
+    <label>Article type</label><select id="rtl-article-type"><option value="news">News</option><option value="match_report">Match report</option><option value="interview">Interview</option><option value="press_release">Press release</option><option value="feature">Feature</option></select>
+    <label>Division</label><select id="rtl-article-division"><option value="">Not division-specific</option><option>U17</option><option>U19</option></select>
+    <label>Full article</label><textarea id="rtl-article-body" required minlength="80" rows="10"></textarea>
+    <label>Cover image URL (optional)</label><input id="rtl-article-cover" type="url">
+    <button type="submit">Save and submit for review</button><p id="rtl-article-feedback" role="status"></p>
+  </form>
+  <h4>Your submitted stories</h4><div id="rtl-journalist-my-articles">Sign in to view your stories.</div>
+</article></div></section>
+<section id="rtl-promotions"><div class="container"><div class="section-heading"><div class="eyebrow">Partners & Visibility</div><h2>Promotions</h2><p>Official partners, academy spotlights and campaign opportunities.</p></div><div id="rtl-public-promotions" class="grid"><article class="card"><h3>Loading partners</h3><p>Official partner profiles and active campaigns will appear here.</p></article></div></div></section>
+<section id="rtl-hosted-events"><div class="container"><div class="section-heading"><div class="eyebrow">Majesty Group Events</div><h2>Hosted Tournaments</h2><p>Independent tournaments organised through the Majesty Group platform. These events operate separately from the RTL league competition.</p></div><div id="rtl-public-hosted-tournaments" class="grid"><article class="card"><h3>Loading tournaments</h3><p>Public hosted tournaments will appear here.</p></article></div><article class="card" style="margin-top:24px"><h3>Register your team</h3><p>Submit your team for an upcoming Majesty Group hosted tournament. Management will review your application.</p><form id="rtl-hosted-team-registration"><label for="rtl-register-tournament">Tournament</label><select id="rtl-register-tournament" required><option value="">Select an open tournament</option></select><label for="rtl-register-team-name">Team name</label><input id="rtl-register-team-name" required maxlength="100"><label for="rtl-register-contact-name">Contact person</label><input id="rtl-register-contact-name" required maxlength="100"><label for="rtl-register-contact-phone">Contact phone</label><input id="rtl-register-contact-phone" required maxlength="40"><button type="submit">Submit team registration</button><p id="rtl-hosted-registration-feedback" role="status"></p></form></article></div></section>
 <section id="pathway">
   <div class="container">
     <div class="section-heading">
@@ -1336,6 +2027,20 @@ input, select, textarea { font-size: 16px; }
   <h2>RTL Administration Dashboard</h2>
   <p>Welcome to the Rising Talents League management centre.</p><button type="button" onclick="rtlLogout()">Sign out</button>
 
+  <section id="rtl-admin-overview" class="rtl-admin-overview" aria-label="League overview">
+    <h3>League Overview</h3>
+    <div class="rtl-overview-stats">
+      <article class="rtl-stat-card"><span>Registered Academies</span><strong id="rtl-stat-academies">Loading</strong></article>
+      <article class="rtl-stat-card"><span>Registered Players</span><strong id="rtl-stat-players">Loading</strong></article>
+      <article class="rtl-stat-card"><span>Pending Approvals</span><strong id="rtl-stat-pending">Loading</strong></article>
+      <article class="rtl-stat-card"><span>Upcoming Fixtures</span><strong id="rtl-stat-fixtures">Loading</strong></article>
+    </div>
+    <div class="rtl-recent-updates">
+      <h3>Recent Academy Updates</h3>
+      <div id="rtl-recent-updates-list" aria-live="polite">Loading recent applications...</div>
+    </div>
+  </section>
+
   <div class="admin-grid" id="rtl-admin-grid">
     <article class="card">
       <h3>Academy Management</h3>
@@ -1386,7 +2091,31 @@ input, select, textarea { font-size: 16px; }
     Manage Players
   </button>
     </article>
+    <article class="card"><h3>Newsroom & Journalists</h3><p>Review accreditation and publish official coverage.</p><button type="button" onclick="openRTLSection('newsroom')">Manage Newsroom</button></article>
+    <article class="card"><h3>Partners & Promotions</h3><p>Manage partner profiles and advertising campaigns.</p><button type="button" onclick="openRTLSection('promotions')">Manage Promotions</button></article>
+    <article class="card"><h3>Hosted Tournaments</h3><p>Create independent Majesty Group events.</p><button type="button" onclick="openRTLSection('hosted')">Manage Tournaments</button></article>
+    <article class="card" id="rtl-competition-settings-card"><h3>Competition Settings</h3><p>Update the season year, edition and tournament name shown across the public website.</p><button type="button" onclick="openRTLSection('competition-settings')">Edit Competition Identity</button></article>
   </div>
+      <section id="rtl-competition-settings-section" class="admin-section" hidden>
+        <h2>Competition Settings</h2>
+        <p>Change the public competition identity when a new season, edition or tournament is announced. Changes update the homepage labels for every visitor.</p>
+        <button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button>
+        <form id="rtl-competition-settings-form" class="card" style="margin-top:18px">
+          <label for="rtl-setting-tournament-name">Tournament name</label>
+          <input id="rtl-setting-tournament-name" type="text" maxlength="100" required placeholder="Rising Talents League">
+          <label for="rtl-setting-season-year">Season year</label>
+          <input id="rtl-setting-season-year" type="number" min="2000" max="2100" step="1" required>
+          <label for="rtl-setting-edition-number">Edition number</label>
+          <input id="rtl-setting-edition-number" type="number" min="1" max="999" step="1" required>
+          <button type="submit">Save Competition Settings</button>
+          <p id="rtl-competition-settings-feedback" role="status" aria-live="polite"></p>
+        </form>
+        <div class="card" style="margin-top:14px">
+          <h3>Public display preview</h3>
+          <p id="rtl-competition-settings-preview">Loading current competition identity...</p>
+        </div>
+      </section>
+
       <section id="rtl-player-registration" class="admin-section" hidden>
   <h2>Player Registration</h2>
   <p>Register and manage players for your academy.</p>
@@ -1598,7 +2327,7 @@ input, select, textarea { font-size: 16px; }
 <section class="section" id="public-lineups-section"><div class="container"><h2>Confirmed Starting XIs</h2><p>Starting line-ups shared by academies and approved by RTL.</p><div id="public-lineups-list"><p>No public line-ups confirmed yet.</p></div></div></section>
 <div id="rtl-referee-portal" class="admin-section" hidden>
   <div class="card"><h2>Referee Portal</h2><p id="referee-portal-welcome"></p><button type="button" onclick="rtlLogout()">Sign out</button></div>
-  <div class="card"><h3>My Assigned Fixtures</h3><div id="referee-fixture-list">Loading...</div></div>
+  <div class="card"><h3>My Assigned RTL Fixtures</h3><div id="referee-fixture-list">Loading...</div></div><div class="card"><h3>My Assigned Hosted Tournament Fixtures</h3><div id="referee-hosted-fixture-list">Loading...</div></div>
   <div class="card"><h3>Submit Match Report</h3>
     <form id="referee-report-form">
       <label>Assigned fixture</label><select id="referee-fixture" required><option value="">Select fixture</option></select>
@@ -1629,6 +2358,22 @@ input, select, textarea { font-size: 16px; }
   <form id="rtl-staff-form"><label>Full name</label><input id="staff-full-name" required autocomplete="name"><label>Email address</label><input id="staff-email" type="email" required autocomplete="email"><label>Temporary password</label><input id="staff-password" type="password" minlength="10" required autocomplete="new-password"><label>Role</label><select id="staff-role" required><option value="academy_staff">Academy Staff</option><option value="referee">Referee</option><option value="rtl_staff">RTL Staff</option><option value="admin">Administrator</option></select><label>Academy, required for Academy Staff</label><select id="staff-academy"><option value="">No academy</option></select><button type="submit">Create Staff Account</button><p id="staff-message"></p></form>
   <h3>Registered Staff</h3><div id="rtl-admin-staff-list">Loading...</div>
 </div>
+<div id="rtl-newsroom-section" class="card admin-section" hidden>
+  <h2>Newsroom & Journalist Desk</h2><button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button>
+  <h3>Journalist applications</h3><div id="rtl-journalist-applications">Loading...</div>
+  <h3>Articles awaiting review</h3><div id="rtl-news-review-list">Loading...</div>
+</div>
+<div id="rtl-promotions-section" class="card admin-section" hidden>
+  <h2>Partners & Promotions</h2><button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button>
+  <form id="rtl-partner-form"><h3>Add partner</h3><label>Partner name</label><input id="rtl-partner-name" required><label>Description</label><textarea id="rtl-partner-description"></textarea><label>Logo URL</label><input id="rtl-partner-logo" type="url"><label>Website URL</label><input id="rtl-partner-website" type="url"><label>Contact email</label><input id="rtl-partner-email" type="email"><button type="submit">Save Partner</button><p id="rtl-partner-feedback" role="status"></p></form>
+  <div id="rtl-partner-list">Loading partners...</div>
+  <form id="rtl-campaign-form"><h3>Create campaign</h3><label>Campaign title</label><input id="rtl-campaign-title" required><label>Partner</label><select id="rtl-campaign-partner"><option value="">No linked partner</option></select><label>Placement</label><select id="rtl-campaign-placement"><option value="homepage_banner">Homepage banner</option><option value="news_sidebar">Newsroom</option><option value="match_centre">Match Centre</option><option value="academy_spotlight">Academy spotlight</option><option value="player_spotlight">Player spotlight</option><option value="tournament_page">Tournament page</option></select><label>Image URL</label><input id="rtl-campaign-image" type="url"><label>Target URL</label><input id="rtl-campaign-target" type="url"><button type="submit">Save Campaign</button><p id="rtl-campaign-feedback" role="status"></p></form><div id="rtl-campaign-list">Loading campaigns...</div>
+</div>
+<div id="rtl-hosted-section" class="card admin-section" hidden>
+  <h2>Majesty Group Hosted Tournaments</h2><button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button>
+  <form id="rtl-hosted-form"><label>Tournament name</label><input id="rtl-hosted-name" required><label>Slug</label><input id="rtl-hosted-slug" required pattern="[a-z0-9-]+"><label>Description</label><textarea id="rtl-hosted-description"></textarea><label>Venue</label><input id="rtl-hosted-venue"><label>Start date</label><input id="rtl-hosted-start" type="date"><label>End date</label><input id="rtl-hosted-end" type="date"><label>Competition format</label><select id="rtl-hosted-format"><option value="groups_knockout">Groups and knockout</option><option value="round_robin">Round robin</option><option value="single_elimination">Single elimination</option><option value="double_elimination">Double elimination</option></select><label>Status</label><select id="rtl-hosted-status"><option value="draft">Draft</option><option value="registration">Registration open</option><option value="scheduled">Scheduled</option></select><label><input id="rtl-hosted-public" type="checkbox"> Publish public tournament page</label><button type="submit">Create Tournament</button><p id="rtl-hosted-feedback" role="status"></p></form>
+  <h3>Existing hosted tournaments</h3><div id="rtl-hosted-list">Loading tournaments...</div><h3>Team registrations and tournament operations</h3><div id="rtl-hosted-operations">Select a tournament above to manage its teams and fixtures.</div>
+</div>
 
 </main>
 
@@ -1643,8 +2388,8 @@ input, select, textarea { font-size: 16px; }
 <script>
 function openRTLSection(section) {
   const role = sessionStorage.getItem('rtlStaffRole');
-  const managerSections = ['academies','entries','fixtures','lineups','matches','chat'];
-  const adminOnly = ['staff','players'];
+  const managerSections = ['academies','entries','fixtures','lineups','matches','chat','newsroom','promotions','hosted'];
+  const adminOnly = ['staff','players','competition-settings'];
   if (managerSections.includes(section) && !['admin','rtl_staff'].includes(role)) {
     alert('This section is reserved for RTL administrators.');
     return;
@@ -1657,7 +2402,7 @@ function openRTLSection(section) {
     dashboard:'rtl-admin-grid', fixtures:'rtl-fixtures-section',
     players:'rtl-player-registration', academies:'rtl-academies-section',
     entries:'rtl-entries-section', lineups:'rtl-lineups-section',
-    matches:'rtl-matches-section', chat:'rtl-chat-section', staff:'rtl-staff-section'
+    matches:'rtl-matches-section', chat:'rtl-chat-section', staff:'rtl-staff-section', newsroom:'rtl-newsroom-section', promotions:'rtl-promotions-section', hosted:'rtl-hosted-section', 'competition-settings':'rtl-competition-settings-section'
   };
   document.getElementById('rtl-admin-dashboard').hidden = false;
   document.getElementById('rtl-academy-portal').hidden = true;
@@ -1671,8 +2416,12 @@ function openRTLSection(section) {
   if(section==='lineups') loadAdminLineups();
   if(section==='matches') loadAdminMatchCentre();
   if(section==='chat') loadRTLChatModeration();
+  if(section==='newsroom') loadRTLNewsroomAdmin();
+  if(section==='promotions') loadRTLPromotionsAdmin();
+  if(section==='hosted') loadRTLHostedAdmin();
   if(section==='staff') loadAdminStaff();
   if(section==='players') loadPlayerAcademies();
+  if(section==='competition-settings') loadRTLCompetitionSettings();
 }
 
 function showDivision(division, button) {
@@ -1777,8 +2526,8 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 }
 
 
-const RTL_DATA_URL = 'https://ewbasvidrguepjklexbd.supabase.co';
-const RTL_DATA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3YmFzdmlkcmd1ZXBqa2xleGJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU0OTUwOTQsImV4cCI6MjExMTA3MTA5NH0.RyQy6dY0AIj5KOoOQ9l_vzerJGQV0sj0FyLlIIEGRTE';
+const RTL_DATA_URL = 'https://vjzoxzcezkowxtbbcncx.supabase.co';
+const RTL_DATA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqem94emNlemtvd3h0YmJjbmN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2OTA1MDYsImV4cCI6MjExMTI2NjUwNn0.DSc1x0HmQa0IAP2mKbtSPPgXX-IDpM9wh9LTxBcS6Nc';
 
 const rtlHeaders = {
   apikey: RTL_DATA_KEY,
@@ -2005,7 +2754,7 @@ async function rtlFetchPublicLineups(fixtureIds){
 async function rtlFetchMatchEvents(fixtureIds) {
   if(!fixtureIds?.length) return {};
   const query=fixtureIds.map(id=>encodeURIComponent(id)).join(',');
-  const response=await fetch(`${RTL_DATA_URL}/rest/v1/rtl_match_events?select=*&fixture_id=in.(${query})&order=minute.asc,id.asc`,{headers:rtlHeaders});
+  const response=await fetch(`${RTL_DATA_URL}/rest/v1/rtl_match_events?select=*&fixture_id=in.(${query})&order=minute.asc,created_at.asc`,{headers:rtlHeaders});
   if(!response.ok) throw new Error(await response.text());
   const events=await response.json();
   return events.reduce((group,event)=>{(group[event.fixture_id] ||= []).push(event);return group;},{});
@@ -2305,6 +3054,10 @@ if (!loginResponse.ok) {
       sessionStorage.setItem('rtlStaffName', staffRecords[0].full_name);
 sessionStorage.setItem('rtlStaffAcademyId', staffRecords[0].academy_id || '');
       message.textContent = `Welcome ${staffRecords[0].full_name}.`;
+      // Release the mobile keyboard before hiding the login form.
+      if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+      }
       document.getElementById('rtl-login-form').hidden = true;
       showRTLPortal(staffRecords[0].role);
     } catch (error) {
@@ -2677,6 +3430,124 @@ async function loadRTLAcademies() {
 const rtlApi = (table, query='') => `${RTL_DATA_URL}/rest/v1/${table}${query}`;
 function rtlAuthHeaders(extra={}) { const token=sessionStorage.getItem('rtlAccessToken'); return {apikey:RTL_DATA_KEY, Authorization:`Bearer ${token||RTL_DATA_KEY}`, ...extra}; }
 async function rtlRequest(table, query='', options={}) { const r=await fetch(rtlApi(table,query),{...options,headers:rtlAuthHeaders(options.headers||{})}); if(!r.ok) throw new Error(await r.text()); const t=await r.text(); return t?JSON.parse(t):null; }
+
+// Public competition identity. The public site reads the single settings row.
+// Only the main Admin is offered the editor, and Supabase RLS enforces write access.
+function rtlOrdinal(value) {
+  const n = Number(value);
+  const mod100 = n % 100;
+  const suffix = mod100 >= 11 && mod100 <= 13 ? 'th' : ({1:'st',2:'nd',3:'rd'}[n % 10] || 'th');
+  return `${n}${suffix}`;
+}
+function rtlApplyCompetitionIdentity(settings) {
+  if (!settings) return;
+  const name = String(settings.tournament_name || 'Rising Talents League');
+  const year = Number(settings.season_year) || 2027;
+  const edition = Number(settings.edition_number) || 1;
+  const nameNode = document.getElementById('rtl-hero-tournament-name');
+  const yearNode = document.getElementById('rtl-hero-season-label');
+  const editionNode = document.getElementById('rtl-hero-edition-label');
+  if (nameNode) nameNode.textContent = name;
+  if (yearNode) yearNode.textContent = `THE ${year} SEASON`;
+  if (editionNode) editionNode.textContent = `${rtlOrdinal(edition)} EDITION`;
+  const regHeading = document.querySelector('#public-academy-registration h3');
+  if (regHeading) regHeading.textContent = `Academy Registration for the ${year} Season`;
+  const competitionEyebrow = document.querySelector('#competition .section-heading .eyebrow');
+  if (competitionEyebrow) competitionEyebrow.textContent = `${year} Competition`;
+  document.title = `${name} | ${year}`;
+  const preview = document.getElementById('rtl-competition-settings-preview');
+  if (preview) preview.textContent = `${name} · ${year} Season · ${rtlOrdinal(edition)} Edition`;
+}
+async function loadRTLPublicCompetitionIdentity() {
+  try {
+    const rows = await rtlRequest('rtl_site_settings', '?select=tournament_name,season_year,edition_number&setting_key=eq.main&limit=1');
+    if (rows && rows[0]) rtlApplyCompetitionIdentity(rows[0]);
+  } catch (error) {
+    console.warn('Competition identity settings are unavailable. Using the page defaults.', error);
+  }
+}
+async function loadRTLCompetitionSettings() {
+  const form = document.getElementById('rtl-competition-settings-form');
+  const feedback = document.getElementById('rtl-competition-settings-feedback');
+  if (!form) return;
+  if (sessionStorage.getItem('rtlStaffRole') !== 'admin' || !sessionStorage.getItem('rtlAccessToken')) {
+    if (feedback) feedback.textContent = 'Only the main RTL Admin can change these settings.';
+    return;
+  }
+  try {
+    const rows = await rtlRequest('rtl_site_settings', '?select=tournament_name,season_year,edition_number&setting_key=eq.main&limit=1');
+    const current = rows?.[0] || {tournament_name:'Rising Talents League',season_year:2027,edition_number:1};
+    document.getElementById('rtl-setting-tournament-name').value = current.tournament_name || 'Rising Talents League';
+    document.getElementById('rtl-setting-season-year').value = current.season_year || 2027;
+    document.getElementById('rtl-setting-edition-number').value = current.edition_number || 1;
+    rtlApplyCompetitionIdentity(current);
+    if (feedback) feedback.textContent = '';
+  } catch (error) {
+    if (feedback) feedback.textContent = 'Unable to load settings. Apply the supplied Supabase SQL migration first. ' + error.message;
+  }
+}
+document.getElementById('rtl-competition-settings-form')?.addEventListener('submit', async event => {
+  event.preventDefault();
+  const feedback = document.getElementById('rtl-competition-settings-feedback');
+  try {
+    if (sessionStorage.getItem('rtlStaffRole') !== 'admin' || !sessionStorage.getItem('rtlAccessToken')) {
+      throw new Error('Only the main RTL Admin can save competition identity settings.');
+    }
+    const tournament_name = document.getElementById('rtl-setting-tournament-name').value.trim();
+    const season_year = Number(document.getElementById('rtl-setting-season-year').value);
+    const edition_number = Number(document.getElementById('rtl-setting-edition-number').value);
+    if (!tournament_name) throw new Error('Enter the tournament name.');
+    if (!Number.isInteger(season_year) || season_year < 2000 || season_year > 2100) throw new Error('Enter a valid season year between 2000 and 2100.');
+    if (!Number.isInteger(edition_number) || edition_number < 1 || edition_number > 999) throw new Error('Enter an edition number between 1 and 999.');
+    if (feedback) feedback.textContent = 'Saving settings...';
+    const body = {setting_key:'main', tournament_name, season_year, edition_number, updated_at:new Date().toISOString()};
+    await rtlRequest('rtl_site_settings', '?on_conflict=setting_key', {
+      method:'POST',
+      headers:{'Content-Type':'application/json', Prefer:'resolution=merge-duplicates,return=minimal'},
+      body:JSON.stringify(body)
+    });
+    rtlApplyCompetitionIdentity(body);
+    if (feedback) feedback.textContent = 'Competition identity saved and published on the public homepage.';
+  } catch (error) {
+    if (feedback) feedback.textContent = 'Save failed: ' + error.message;
+  }
+});
+loadRTLPublicCompetitionIdentity();
+
+
+async function loadRTLAdminOverview() {
+  const setValue = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
+  const today = new Date().toISOString().slice(0, 10);
+  const tasks = [
+    ['rtl-stat-academies', () => rtlRequest('rtl_academies', '?select=id&registration_status=eq.approved')],
+    ['rtl-stat-players', () => rtlRequest('rtl_players', '?select=id')],
+    ['rtl-stat-pending', () => rtlRequest('rtl_academy_applications', '?select=id&application_status=eq.pending')],
+    ['rtl-stat-fixtures', () => rtlRequest('rtl_fixtures', `?select=id&season=eq.2027&match_date=gte.${today}`)]
+  ];
+  await Promise.all(tasks.map(async ([id, request]) => {
+    try { const rows = await request(); setValue(id, String(rows.length)); }
+    catch (error) { console.error('RTL overview metric failed:', id, error); setValue(id, 'N/A'); }
+  }));
+
+  const list = document.getElementById('rtl-recent-updates-list');
+  if (!list) return;
+  try {
+    const rows = await rtlRequest('rtl_academy_applications', '?select=academy_name,application_status,submitted_at&order=submitted_at.desc&limit=5');
+    if (!rows.length) { list.textContent = 'No academy applications have been submitted yet.'; return; }
+    list.innerHTML = rows.map(row => `
+      <div class="rtl-update-row">
+        <span>${rtlSafe(row.academy_name || 'Academy application')}</span>
+        <span>${rtlSafe(row.application_status || 'Status unavailable')} · ${row.submitted_at ? rtlSafe(new Date(row.submitted_at).toLocaleDateString()) : 'Date unavailable'}</span>
+      </div>`).join('');
+  } catch (error) {
+    console.error('RTL recent updates failed:', error);
+    list.textContent = 'Recent academy updates are unavailable right now.';
+  }
+}
+
 function showRTLPortal(role) {
   document.getElementById('rtl-admin-dashboard').hidden = !['admin','rtl_staff'].includes(role);
   document.getElementById('rtl-academy-portal').hidden = role!=='academy_staff';
@@ -2686,14 +3557,39 @@ function showRTLPortal(role) {
     if(staffCard) staffCard.hidden = role !== 'admin';
     const playerCard = document.querySelector('#rtl-admin-grid article:has(button[onclick*="openRTLSection(\'players\')"])');
     if(playerCard) playerCard.hidden = role !== 'admin';
+    const settingsCard = document.getElementById('rtl-competition-settings-card');
+    if(settingsCard) settingsCard.hidden = role !== 'admin';
     const heading = document.querySelector('#rtl-admin-dashboard h2');
     if(heading) heading.textContent = role === 'admin' ? 'RTL Administration Dashboard' : 'RTL Staff Operations Dashboard';
     openRTLSection('dashboard');
+    loadRTLAdminOverview();
   }
   else if(role==='academy_staff') loadAcademyPortal();
   else if(role==='referee') loadRefereePortal();
   else { alert('This staff role is not supported. Contact RTL administration.'); rtlLogout(); }
-  document.getElementById('staff-login').scrollIntoView({behavior:'smooth',block:'start'});
+  const portalTarget = role === 'admin' || role === 'rtl_staff'
+    ? document.getElementById('rtl-admin-dashboard')
+    : role === 'academy_staff'
+      ? document.getElementById('rtl-academy-portal')
+      : document.getElementById('rtl-referee-portal');
+  const headerAccess = document.getElementById('rtl-header-access');
+  if (headerAccess && portalTarget) {
+    headerAccess.href = `#${portalTarget.id}`;
+    headerAccess.textContent = 'Dashboard';
+    headerAccess.setAttribute('aria-label', 'Open staff dashboard');
+  }
+  if (portalTarget) {
+    // Mobile browsers may reset the viewport while the on-screen keyboard closes.
+    // Scroll after that transition, then focus the portal heading without another scroll.
+    setTimeout(() => {
+      portalTarget.scrollIntoView({behavior:'smooth', block:'start'});
+      const heading = portalTarget.querySelector('h2, h3');
+      if (heading) {
+        heading.setAttribute('tabindex', '-1');
+        heading.focus({preventScroll:true});
+      }
+    }, 400);
+  }
 }
 function rtlLogout(){ sessionStorage.clear(); location.reload(); }
 async function loadAdminEntries(){
@@ -2748,7 +3644,8 @@ async function loadAdminLineups(){const box=document.getElementById('rtl-admin-l
 function rtlRenderAdminMatchEvents(events,fixtureId){
   if(!events?.length) return '<p class="rtl-event-empty">No match events recorded yet.</p>';
   const types=[['goal','Goal'],['own_goal','Own Goal'],['penalty','Penalty'],['yellow_card','Yellow card'],['red_card','Red card'],['second_yellow','Second yellow'],['substitution','Substitution'],['penalty_missed','Penalty missed'],['half_time','Half-time'],['full_time','Full-time']];
-  return `<div class="rtl-event-list">${events.map(event=>{
+  const ordered=[...events].sort((a,b)=>Number(a.minute??0)-Number(b.minute??0)||((['half_time','full_time'].includes(String(a.event_type).toLowerCase())?1:0)-(['half_time','full_time'].includes(String(b.event_type).toLowerCase())?1:0))||String(a.created_at||'').localeCompare(String(b.created_at||'')));
+  return `<div class="rtl-event-list">${ordered.map(event=>{
     const [icon,label]=rtlEventPresentation(event);
     const options=types.map(([value,title])=>`<option value="${value}" ${String(event.event_type).toLowerCase()===value?'selected':''}>${title}</option>`).join('');
     return `<div class="rtl-admin-event-item">
@@ -2804,12 +3701,17 @@ async function rtlSyncMatchStatusFromEvents(fixtureId){
   const eventMap=await rtlFetchMatchEvents([fixtureId]);
   const events=eventMap[fixtureId]||[];
   const types=events.map(item=>String(item.event_type||'').toLowerCase());
-  const status=types.includes('full_time')?'completed':types.includes('half_time')?'halftime':null;
-  if(status){
-    await rtlRequest('rtl_fixtures',`?id=eq.${encodeURIComponent(fixtureId)}`,{
-      method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},
-      body:JSON.stringify({status})
-    });
+  const currentRows=await rtlRequest('rtl_fixtures',`?id=eq.${encodeURIComponent(fixtureId)}&select=id,status`);
+  const currentStatus=String(currentRows?.[0]?.status||'scheduled').toLowerCase();
+  let status=currentStatus;
+  if(currentStatus!=='postponed'&&currentStatus!=='cancelled'){
+    status=types.includes('full_time')?'completed':types.includes('half_time')?'halftime':events.some(e=>!['full_time','half_time'].includes(String(e.event_type||'').toLowerCase()))?'live':'scheduled';
+    if(status!==currentStatus){
+      await rtlRequest('rtl_fixtures',`?id=eq.${encodeURIComponent(fixtureId)}`,{
+        method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},
+        body:JSON.stringify({status})
+      });
+    }
   }
   return {events,status};
 }
@@ -2947,14 +3849,14 @@ async function loadAdminMatchCentre(){
       <div class="rtl-live-team">${rtlSafe(x.away_academy||'Away team')}</div></div>
       ${['live','halftime'].includes(String(x.status||'').toLowerCase())?`<div class="rtl-admin-live-minute" data-rtl-live-minute data-match-date="${rtlSafe(x.match_date)}" data-kick-off="${rtlSafe(x.kick_off)}" data-match-status="${rtlSafe(x.status)}">${rtlLiveMinute(x)}</div>`:''}
       <p>${rtlSafe(x.match_date)} | ${rtlSafe(x.kick_off)} | ${rtlSafe(x.venue||'Venue TBC')}</p>
-      <div class="rtl-quick-event-panel">
+      ${['completed','cancelled','postponed'].includes(String(x.status||'').toLowerCase())?`<p class="rtl-event-empty">${String(x.status).toLowerCase()==='completed'?'Match completed. Live controls are closed.':'Match controls are unavailable while this fixture is '+rtlSafe(x.status)+'.'}</p>`:`<div class="rtl-quick-event-panel">
         <h4>Quick Match Actions</h4>
         <div class="rtl-quick-event-grid">
           ${[['goal','⚽ Goal'],['penalty','⚽ Penalty scored'],['own_goal','↩ Own goal'],['yellow_card','🟨 Yellow card'],['red_card','🟥 Red card'],['substitution','🔄 Substitution'],['penalty_missed','✖ Penalty missed'],['half_time','Ⅱ Half-time'],['full_time','■ Full-time']].map(([type,label])=>`<button type="button" class="rtl-quick-event-btn" onclick="rtlOpenQuickEvent('${x.id}','${type}')">${label}</button>`).join('')}
         </div>
-      </div>
+      </div>`}
       <details class="rtl-admin-details rtl-live-events"><summary>Recorded events (${(adminEventMap[x.id]||[]).length})</summary><div class="rtl-admin-details-body">${rtlRenderAdminMatchEvents(adminEventMap[x.id]||[],x.id)}</div></details>
-      <details class="rtl-admin-details rtl-add-event-details" id="rtl-add-event-${x.id}"><summary>Add event details</summary><div class="rtl-admin-details-body">
+      ${['completed','cancelled','postponed'].includes(String(x.status||'').toLowerCase())?'':`<details class="rtl-admin-details rtl-add-event-details" id="rtl-add-event-${x.id}"><summary>Add event details</summary><div class="rtl-admin-details-body">
         <form class="rtl-admin-event-form" onsubmit="rtlAddMatchEvent(event,'${x.id}')">
           <label>Event type<select name="event_type" required><option value="goal">Goal</option><option value="own_goal">Own Goal</option><option value="penalty">Penalty scored</option><option value="yellow_card">Yellow card</option><option value="red_card">Red card</option><option value="second_yellow">Second yellow</option><option value="substitution">Substitution</option><option value="penalty_missed">Penalty missed</option><option value="half_time">Half-time</option><option value="full_time">Full-time</option></select></label>
           <label>Minute<input name="minute" type="number" min="0" max="130" required placeholder="e.g. 67"></label>
@@ -2962,8 +3864,8 @@ async function loadAdminMatchCentre(){
           <label class="event-wide">Player / event details<input name="player_name" maxlength="160" placeholder="Player name, or OFF: Name | ON: Name"></label>
           <button type="submit">Save Match Event</button><p class="rtl-event-message" aria-live="polite"></p>
         </form>
-      </div></details>
-      <details class="rtl-admin-details rtl-manual-score-details"><summary>Manual score correction and match status</summary><div class="rtl-admin-details-body">
+      </div></details>`}
+      ${['completed','cancelled','postponed'].includes(String(x.status||'').toLowerCase())?'':`<details class="rtl-admin-details rtl-manual-score-details"><summary>Manual score correction and match status</summary><div class="rtl-admin-details-body">
         <form class="rtl-admin-score-form" onsubmit="rtlSaveLiveScore(event,'${x.id}')">
           <h4 class="rtl-score-form-title">Backup score correction</h4>
           <label><span class="rtl-score-team-label">${rtlSafe(x.home_academy||'Home Team')}<small>Home score</small></span><input class="rtl-score-input" name="home_score" type="number" min="0" step="1" value="${rtlSafe(x.home_score??0)}" required></label>
@@ -2971,7 +3873,7 @@ async function loadAdminMatchCentre(){
           <label class="event-wide">Match status<select name="status">${[['scheduled','Scheduled'],['live','Live'],['halftime','Half-time'],['completed','Full-time'],['postponed','Postponed'],['cancelled','Cancelled']].map(([value,label])=>`<option value="${value}" ${String(x.status||'scheduled').toLowerCase()===value?'selected':''}>${label}</option>`).join('')}</select></label>
           <button type="submit">Save Manual Correction</button><p class="rtl-event-message" aria-live="polite"></p>
         </form>
-      </div></details>
+      </div></details>`}
     </article>`;
     box.innerHTML=liveRows.length?`<h3>Live Now</h3>${liveRows.map(card).join('')}`:'';
     box.innerHTML+=(otherRows.length?`<h3>Other Matches</h3>${otherRows.map(card).join('')}`:'');
@@ -3196,7 +4098,7 @@ document.getElementById('academy-lineup-form')?.addEventListener('submit',async 
  }catch(err){msg.textContent='Line-up submission failed: '+err.message;}
 });
 async function rtlCurrentUserId(){const r=await fetch(`${RTL_DATA_URL}/auth/v1/user`,{headers:rtlAuthHeaders()});if(!r.ok)throw new Error('Session expired. Sign in again.');const u=await r.json();return u.id;}
-async function loadRefereePortal(){document.getElementById('referee-portal-welcome').textContent='Welcome '+(sessionStorage.getItem('rtlStaffName')||'');try{const uid=await rtlCurrentUserId();const [assigned,publicFixtures,reports]=await Promise.all([rtlRequest('rtl_fixtures',`?select=*&season=eq.2027&referee_user_id=eq.${uid}&order=match_date.asc`),rtlRequest('rtl_public_fixtures','?select=*'),rtlRequest('rtl_referee_reports',`?select=*&referee_user_id=eq.${uid}&order=submitted_at.desc`)]);const fixtures=assigned.map(f=>({...f,...(publicFixtures.find(p=>p.id===f.id)||{})}));const list=document.getElementById('referee-fixture-list'),sel=document.getElementById('referee-fixture');list.innerHTML=fixtures.length?fixtures.map(f=>`<div class="team-slot"><strong>${rtlSafe(f.division)} | ${rtlSafe(f.home_academy||f.home_entry_id)} vs ${rtlSafe(f.away_academy||f.away_entry_id)}</strong><p>${rtlSafe(f.match_date)} ${rtlSafe(f.kick_off)} | ${rtlSafe(f.venue)}</p></div>`).join(''):'<p>No fixtures assigned to your account.</p>';sel.innerHTML='<option value="">Select assigned fixture</option>'+fixtures.map(f=>`<option value="${f.id}">${rtlSafe(f.match_date)} ${rtlSafe(f.home_academy||f.home_entry_id)} vs ${rtlSafe(f.away_academy||f.away_entry_id)}</option>`).join('');document.getElementById('referee-report-history').innerHTML=reports.length?reports.map(r=>`<p>${rtlSafe(r.submitted_at)} | ${rtlSafe(r.status)} | ${rtlSafe(r.home_score)}-${rtlSafe(r.away_score)}</p>`).join(''):'No reports submitted yet.';}catch(e){document.getElementById('referee-fixture-list').textContent='Unable to load assigned fixtures: '+e.message;}}
+async function loadRefereePortal(){document.getElementById('referee-portal-welcome').textContent='Welcome '+(sessionStorage.getItem('rtlStaffName')||'');try{const uid=await rtlCurrentUserId();const [assigned,publicFixtures,reports,hostedAssigned]=await Promise.all([rtlRequest('rtl_fixtures',`?select=*&season=eq.2027&referee_user_id=eq.${uid}&order=match_date.asc`),rtlRequest('rtl_public_fixtures','?select=*'),rtlRequest('rtl_referee_reports',`?select=*&referee_user_id=eq.${uid}&order=submitted_at.desc`),rtlRequest('rtl_hosted_referee_fixtures','?select=*&order=match_date.asc.nullslast,kick_off.asc')]);const fixtures=assigned.map(f=>({...f,...(publicFixtures.find(p=>p.id===f.id)||{})}));const list=document.getElementById('referee-fixture-list'),sel=document.getElementById('referee-fixture');list.innerHTML=fixtures.length?fixtures.map(f=>`<div class="team-slot"><strong>${rtlSafe(f.division)} | ${rtlSafe(f.home_academy||f.home_entry_id)} vs ${rtlSafe(f.away_academy||f.away_entry_id)}</strong><p>${rtlSafe(f.match_date)} ${rtlSafe(f.kick_off)} | ${rtlSafe(f.venue)}</p></div>`).join(''):'<p>No fixtures assigned to your account.</p>';sel.innerHTML='<option value="">Select assigned fixture</option>'+fixtures.map(f=>`<option value="${f.id}">${rtlSafe(f.match_date)} ${rtlSafe(f.home_academy||f.home_entry_id)} vs ${rtlSafe(f.away_academy||f.away_entry_id)}</option>`).join('');const hostedList=document.getElementById('referee-hosted-fixture-list');if(hostedList)hostedList.innerHTML=hostedAssigned.length?hostedAssigned.map(f=>`<div class="team-slot"><strong>${rtlSafe(f.tournament_name)} | ${rtlSafe(f.home_team)} vs ${rtlSafe(f.away_team)}</strong><p>${rtlSafe(f.match_date||'Date TBC')} ${rtlSafe(f.kick_off||'')} | ${rtlSafe(f.venue||'Venue TBC')} | ${rtlSafe(f.stage)} | ${rtlSafe(f.status)}</p></div>`).join(''):'<p>No hosted tournament fixtures assigned to your account.</p>';document.getElementById('referee-report-history').innerHTML=reports.length?reports.map(r=>`<p>${rtlSafe(r.submitted_at)} | ${rtlSafe(r.status)} | ${rtlSafe(r.home_score)}-${rtlSafe(r.away_score)}</p>`).join(''):'No reports submitted yet.';}catch(e){document.getElementById('referee-fixture-list').textContent='Unable to load assigned fixtures: '+e.message;}}
 document.getElementById('referee-report-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.getElementById('referee-report-message');try{const uid=await rtlCurrentUserId(),fixture=document.getElementById('referee-fixture').value;await rtlRequest('rtl_referee_reports','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({fixture_id:fixture,referee_user_id:uid,home_score:Number(document.getElementById('referee-home-score').value),away_score:Number(document.getElementById('referee-away-score').value),report_text:document.getElementById('referee-report-text').value.trim(),status:'submitted',submitted_at:new Date().toISOString()})});const eventLines=document.getElementById('referee-events').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);const events=eventLines.map(line=>{const p=line.split(',').map(x=>x.trim());return {fixture_id:fixture,minute:Number(p[0]),event_type:p[1],player_name:p[2]||null,academy_entry_id:p[3]||null};});if(events.length)await rtlRequest('rtl_match_events','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(events)});msg.textContent='Match report submitted.';e.target.reset();loadRefereePortal();}catch(err){msg.textContent='Report submission failed: '+err.message;}});
 
 // Public academy applications. The database UUID is also the private application reference.
@@ -3327,6 +4229,7 @@ const RTL_CHAT_TOKEN_KEY='rtlChatSenderToken';
 function rtlChatSenderToken(){let token=localStorage.getItem(RTL_CHAT_TOKEN_KEY);if(!token){token=crypto.randomUUID();localStorage.setItem(RTL_CHAT_TOKEN_KEY,token);}return token;}
 function rtlChatTime(value){const date=new Date(value);return Number.isNaN(date.getTime())?'':date.toLocaleString([], {dateStyle:'short',timeStyle:'short'});}
 function rtlChatIsModerator(){return ['admin','rtl_staff'].includes(sessionStorage.getItem('rtlStaffRole'))&&!!sessionStorage.getItem('rtlAccessToken');}
+function rtlUpdateChatComposerAccess(){const form=document.getElementById('rtl-chat-form');const nickname=document.getElementById('rtl-chat-nickname');const note=document.getElementById('rtl-chat-signin-note');const signedIn=!!sessionStorage.getItem('rtlAccessToken');if(form)form.hidden=!signedIn;if(nickname)nickname.hidden=!signedIn;if(note){note.hidden=signedIn;note.textContent='Registered RTL users must sign in through the staff portal before sending messages.';}}
 function rtlChatMessageMarkup(row,moderator=false){return `<article class="rtl-chat-message" data-chat-id="${rtlSafe(row.id)}"><div class="rtl-chat-message-head"><strong>${rtlSafe(row.nickname)}</strong><time>${rtlSafe(rtlChatTime(row.created_at))}</time></div><p>${rtlSafe(row.message_text)}</p>${moderator?`<div class="rtl-chat-message-actions"><button type="button" onclick="rtlModerateChatMessage('${rtlSafe(row.id)}','delete')">Delete</button><button type="button" onclick="rtlModerateChatMessage('${rtlSafe(row.id)}','block','${rtlSafe(row.sender_token)}')">Block sender</button></div>`:''}</article>`;}
 async function rtlLoadChat(){const box=document.getElementById('rtl-chat-messages');const status=document.getElementById('rtl-chat-status');if(!box)return;try{const rows=await rtlRequest('rtl_chat_messages','?select=id,nickname,message_text,message_type,created_at,sender_token,is_deleted&order=created_at.desc&limit=100');const visibleRows=rows.filter(x=>x.is_deleted!==true);const announcements=visibleRows.filter(x=>x.message_type==='announcement');const messages=visibleRows.filter(x=>x.message_type==='message').reverse();const latest=announcements[0];const announcementBox=document.getElementById('rtl-chat-announcement');if(announcementBox)announcementBox.innerHTML=latest?`<strong>RTL Official Announcement</strong><p>${rtlSafe(latest.message_text)}</p><small>${rtlSafe(rtlChatTime(latest.created_at))}</small>`:'<strong>RTL Official Announcement</strong><p>No official announcements yet.</p>';const history=document.getElementById('rtl-public-announcement-history');if(history)history.innerHTML='<h3>Announcement History</h3>'+(announcements.length?announcements.map(x=>`<article class="rtl-announcement-history-item"><small>${rtlSafe(rtlChatTime(x.created_at))}</small><p>${rtlSafe(x.message_text)}</p></article>`).join(''):'<p class="rtl-event-empty">No previous announcements.</p>');box.innerHTML=messages.length?messages.map(x=>rtlChatMessageMarkup(x,false)).join(''):'<p class="rtl-event-empty">No messages yet. Start the conversation.</p>';box.scrollTop=box.scrollHeight;if(status)status.textContent=`${messages.length} recent messages · Updates automatically`; }catch(error){if(status)status.textContent='Chat is temporarily unavailable. Please try again shortly.';box.innerHTML='<p class="rtl-event-empty">Unable to load chat messages.</p>';console.error('RTL chat load error:',error);}}
 document.getElementById('rtl-chat-nickname')?.addEventListener('change',e=>localStorage.setItem('rtlChatNickname',e.target.value.trim().slice(0,24)));
@@ -3335,6 +4238,7 @@ document.getElementById('rtl-chat-form')?.addEventListener('submit',async e=>{e.
 async function loadRTLChatModeration(){const box=document.getElementById('rtl-chat-admin-list');if(!box||!rtlChatIsModerator())return;box.textContent='Loading messages...';try{const rows=await rtlRequest('rtl_chat_messages','?select=id,nickname,message_text,message_type,created_at,sender_token,is_deleted&order=created_at.desc&limit=100');const visible=rows.filter(x=>x.is_deleted!==true);const announcements=visible.filter(x=>x.message_type==='announcement');const history=document.getElementById('rtl-chat-announcement-history');if(history)history.innerHTML=announcements.length?announcements.map(x=>`<article class="rtl-announcement-history-item"><small>${rtlSafe(rtlChatTime(x.created_at))}</small><p>${rtlSafe(x.message_text)}</p></article>`).join(''):'<p>No announcements published yet.</p>';box.innerHTML=rows.length?rows.map(x=>rtlChatMessageMarkup(x,true)).join(''):'<p>No chat messages yet.</p>';}catch(error){box.textContent='Unable to load chat moderation: '+error.message;}}
 async function rtlModerateChatMessage(id,action,senderToken){if(!rtlChatIsModerator()){alert('You are not authorised to moderate chat.');return;}if(action==='delete'){if(!confirm('Delete this message?'))return;try{await rtlRequest('rtl_chat_messages',`?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({is_deleted:true,deleted_by:await rtlCurrentUserId()})});await Promise.all([loadRTLChatModeration(),rtlLoadChat()]);}catch(error){alert('Unable to delete message: '+error.message);}}else if(action==='block'){if(!confirm('Block this participant from sending further messages?'))return;try{await rtlRequest('rtl_chat_bans','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({sender_token:senderToken,blocked_by:await rtlCurrentUserId()})});await rtlRequest('rtl_chat_messages',`?sender_token=eq.${encodeURIComponent(senderToken)}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({is_deleted:true,deleted_by:await rtlCurrentUserId()})});await Promise.all([loadRTLChatModeration(),rtlLoadChat()]);}catch(error){alert('Unable to block participant: '+error.message);}}}
 document.getElementById('rtl-chat-announcement-form')?.addEventListener('submit',async e=>{e.preventDefault();const feedback=document.getElementById('rtl-chat-admin-feedback');if(!rtlChatIsModerator()){feedback.textContent='You are not authorised to publish announcements.';return;}const text=document.getElementById('rtl-chat-announcement-input').value.trim();if(!text)return;try{await rtlRequest('rtl_chat_messages','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({sender_token:rtlChatSenderToken(),nickname:'RTL Administration',message_text:text,message_type:'announcement'})});document.getElementById('rtl-chat-announcement-input').value='';feedback.textContent='Official announcement published.';await Promise.all([loadRTLChatModeration(),rtlLoadChat()]);}catch(error){feedback.textContent='Unable to publish announcement: '+error.message;}});
+rtlUpdateChatComposerAccess();
 rtlLoadChat();
 window.setInterval(()=>{if(document.visibilityState==='visible')rtlLoadChat();},5000);
 
@@ -3404,6 +4308,113 @@ async function rtlEnablePushNotifications() {
   }catch(error){say('Could not enable notifications: '+error.message);if(button)button.textContent='🔔 Enable Match Notifications';}
   finally{if(button)button.disabled=false;}
 }
+
+
+// RTL platform operations: newsroom, partner campaigns and independent hosted events.
+function rtlEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function rtlRequireManager(){if(!['admin','rtl_staff'].includes(sessionStorage.getItem('rtlStaffRole'))||!sessionStorage.getItem('rtlAccessToken'))throw new Error('Admin or RTL Staff sign-in required.');}
+async function loadRTLNewsroomAdmin(){const apps=document.getElementById('rtl-journalist-applications'),articles=document.getElementById('rtl-news-review-list');try{rtlRequireManager();const [a,n]=await Promise.all([rtlRequest('rtl_journalist_applications','?select=id,full_name,organisation,email,phone,portfolio_url,status,created_at&order=created_at.desc'),rtlRequest('rtl_news_articles','?select=id,title,summary,article_type,status,created_at,author_id&status=in.(submitted,approved)&order=created_at.desc')]);apps.innerHTML=a.length?a.map(x=>`<article class="card"><b>${rtlEsc(x.full_name)}</b><p>${rtlEsc(x.organisation)} · ${rtlEsc(x.email)} · ${rtlEsc(x.phone)}</p><p>Status: ${rtlEsc(x.status)}</p>${x.portfolio_url?`<a href="${rtlEsc(x.portfolio_url)}" target="_blank" rel="noopener">Portfolio</a>`:''}<p>${sessionStorage.getItem('rtlStaffRole')==='admin'?`<button type="button" onclick="rtlSetJournalistApplication('${x.id}','approved')">Approve & create login</button>`:''} <button type="button" onclick="rtlSetJournalistApplication('${x.id}','rejected')">Reject</button></p></article>`).join(''):'<p>No applications.</p>';articles.innerHTML=n.length?n.map(x=>`<article class="card"><b>${rtlEsc(x.title)}</b><p>${rtlEsc(x.article_type)} · ${rtlEsc(x.status)}</p><p>${rtlEsc(x.summary)}</p><button type="button" onclick="rtlReviewArticle('${x.id}','published')">Publish</button> <button type="button" onclick="rtlReviewArticle('${x.id}','rejected')">Return to author</button></article>`).join(''):'<p>No articles awaiting review.</p>';}catch(e){apps.textContent=e.message;articles.textContent=e.message;}}
+async function rtlSetJournalistApplication(id,status){
+ try{
+  rtlRequireManager();
+  if(status==='approved'){
+   if(sessionStorage.getItem('rtlStaffRole')!=='admin')throw new Error('Only the main RTL Admin may create journalist login accounts.');
+   if(!confirm('Approve this journalist and automatically create or link their login account?'))return;
+   const token=sessionStorage.getItem('rtlAccessToken');
+   const response=await fetch(`${RTL_DATA_URL}/functions/v1/approve-rtl-journalist`,{method:'POST',headers:{apikey:RTL_DATA_KEY,Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({application_id:id})});
+   const result=await response.json();
+   if(!response.ok)throw new Error(result.error||'Journalist account provisioning failed.');
+   alert(result.message+(result.existing_account?' Existing account linked.':' Please ask the journalist to check their email for the invitation.'));
+  }else{
+   await rtlRequest('rtl_journalist_applications',`?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({status:'rejected',reviewed_by:await rtlCurrentUserId(),reviewed_at:new Date().toISOString()})});
+  }
+  await loadRTLNewsroomAdmin();
+ }catch(e){alert('Unable to update application: '+e.message);}
+}
+async function rtlReviewArticle(id,status){try{rtlRequireManager();await rtlRequest('rtl_news_articles',`?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({status,published_at:status==='published'?new Date().toISOString():null,reviewed_by:await rtlCurrentUserId(),reviewed_at:new Date().toISOString()})});await loadRTLNewsroomAdmin();}catch(e){alert('Unable to review article: '+e.message);}}
+async function loadRTLPromotionsAdmin(){try{rtlRequireManager();const [partners,campaigns]=await Promise.all([rtlRequest('rtl_promotion_partners','?select=*&order=name.asc'),rtlRequest('rtl_promotion_campaigns','?select=*,rtl_promotion_partners(name)&order=created_at.desc')]);document.getElementById('rtl-partner-list').innerHTML=partners.map(p=>`<article class="card"><b>${rtlEsc(p.name)}</b><p>${rtlEsc(p.description)}</p><button type="button" onclick="rtlTogglePartner('${p.id}',${!p.active})">${p.active?'Deactivate':'Activate'}</button></article>`).join('')||'<p>No partners yet.</p>';document.getElementById('rtl-campaign-partner').innerHTML='<option value="">No linked partner</option>'+partners.map(p=>`<option value="${p.id}">${rtlEsc(p.name)}</option>`).join('');document.getElementById('rtl-campaign-list').innerHTML=campaigns.map(c=>`<article class="card"><b>${rtlEsc(c.title)}</b><p>${rtlEsc(c.placement)} · ${c.active?'Active':'Inactive'}</p><button type="button" onclick="rtlToggleCampaign('${c.id}',${!c.active})">${c.active?'Pause':'Activate'}</button></article>`).join('')||'<p>No campaigns yet.</p>';}catch(e){document.getElementById('rtl-partner-list').textContent=e.message;}}
+async function rtlTogglePartner(id,active){try{await rtlRequest('rtl_promotion_partners',`?id=eq.${id}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({active})});loadRTLPromotionsAdmin();}catch(e){alert(e.message);}}
+async function rtlToggleCampaign(id,active){try{await rtlRequest('rtl_promotion_campaigns',`?id=eq.${id}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({active})});loadRTLPromotionsAdmin();}catch(e){alert(e.message);}}
+document.getElementById('rtl-partner-form')?.addEventListener('submit',async e=>{e.preventDefault();const f=document.getElementById('rtl-partner-feedback');try{rtlRequireManager();await rtlRequest('rtl_promotion_partners','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({name:document.getElementById('rtl-partner-name').value.trim(),description:document.getElementById('rtl-partner-description').value.trim(),logo_url:document.getElementById('rtl-partner-logo').value.trim()||null,website_url:document.getElementById('rtl-partner-website').value.trim()||null,contact_email:document.getElementById('rtl-partner-email').value.trim()||null})});f.textContent='Partner saved.';e.target.reset();loadRTLPromotionsAdmin();}catch(x){f.textContent='Unable to save partner: '+x.message;}});
+document.getElementById('rtl-campaign-form')?.addEventListener('submit',async e=>{e.preventDefault();const f=document.getElementById('rtl-campaign-feedback');try{rtlRequireManager();await rtlRequest('rtl_promotion_campaigns','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({title:document.getElementById('rtl-campaign-title').value.trim(),partner_id:document.getElementById('rtl-campaign-partner').value||null,placement:document.getElementById('rtl-campaign-placement').value,image_url:document.getElementById('rtl-campaign-image').value.trim()||null,target_url:document.getElementById('rtl-campaign-target').value.trim()||null,active:false,created_by:await rtlCurrentUserId()})});f.textContent='Campaign saved as inactive. Activate it after review.';e.target.reset();loadRTLPromotionsAdmin();}catch(x){f.textContent='Unable to save campaign: '+x.message;}});
+async function loadRTLHostedAdmin(){const box=document.getElementById('rtl-hosted-list');try{rtlRequireManager();const rows=await rtlRequest('rtl_hosted_tournaments','?select=*&order=start_date.desc.nullslast,created_at.desc');box.innerHTML=rows.map(t=>`<article class="card"><b>${rtlEsc(t.name)}</b><p>${rtlEsc(t.status)} · ${rtlEsc(t.venue)} · ${rtlEsc(t.start_date)}</p><button type="button" onclick="rtlSetHostedVisibility('${t.id}',${!t.is_public})">${t.is_public?'Unpublish':'Publish'}</button> <button type="button" onclick="rtlLoadHostedOperations('${t.id}')">Manage teams and fixtures</button></article>`).join('')||'<p>No hosted tournaments yet.</p>';}catch(e){box.textContent=e.message;}}
+async function rtlLoadHostedOperations(tournamentId){const box=document.getElementById('rtl-hosted-operations');if(!box)return;box.dataset.tournamentId=tournamentId;try{rtlRequireManager();const [teams,fixtures,referees]=await Promise.all([rtlRequest('rtl_hosted_tournament_teams_public',`?select=id,team_name,contact_name,contact_phone,group_name,registration_status&tournament_id=eq.${encodeURIComponent(tournamentId)}&order=team_name.asc`),rtlRequest('rtl_hosted_tournament_fixtures',`?select=id,stage,group_name,home_team_id,away_team_id,match_date,kick_off,venue,status,home_score,away_score,home_penalties,away_penalties,bracket_position,referee_user_id,referee_public_name&tournament_id=eq.${encodeURIComponent(tournamentId)}&order=match_date.asc.nullslast,kick_off.asc`),rtlRequest('rtl_staff','?select=user_id,full_name&active=eq.true&role=eq.referee&order=full_name.asc')]);const teamName=Object.fromEntries(teams.map(t=>[t.id,t.team_name]));box.innerHTML=`<h4>Team registrations</h4>${teams.length?teams.map(t=>`<article class="card"><strong>${rtlEsc(t.team_name)}</strong><p>${rtlEsc(t.contact_name||'')} · ${rtlEsc(t.contact_phone||'')} · ${rtlEsc(t.registration_status)}</p><label>Group <input id="rtl-hosted-group-${t.id}" maxlength="20" value="${rtlEsc(t.group_name||'')}" placeholder="A, B, C..."></label><button type="button" onclick="rtlReviewHostedTeam('${t.id}','approved')">Approve / save group</button> <button type="button" onclick="rtlReviewHostedTeam('${t.id}','rejected')">Reject</button></article>`).join(''):'<p>No team registrations yet.</p>'}<button type="button" onclick="rtlGenerateHostedFixtures('${tournamentId}')">Generate group fixtures</button><section class="card"><h4>Automatic fixture scheduling</h4><p>Schedule all upcoming matches in order. Live and completed matches are left unchanged.</p><div class="form-grid"><label>First match date <input type="date" id="rtl-hosted-schedule-date"></label><label>First kick-off <input type="time" id="rtl-hosted-schedule-time" value="09:00"></label><label>Minutes between matches <input type="number" min="30" step="15" value="90" id="rtl-hosted-schedule-gap"></label><label>Matches per day <input type="number" min="1" max="30" value="8" id="rtl-hosted-schedule-daily"></label><label>Venue <input type="text" id="rtl-hosted-schedule-venue" placeholder="Main stadium"></label></div><button type="button" onclick="rtlAutoScheduleHosted('${tournamentId}')">Schedule upcoming matches</button><p id="rtl-hosted-schedule-feedback" role="status"></p></section><section class="card"><h4>Knockout stage</h4><label>Qualifiers per group <select id="rtl-hosted-qualifiers"><option value="1">1 team</option><option value="2" selected>2 teams</option><option value="3">3 teams</option><option value="4">4 teams</option></select></label><p>For groups plus knockout, finish every group match first. Qualified teams are seeded by group position, then points, goal difference and goals scored.</p><button type="button" onclick="rtlGenerateHostedKnockout('${tournamentId}')">Generate knockout bracket</button> <button type="button" onclick="rtlAdvanceHostedKnockout('${tournamentId}')">Advance completed round</button></section><h4>Fixtures and score control</h4>${fixtures.length?fixtures.map(f=>`<article class="card"><strong>${rtlEsc(teamName[f.home_team_id]||'Home')} vs ${rtlEsc(teamName[f.away_team_id]||'Away')}</strong><p>${rtlEsc(f.group_name||f.stage)} · ${rtlEsc(f.match_date||'Date TBC')} ${rtlEsc(f.kick_off||'')}</p><label>Home score <input type="number" min="0" id="rtl-hscore-${f.id}" value="${f.home_score}"></label><label>Away score <input type="number" min="0" id="rtl-ascore-${f.id}" value="${f.away_score}"></label><label>Home penalties <input type="number" min="0" id="rtl-hpen-${f.id}" value="${f.home_penalties??''}" placeholder="Optional"></label><label>Away penalties <input type="number" min="0" id="rtl-apen-${f.id}" value="${f.away_penalties??''}" placeholder="Optional"></label><label>Match date <input type="date" id="rtl-fdate-${f.id}" value="${f.match_date||''}"></label><label>Kick-off <input type="time" id="rtl-ftime-${f.id}" value="${String(f.kick_off||'').slice(0,5)}"></label><label>Venue <input type="text" id="rtl-fvenue-${f.id}" value="${rtlEsc(f.venue||'')}" placeholder="Venue"></label><label>Referee <select id="rtl-fref-${f.id}"><option value="">Unassigned</option>${referees.map(r=>`<option value="${r.user_id}" ${f.referee_user_id===r.user_id?'selected':''}>${rtlEsc(r.full_name||'Referee')}</option>`).join('')}</select></label><label>Status <select id="rtl-fstatus-${f.id}">${['scheduled','live','halftime','completed','postponed','cancelled'].map(v=>`<option value="${v}" ${f.status===v?'selected':''}>${v}</option>`).join('')}</select></label><button type="button" onclick="rtlSaveHostedFixture('${f.id}')">Save match, schedule and referee</button></article>`).join(''):'<p>Generate group fixtures after approving teams and assigning groups.</p>'}`;}catch(e){box.textContent='Unable to load tournament operations: '+e.message;}}
+async function rtlReviewHostedTeam(id,status){try{rtlRequireManager();const group=document.getElementById('rtl-hosted-group-'+id)?.value.trim().toUpperCase()||null;await rtlRequest('rtl_hosted_tournament_teams',`?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({registration_status:status,group_name:status==='approved'?group:null})});const tournamentId=document.querySelector('#rtl-hosted-operations')?.dataset.tournamentId;if(tournamentId)await rtlLoadHostedOperations(tournamentId);else await loadRTLHostedAdmin();}catch(e){alert('Unable to review team: '+e.message);}}
+async function rtlGenerateHostedFixtures(id){if(!confirm('Generate group fixtures for all approved teams with assigned groups? Existing scheduled fixtures will be replaced. Live and completed matches are protected.'))return;try{rtlRequireManager();const result=await rtlRequest('rpc/rtl_generate_hosted_group_fixtures','',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p_tournament_id:id})});alert(`Fixture generation complete. ${result} matches created.`);await rtlLoadHostedOperations(id);}catch(e){alert('Fixture generation failed: '+e.message);}}
+async function rtlSaveHostedFixture(id){try{rtlRequireManager();const home=Number(document.getElementById('rtl-hscore-'+id).value),away=Number(document.getElementById('rtl-ascore-'+id).value),status=document.getElementById('rtl-fstatus-'+id).value,hp=document.getElementById('rtl-hpen-'+id)?.value,ap=document.getElementById('rtl-apen-'+id)?.value;if(!Number.isInteger(home)||!Number.isInteger(away)||home<0||away<0)throw new Error('Enter valid non-negative scores.');const penalties=v=>v===''?null:Number(v),homePen=penalties(hp),awayPen=penalties(ap);if((homePen===null)!==(awayPen===null)||(homePen!==null&&(!Number.isInteger(homePen)||!Number.isInteger(awayPen)||homePen<0||awayPen<0||homePen===awayPen)))throw new Error('Enter two different, valid penalty scores, or leave both blank.');const referee=document.getElementById('rtl-fref-'+id)?.value||null;const staff=referee?await rtlRequest('rtl_staff',`?select=full_name&user_id=eq.${encodeURIComponent(referee)}&active=eq.true&role=eq.referee`):[];if(referee&&!staff.length)throw new Error('Selected referee is not an active RTL referee.');const body={home_score:home,away_score:away,home_penalties:homePen,away_penalties:awayPen,status,match_date:document.getElementById('rtl-fdate-'+id)?.value||null,kick_off:document.getElementById('rtl-ftime-'+id)?.value||null,venue:document.getElementById('rtl-fvenue-'+id)?.value.trim()||null,referee_user_id:referee,referee_public_name:staff[0]?.full_name||null,referee_assigned_at:referee?new Date().toISOString():null,referee_assigned_by:referee?await rtlCurrentUserId():null};await rtlRequest('rtl_hosted_tournament_fixtures',`?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(body)});alert('Match details saved.');await rtlLoadHostedOperations(document.getElementById('rtl-hosted-operations')?.dataset.tournamentId);}catch(e){alert('Unable to save match: '+e.message);}}
+async function rtlAutoScheduleHosted(id){const feedback=document.getElementById('rtl-hosted-schedule-feedback');try{rtlRequireManager();const dateValue=document.getElementById('rtl-hosted-schedule-date')?.value,timeValue=document.getElementById('rtl-hosted-schedule-time')?.value||'09:00',gap=Number(document.getElementById('rtl-hosted-schedule-gap')?.value||90),perDay=Number(document.getElementById('rtl-hosted-schedule-daily')?.value||8),venue=document.getElementById('rtl-hosted-schedule-venue')?.value.trim()||null;if(!dateValue)throw new Error('Choose the first match date.');if(!Number.isInteger(gap)||gap<30||!Number.isInteger(perDay)||perDay<1||perDay>30)throw new Error('Check the match interval and daily match limit.');const matches=await rtlRequest('rtl_hosted_tournament_fixtures',`?select=id,status&tournament_id=eq.${encodeURIComponent(id)}&status=in.(scheduled,postponed)&order=stage.asc,group_name.asc,bracket_position.asc,created_at.asc`);if(!matches.length){feedback.textContent='No upcoming fixtures need scheduling.';return;}const [hh,mm]=timeValue.split(':').map(Number);if(!Number.isInteger(hh)||!Number.isInteger(mm))throw new Error('Choose a valid first kick-off time.');for(let i=0;i<matches.length;i++){const day=new Date(`${dateValue}T12:00:00`);day.setDate(day.getDate()+Math.floor(i/perDay));const minutes=hh*60+mm+(i%perDay)*gap;if(minutes>=1440)throw new Error('The daily match interval runs past midnight. Increase matches per day or reduce the interval.');const matchDate=`${day.getFullYear()}-${String(day.getMonth()+1).padStart(2,'0')}-${String(day.getDate()).padStart(2,'0')}`,kickOff=`${String(Math.floor(minutes/60)).padStart(2,'0')}:${String(minutes%60).padStart(2,'0')}`;await rtlRequest('rtl_hosted_tournament_fixtures',`?id=eq.${encodeURIComponent(matches[i].id)}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({match_date:matchDate,kick_off:kickOff,venue})});}feedback.textContent=`Scheduled ${matches.length} upcoming matches.`;await rtlLoadHostedOperations(id);}catch(e){feedback.textContent='Scheduling failed: '+e.message;}}
+async function rtlGenerateHostedKnockout(id){try{rtlRequireManager();const q=Number(document.getElementById('rtl-hosted-qualifiers')?.value||2);if(!confirm('Generate the knockout bracket now? This requires all group matches to be completed.'))return;const result=await rtlRequest('rpc/rtl_generate_hosted_knockout','',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p_tournament_id:id,p_qualifiers_per_group:q})});alert(`Knockout bracket created. ${result} matches added.`);await rtlLoadHostedOperations(id);}catch(e){alert('Unable to generate knockout bracket: '+e.message);}}
+async function rtlAdvanceHostedKnockout(id){try{rtlRequireManager();if(!confirm('Advance winners from the completed knockout round?'))return;const result=await rtlRequest('rpc/rtl_advance_hosted_knockout','',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p_tournament_id:id})});alert(result?`${result} next-round matches created.`:'Tournament completed.');await rtlLoadHostedOperations(id);}catch(e){alert('Unable to advance knockout round: '+e.message);}}
+async function rtlSetHostedVisibility(id,is_public){try{await rtlRequest('rtl_hosted_tournaments',`?id=eq.${id}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({is_public})});loadRTLHostedAdmin();}catch(e){alert(e.message);}}
+document.getElementById('rtl-hosted-form')?.addEventListener('submit',async e=>{e.preventDefault();const f=document.getElementById('rtl-hosted-feedback');try{rtlRequireManager();await rtlRequest('rtl_hosted_tournaments','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({name:document.getElementById('rtl-hosted-name').value.trim(),slug:document.getElementById('rtl-hosted-slug').value.trim().toLowerCase(),description:document.getElementById('rtl-hosted-description').value.trim()||null,venue:document.getElementById('rtl-hosted-venue').value.trim()||null,start_date:document.getElementById('rtl-hosted-start').value||null,end_date:document.getElementById('rtl-hosted-end').value||null,format:document.getElementById('rtl-hosted-format').value,status:document.getElementById('rtl-hosted-status').value,is_public:document.getElementById('rtl-hosted-public').checked,created_by:await rtlCurrentUserId()})});f.textContent='Tournament created.';e.target.reset();loadRTLHostedAdmin();}catch(x){f.textContent='Unable to create tournament: '+x.message;}});
+
+
+// Public data surfaces for the newsroom, partners and independent hosted tournaments.
+async function rtlLoadPublicPlatform(){
+  const news=document.getElementById('rtl-public-news-list');
+  const promos=document.getElementById('rtl-public-promotions');
+  const events=document.getElementById('rtl-public-hosted-tournaments');
+  try{
+    const [articles,partners,campaigns,tournaments]=await Promise.all([
+      rtlRequest('rtl_news_articles','?select=id,title,slug,summary,article_type,division,cover_image_url,published_at&status=eq.published&order=published_at.desc&limit=12'),
+      rtlRequest('rtl_promotion_partners','?select=id,name,description,logo_url,website_url&active=eq.true&order=name.asc'),
+      rtlRequest('rtl_promotion_campaigns','?select=id,title,placement,image_url,target_url,partner_id&active=eq.true&order=created_at.desc'),
+      rtlRequest('rtl_hosted_tournaments','?select=id,name,slug,description,venue,start_date,end_date,format,status&is_public=eq.true&order=start_date.asc.nullslast')
+    ]);
+    if(news)news.innerHTML=articles.length?articles.map(a=>`<article class="card">${a.cover_image_url?`<img src="${rtlEsc(a.cover_image_url)}" alt="${rtlEsc(a.title)}" loading="lazy" style="width:100%;max-height:220px;object-fit:cover;border-radius:9px">`:''}<small>${rtlEsc(a.article_type)}${a.division?' · '+rtlEsc(a.division):''} · ${a.published_at?new Date(a.published_at).toLocaleDateString():''}</small><h3>${rtlEsc(a.title)}</h3><p>${rtlEsc(a.summary||'')}</p></article>`).join(''):'<article class="card"><h3>No published stories yet</h3><p>Check back for official RTL news and match reports.</p></article>';
+    if(promos){const phtml=partners.map(p=>`<article class="card">${p.logo_url?`<img src="${rtlEsc(p.logo_url)}" alt="${rtlEsc(p.name)}" loading="lazy" style="max-width:180px;max-height:90px;object-fit:contain">`:''}<h3>${rtlEsc(p.name)}</h3><p>${rtlEsc(p.description||'Official RTL partner')}</p>${p.website_url?`<a href="${rtlEsc(p.website_url)}" target="_blank" rel="noopener noreferrer">Visit partner</a>`:''}</article>`).join('');const chtml=campaigns.map(c=>`<article class="card">${c.image_url?`<img src="${rtlEsc(c.image_url)}" alt="${rtlEsc(c.title)}" loading="lazy" style="width:100%;max-height:180px;object-fit:cover;border-radius:9px">`:''}<h3>${rtlEsc(c.title)}</h3><small>${rtlEsc(c.placement.replaceAll('_',' '))}</small>${c.target_url?`<p><a href="${rtlEsc(c.target_url)}" target="_blank" rel="noopener noreferrer">Learn more</a></p>`:''}</article>`).join('');promos.innerHTML=phtml+chtml||'<article class="card"><h3>Partner with RTL</h3><p>Promotional opportunities for organisations supporting youth football.</p></article>';}
+    const regSelect=document.getElementById('rtl-register-tournament');if(regSelect)regSelect.innerHTML='<option value="">Select an open tournament</option>'+tournaments.filter(t=>t.status==='registration').map(t=>`<option value="${t.id}">${rtlEsc(t.name)}</option>`).join('');
+    if(events)events.innerHTML=tournaments.length?tournaments.map(t=>`<article class="card"><small>${rtlEsc(t.status)} · ${rtlEsc(t.format.replaceAll('_',' '))}</small><h3>${rtlEsc(t.name)}</h3><p>${rtlEsc(t.description||'')}</p><p>${rtlEsc(t.venue||'Venue to be announced')} · ${rtlEsc(t.start_date||'Date to be announced')}${t.end_date?' to '+rtlEsc(t.end_date):''}</p><button type="button" onclick="rtlOpenHostedTournament('${t.id}')">View tournament details</button><div id="rtl-hosted-detail-${t.id}"></div></article>`).join(''):'<article class="card"><h3>No public tournaments listed</h3><p>New Majesty Group hosted events will appear here when published.</p></article>';
+  }catch(e){[news,promos,events].filter(Boolean).forEach(el=>el.innerHTML='<article class="card"><p>Platform information is temporarily unavailable. Please refresh later.</p></article>');console.warn('Public platform load:',e);}
+}
+async function rtlOpenHostedTournament(id){const box=document.getElementById('rtl-hosted-detail-'+id);if(!box)return;box.innerHTML='<p>Loading tournament details...</p>';try{const [teams,fixtures,standings]=await Promise.all([rtlRequest('rtl_hosted_tournament_teams_public',`?select=id,team_name,group_name,registration_status&tournament_id=eq.${encodeURIComponent(id)}&registration_status=eq.approved&order=team_name.asc`),rtlRequest('rtl_hosted_tournament_fixtures',`?select=id,stage,group_name,match_date,kick_off,status,home_score,away_score,home_penalties,away_penalties,home_team_id,away_team_id&tournament_id=eq.${encodeURIComponent(id)}&order=match_date.asc.nullslast,kick_off.asc`),rtlRequest('rtl_hosted_tournament_standings',`?select=team_id,team_name,group_name,played,won,drawn,lost,goals_for,goals_against,goal_difference,points&tournament_id=eq.${encodeURIComponent(id)}&order=group_name.asc,points.desc,goal_difference.desc,goals_for.desc`) ]);const teamNames=Object.fromEntries(teams.map(t=>[t.id,t.team_name]));const groups=[...new Set(standings.map(t=>t.group_name||'Overall'))];const standingsHTML=groups.map(g=>`<h5>${rtlEsc(g)}</h5><div class="table-wrap"><table><thead><tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody>${standings.filter(t=>(t.group_name||'Overall')===g).map(t=>`<tr><td>${rtlEsc(t.team_name)}</td><td>${t.played}</td><td>${t.won}</td><td>${t.drawn}</td><td>${t.lost}</td><td>${t.goals_for}</td><td>${t.goals_against}</td><td>${t.goal_difference}</td><td><strong>${t.points}</strong></td></tr>`).join('')}</tbody></table></div>`).join('');box.innerHTML=`<h4>Participating teams</h4>${teams.length?teams.map(t=>`<p>${rtlEsc(t.team_name)}${t.group_name?' · '+rtlEsc(t.group_name):''}</p>`).join(''):'<p>Team list will be published after approval.</p>'}<h4>Fixtures and results</h4>${fixtures.length?fixtures.map(f=>`<p>${rtlEsc(f.match_date||'TBC')} ${rtlEsc(f.kick_off||'')} · ${rtlEsc(teamNames[f.home_team_id]||'TBC')} ${f.home_score} : ${f.away_score} ${rtlEsc(teamNames[f.away_team_id]||'TBC')}${f.home_penalties!==null&&f.home_penalties!==undefined?' (pens '+f.home_penalties+':'+f.away_penalties+')':''} · ${rtlEsc(f.stage.replaceAll('_',' '))} · ${rtlEsc(f.status)}</p>`).join(''):'<p>Fixtures will be published when ready.'}<h4>Standings</h4>${standingsHTML||'<p>Standings will appear after completed matches.</p>'}`;}catch(e){box.textContent='Tournament details are not available yet.';console.warn(e);}}
+document.getElementById('rtl-hosted-team-registration')?.addEventListener('submit',async e=>{e.preventDefault();const feedback=document.getElementById('rtl-hosted-registration-feedback');try{const tournament_id=document.getElementById('rtl-register-tournament').value;if(!tournament_id)throw new Error('Select an open tournament.');await rtlRequest('rtl_hosted_tournament_teams','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({tournament_id,team_name:document.getElementById('rtl-register-team-name').value.trim(),contact_name:document.getElementById('rtl-register-contact-name').value.trim(),contact_phone:document.getElementById('rtl-register-contact-phone').value.trim(),registration_status:'pending'})});feedback.textContent='Registration submitted. Majesty Group will review your team.';e.target.reset();}catch(err){feedback.textContent='Unable to submit registration: '+err.message;}});
+document.getElementById('rtl-journalist-application-form')?.addEventListener('submit',async e=>{e.preventDefault();const f=document.getElementById('rtl-journalist-application-feedback');try{await rtlRequest('rtl_journalist_applications','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({full_name:document.getElementById('rtl-journalist-name').value.trim(),organisation:document.getElementById('rtl-journalist-org').value.trim()||null,email:document.getElementById('rtl-journalist-email').value.trim(),phone:document.getElementById('rtl-journalist-phone').value.trim()||null,portfolio_url:document.getElementById('rtl-journalist-portfolio').value.trim()||null,status:'pending'})});f.textContent='Application received. The RTL team will review your submission.';e.target.reset();}catch(x){f.textContent='Unable to submit application: '+x.message;}});
+document.getElementById('rtl-journalist-login-form')?.addEventListener('submit',async e=>{
+ e.preventDefault();const status=document.getElementById('rtl-journalist-desk-status');status.textContent='Signing in...';
+ try{
+  const response=await fetch(`${RTL_DATA_URL}/auth/v1/token?grant_type=password`,{method:'POST',headers:{apikey:RTL_DATA_KEY,'Content-Type':'application/json'},body:JSON.stringify({email:document.getElementById('rtl-journalist-login-email').value.trim(),password:document.getElementById('rtl-journalist-login-password').value})});
+  const data=await response.json();if(!response.ok)throw new Error(data.error_description||data.msg||'Sign-in failed.');
+  const check=await fetch(`${RTL_DATA_URL}/rest/v1/rpc/rtl_is_accredited_journalist`,{method:'POST',headers:{apikey:RTL_DATA_KEY,Authorization:`Bearer ${data.access_token}`,'Content-Type':'application/json'},body:'{}'});
+  if(!check.ok||await check.json()!==true)throw new Error('This account does not have approved journalist accreditation.');
+  sessionStorage.setItem('rtlAccessToken',data.access_token);sessionStorage.setItem('rtlStaffRole','journalist');sessionStorage.setItem('rtlStaffName',data.user.email||'Journalist');
+  document.getElementById('rtl-journalist-login-form').hidden=true;document.getElementById('rtl-journalist-logout').hidden=false;await rtlLoadJournalistDesk();
+ }catch(err){status.textContent=err.message;}
+});
+document.getElementById('rtl-journalist-logout')?.addEventListener('click',()=>{sessionStorage.removeItem('rtlAccessToken');sessionStorage.removeItem('rtlStaffRole');sessionStorage.removeItem('rtlStaffName');document.getElementById('rtl-journalist-login-form').hidden=false;document.getElementById('rtl-journalist-logout').hidden=true;document.getElementById('rtl-journalist-article-form').hidden=true;document.getElementById('rtl-journalist-desk-status').textContent='You have signed out.';document.getElementById('rtl-journalist-my-articles').textContent='Sign in to view your stories.';});
+async function rtlLoadJournalistDesk(){
+ const status=document.getElementById('rtl-journalist-desk-status'),form=document.getElementById('rtl-journalist-article-form'),list=document.getElementById('rtl-journalist-my-articles');
+ if(!status||!form||!list)return;
+ const token=sessionStorage.getItem('rtlAccessToken');
+ if(!token){status.textContent='Please sign in first. Only accredited journalist accounts have access.';form.hidden=true;return;}
+ try{
+  const check=await fetch(`${RTL_DATA_URL}/rest/v1/rpc/rtl_is_accredited_journalist`,{method:'POST',headers:rtlAuthHeaders({'Content-Type':'application/json'}),body:'{}'});
+  if(!check.ok)throw new Error('Unable to verify journalist accreditation.');
+  const accredited=await check.json();
+  if(accredited!==true){status.textContent='Your account is not yet accredited as an RTL journalist.';form.hidden=true;return;}
+  const uid=await rtlCurrentUserId();
+  const rows=await rtlRequest('rtl_news_articles',`?select=id,title,article_type,status,created_at,published_at&author_id=eq.${encodeURIComponent(uid)}&order=created_at.desc`);
+  status.textContent='Accreditation verified. You may prepare and submit articles.';form.hidden=false;
+  list.innerHTML=rows.length?rows.map(a=>`<article class="team-slot"><strong>${rtlEsc(a.title)}</strong><p>${rtlEsc(a.article_type)} · ${rtlEsc(a.status)} · ${new Date(a.created_at).toLocaleDateString()}</p></article>`).join(''):'<p>You have not submitted any stories yet.</p>';
+ }catch(e){status.textContent='Journalist desk unavailable: '+e.message;form.hidden=true;}
+}
+document.getElementById('rtl-article-title')?.addEventListener('input',e=>{const slug=document.getElementById('rtl-article-slug');if(!slug.dataset.edited)slug.value=e.target.value.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,180);});
+document.getElementById('rtl-article-slug')?.addEventListener('input',e=>e.target.dataset.edited='1');
+document.getElementById('rtl-journalist-article-form')?.addEventListener('submit',async e=>{
+ e.preventDefault();const msg=document.getElementById('rtl-article-feedback');
+ try{
+  const uid=await rtlCurrentUserId();
+  const title=document.getElementById('rtl-article-title').value.trim();
+  const slugBase=document.getElementById('rtl-article-slug').value.trim().toLowerCase();
+  const slug=`${slugBase}-${crypto.randomUUID().slice(0,8)}`;
+  const payload={author_id:uid,title,slug,summary:document.getElementById('rtl-article-summary').value.trim(),body:document.getElementById('rtl-article-body').value.trim(),article_type:document.getElementById('rtl-article-type').value,division:document.getElementById('rtl-article-division').value||null,cover_image_url:document.getElementById('rtl-article-cover').value.trim()||null,status:'submitted'};
+  await rtlRequest('rtl_news_articles','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(payload)});
+  msg.textContent='Story submitted. It will appear publicly after editorial approval.';e.target.reset();document.getElementById('rtl-article-slug').dataset.edited='';await rtlLoadJournalistDesk();
+ }catch(x){msg.textContent='Unable to submit story: '+x.message;}
+});
+rtlLoadJournalistDesk();
+rtlLoadPublicPlatform();
+
 </script>
 
 </body>
