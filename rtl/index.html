@@ -1408,7 +1408,212 @@ html, body {
   }
 }
 
+
+
+/* RTL cinematic homepage hero refinement */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(72px, 9vw, 118px) 24px clamp(76px, 9vw, 112px);
+  background:
+    radial-gradient(ellipse at 82% 46%, rgba(180, 0, 22, .22), transparent 34%),
+    radial-gradient(ellipse at 12% 100%, rgba(12, 92, 55, .18), transparent 38%),
+    linear-gradient(112deg, #020b14 0%, #061522 53%, #020b12 100%);
+  border-bottom: 1px solid rgba(236, 67, 91, .24);
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: .18;
+  background-image:
+    linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 48%, #000 100%);
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: max(2%, calc((100vw - 1180px) / 2));
+  top: 50%;
+  width: clamp(260px, 36vw, 470px);
+  aspect-ratio: 1;
+  transform: translateY(-50%) rotate(-8deg);
+  background: url("rtl-crest.webp") center / contain no-repeat;
+  opacity: .20;
+  filter: drop-shadow(0 0 38px rgba(204, 0, 35, .32));
+  pointer-events: none;
+}
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+}
+.hero-inner > * {
+  max-width: min(690px, 68%);
+}
+.hero-identity {
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.hero-crest {
+  width: 104px;
+  height: 104px;
+  padding: 5px;
+  border: 1px solid rgba(255,255,255,.20);
+  border-radius: 50%;
+  background: rgba(0,0,0,.24);
+  box-shadow: 0 0 0 7px rgba(255,255,255,.025), 0 14px 34px rgba(0,0,0,.36);
+}
+.hero-edition .eyebrow {
+  color: #f18ba0;
+  font-size: 13px;
+  letter-spacing: 3.5px;
+}
+.edition-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 3px;
+  color: #d9e1e8;
+  background: rgba(255,255,255,.045);
+  font-size: 10px;
+  letter-spacing: 2.2px;
+}
+.hero h1 {
+  position: relative;
+  max-width: 680px;
+  margin: 0 0 22px;
+  color: #fff;
+  font-size: clamp(54px, 7.5vw, 92px);
+  font-weight: 950;
+  line-height: .91;
+  letter-spacing: -3.8px;
+  text-shadow: 0 8px 35px rgba(0,0,0,.28);
+}
+.hero h1::after {
+  content: "";
+  display: block;
+  width: 84px;
+  height: 5px;
+  margin-top: 22px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #c90025, #f08ba0);
+}
+.hero-supporting-line {
+  margin: 0 0 9px;
+  color: #f3f5f7;
+  font-size: clamp(15px, 1.9vw, 20px);
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+.hero-official-slogan {
+  margin: 0 0 20px;
+  color: #f18ba0;
+  font-size: clamp(15px, 1.7vw, 18px);
+  font-weight: 850;
+  letter-spacing: .7px;
+}
+.hero-description {
+  max-width: 600px !important;
+  color: #aab7c1 !important;
+  font-size: clamp(15px, 1.55vw, 18px) !important;
+  line-height: 1.75;
+}
+.hero .actions {
+  margin-top: 30px;
+  gap: 14px;
+}
+.hero .btn {
+  min-height: 48px;
+  padding: 14px 22px;
+  border-radius: 5px;
+  font-weight: 800;
+  letter-spacing: .2px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.18);
+}
+@media (max-width: 700px) {
+  .hero {
+    padding: 58px 18px 58px;
+  }
+  .hero::after {
+    right: -92px;
+    top: 42%;
+    width: 280px;
+    opacity: .10;
+  }
+  .hero-inner > * {
+    max-width: 100%;
+  }
+  .hero-identity {
+    margin-bottom: 24px;
+  }
+  .hero-crest {
+    width: 82px;
+    height: 82px;
+  }
+  .hero h1 {
+    font-size: clamp(46px, 11.5vw, 68px);
+    line-height: .96;
+    letter-spacing: -2px;
+    margin-bottom: 18px;
+  }
+  .hero h1::after {
+    width: 62px;
+    height: 4px;
+    margin-top: 16px;
+  }
+  .hero-supporting-line {
+    font-size: 13px;
+    letter-spacing: 1.2px;
+    line-height: 1.5;
+  }
+  .hero-official-slogan {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .hero-description {
+    font-size: 14px !important;
+    line-height: 1.7;
+  }
+}
+
 </style>
+
+<style>
+/* Competition identity editor and dynamic hero label */
+.hero-tournament-name {
+  color: #fff;
+  font-size: clamp(13px, 1.6vw, 18px);
+  font-weight: 850;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+#rtl-competition-settings-form {
+  display: grid;
+  gap: 10px;
+  max-width: 680px;
+}
+#rtl-competition-settings-form input {
+  width: 100%;
+  max-width: 100%;
+}
+#rtl-competition-settings-preview {
+  color: #f08ba0;
+  font-weight: 800;
+  letter-spacing: .5px;
+}
+@media(max-width:600px) {
+  .hero-tournament-name { font-size: 12px; letter-spacing: 1px; }
+}
+</style>
+
 </head>
 <body>
 
@@ -1441,8 +1646,9 @@ html, body {
     <div class="hero-identity">
       <img class="hero-crest" src="rtl-crest.webp" alt="Rising Talents League official crest">
       <div class="hero-edition">
-        <div class="eyebrow">The 2027 Season</div>
-        <span class="edition-label">1st Edition</span>
+        <div class="hero-tournament-name" id="rtl-hero-tournament-name">Rising Talents League</div>
+        <div class="eyebrow" id="rtl-hero-season-label">THE 2027 SEASON</div>
+        <span class="edition-label" id="rtl-hero-edition-label">1ST EDITION</span>
       </div>
     </div>
     <h1>UNITED BY<br>FOOTBALL.</h1>
@@ -1851,7 +2057,28 @@ html, body {
     <article class="card"><h3>Newsroom & Journalists</h3><p>Review accreditation and publish official coverage.</p><button type="button" onclick="openRTLSection('newsroom')">Manage Newsroom</button></article>
     <article class="card"><h3>Partners & Promotions</h3><p>Manage partner profiles and advertising campaigns.</p><button type="button" onclick="openRTLSection('promotions')">Manage Promotions</button></article>
     <article class="card"><h3>Hosted Tournaments</h3><p>Create independent Majesty Group events.</p><button type="button" onclick="openRTLSection('hosted')">Manage Tournaments</button></article>
+    <article class="card" id="rtl-competition-settings-card"><h3>Competition Settings</h3><p>Update the season year, edition and tournament name shown across the public website.</p><button type="button" onclick="openRTLSection('competition-settings')">Edit Competition Identity</button></article>
   </div>
+      <section id="rtl-competition-settings-section" class="admin-section" hidden>
+        <h2>Competition Settings</h2>
+        <p>Change the public competition identity when a new season, edition or tournament is announced. Changes update the homepage labels for every visitor.</p>
+        <button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button>
+        <form id="rtl-competition-settings-form" class="card" style="margin-top:18px">
+          <label for="rtl-setting-tournament-name">Tournament name</label>
+          <input id="rtl-setting-tournament-name" type="text" maxlength="100" required placeholder="Rising Talents League">
+          <label for="rtl-setting-season-year">Season year</label>
+          <input id="rtl-setting-season-year" type="number" min="2000" max="2100" step="1" required>
+          <label for="rtl-setting-edition-number">Edition number</label>
+          <input id="rtl-setting-edition-number" type="number" min="1" max="999" step="1" required>
+          <button type="submit">Save Competition Settings</button>
+          <p id="rtl-competition-settings-feedback" role="status" aria-live="polite"></p>
+        </form>
+        <div class="card" style="margin-top:14px">
+          <h3>Public display preview</h3>
+          <p id="rtl-competition-settings-preview">Loading current competition identity...</p>
+        </div>
+      </section>
+
       <section id="rtl-player-registration" class="admin-section" hidden>
   <h2>Player Registration</h2>
   <p>Register and manage players for your academy.</p>
@@ -2125,7 +2352,7 @@ html, body {
 function openRTLSection(section) {
   const role = sessionStorage.getItem('rtlStaffRole');
   const managerSections = ['academies','entries','fixtures','lineups','matches','chat','newsroom','promotions','hosted'];
-  const adminOnly = ['staff','players'];
+  const adminOnly = ['staff','players','competition-settings'];
   if (managerSections.includes(section) && !['admin','rtl_staff'].includes(role)) {
     alert('This section is reserved for RTL administrators.');
     return;
@@ -2138,7 +2365,7 @@ function openRTLSection(section) {
     dashboard:'rtl-admin-grid', fixtures:'rtl-fixtures-section',
     players:'rtl-player-registration', academies:'rtl-academies-section',
     entries:'rtl-entries-section', lineups:'rtl-lineups-section',
-    matches:'rtl-matches-section', chat:'rtl-chat-section', staff:'rtl-staff-section', newsroom:'rtl-newsroom-section', promotions:'rtl-promotions-section', hosted:'rtl-hosted-section'
+    matches:'rtl-matches-section', chat:'rtl-chat-section', staff:'rtl-staff-section', newsroom:'rtl-newsroom-section', promotions:'rtl-promotions-section', hosted:'rtl-hosted-section', 'competition-settings':'rtl-competition-settings-section'
   };
   document.getElementById('rtl-admin-dashboard').hidden = false;
   document.getElementById('rtl-academy-portal').hidden = true;
@@ -2157,6 +2384,7 @@ function openRTLSection(section) {
   if(section==='hosted') loadRTLHostedAdmin();
   if(section==='staff') loadAdminStaff();
   if(section==='players') loadPlayerAcademies();
+  if(section==='competition-settings') loadRTLCompetitionSettings();
 }
 
 function showDivision(division, button) {
@@ -3166,6 +3394,90 @@ const rtlApi = (table, query='') => `${RTL_DATA_URL}/rest/v1/${table}${query}`;
 function rtlAuthHeaders(extra={}) { const token=sessionStorage.getItem('rtlAccessToken'); return {apikey:RTL_DATA_KEY, Authorization:`Bearer ${token||RTL_DATA_KEY}`, ...extra}; }
 async function rtlRequest(table, query='', options={}) { const r=await fetch(rtlApi(table,query),{...options,headers:rtlAuthHeaders(options.headers||{})}); if(!r.ok) throw new Error(await r.text()); const t=await r.text(); return t?JSON.parse(t):null; }
 
+// Public competition identity. The public site reads the single settings row.
+// Only the main Admin is offered the editor, and Supabase RLS enforces write access.
+function rtlOrdinal(value) {
+  const n = Number(value);
+  const mod100 = n % 100;
+  const suffix = mod100 >= 11 && mod100 <= 13 ? 'th' : ({1:'st',2:'nd',3:'rd'}[n % 10] || 'th');
+  return `${n}${suffix}`;
+}
+function rtlApplyCompetitionIdentity(settings) {
+  if (!settings) return;
+  const name = String(settings.tournament_name || 'Rising Talents League');
+  const year = Number(settings.season_year) || 2027;
+  const edition = Number(settings.edition_number) || 1;
+  const nameNode = document.getElementById('rtl-hero-tournament-name');
+  const yearNode = document.getElementById('rtl-hero-season-label');
+  const editionNode = document.getElementById('rtl-hero-edition-label');
+  if (nameNode) nameNode.textContent = name;
+  if (yearNode) yearNode.textContent = `THE ${year} SEASON`;
+  if (editionNode) editionNode.textContent = `${rtlOrdinal(edition)} EDITION`;
+  const regHeading = document.querySelector('#public-academy-registration h3');
+  if (regHeading) regHeading.textContent = `Academy Registration for the ${year} Season`;
+  const competitionEyebrow = document.querySelector('#competition .section-heading .eyebrow');
+  if (competitionEyebrow) competitionEyebrow.textContent = `${year} Competition`;
+  document.title = `${name} | ${year}`;
+  const preview = document.getElementById('rtl-competition-settings-preview');
+  if (preview) preview.textContent = `${name} · ${year} Season · ${rtlOrdinal(edition)} Edition`;
+}
+async function loadRTLPublicCompetitionIdentity() {
+  try {
+    const rows = await rtlRequest('rtl_site_settings', '?select=tournament_name,season_year,edition_number&setting_key=eq.main&limit=1');
+    if (rows && rows[0]) rtlApplyCompetitionIdentity(rows[0]);
+  } catch (error) {
+    console.warn('Competition identity settings are unavailable. Using the page defaults.', error);
+  }
+}
+async function loadRTLCompetitionSettings() {
+  const form = document.getElementById('rtl-competition-settings-form');
+  const feedback = document.getElementById('rtl-competition-settings-feedback');
+  if (!form) return;
+  if (sessionStorage.getItem('rtlStaffRole') !== 'admin' || !sessionStorage.getItem('rtlAccessToken')) {
+    if (feedback) feedback.textContent = 'Only the main RTL Admin can change these settings.';
+    return;
+  }
+  try {
+    const rows = await rtlRequest('rtl_site_settings', '?select=tournament_name,season_year,edition_number&setting_key=eq.main&limit=1');
+    const current = rows?.[0] || {tournament_name:'Rising Talents League',season_year:2027,edition_number:1};
+    document.getElementById('rtl-setting-tournament-name').value = current.tournament_name || 'Rising Talents League';
+    document.getElementById('rtl-setting-season-year').value = current.season_year || 2027;
+    document.getElementById('rtl-setting-edition-number').value = current.edition_number || 1;
+    rtlApplyCompetitionIdentity(current);
+    if (feedback) feedback.textContent = '';
+  } catch (error) {
+    if (feedback) feedback.textContent = 'Unable to load settings. Apply the supplied Supabase SQL migration first. ' + error.message;
+  }
+}
+document.getElementById('rtl-competition-settings-form')?.addEventListener('submit', async event => {
+  event.preventDefault();
+  const feedback = document.getElementById('rtl-competition-settings-feedback');
+  try {
+    if (sessionStorage.getItem('rtlStaffRole') !== 'admin' || !sessionStorage.getItem('rtlAccessToken')) {
+      throw new Error('Only the main RTL Admin can save competition identity settings.');
+    }
+    const tournament_name = document.getElementById('rtl-setting-tournament-name').value.trim();
+    const season_year = Number(document.getElementById('rtl-setting-season-year').value);
+    const edition_number = Number(document.getElementById('rtl-setting-edition-number').value);
+    if (!tournament_name) throw new Error('Enter the tournament name.');
+    if (!Number.isInteger(season_year) || season_year < 2000 || season_year > 2100) throw new Error('Enter a valid season year between 2000 and 2100.');
+    if (!Number.isInteger(edition_number) || edition_number < 1 || edition_number > 999) throw new Error('Enter an edition number between 1 and 999.');
+    if (feedback) feedback.textContent = 'Saving settings...';
+    const body = {setting_key:'main', tournament_name, season_year, edition_number, updated_at:new Date().toISOString()};
+    await rtlRequest('rtl_site_settings', '?on_conflict=setting_key', {
+      method:'POST',
+      headers:{'Content-Type':'application/json', Prefer:'resolution=merge-duplicates,return=minimal'},
+      body:JSON.stringify(body)
+    });
+    rtlApplyCompetitionIdentity(body);
+    if (feedback) feedback.textContent = 'Competition identity saved and published on the public homepage.';
+  } catch (error) {
+    if (feedback) feedback.textContent = 'Save failed: ' + error.message;
+  }
+});
+loadRTLPublicCompetitionIdentity();
+
+
 async function loadRTLAdminOverview() {
   const setValue = (id, value) => {
     const el = document.getElementById(id);
@@ -3208,6 +3520,8 @@ function showRTLPortal(role) {
     if(staffCard) staffCard.hidden = role !== 'admin';
     const playerCard = document.querySelector('#rtl-admin-grid article:has(button[onclick*="openRTLSection(\'players\')"])');
     if(playerCard) playerCard.hidden = role !== 'admin';
+    const settingsCard = document.getElementById('rtl-competition-settings-card');
+    if(settingsCard) settingsCard.hidden = role !== 'admin';
     const heading = document.querySelector('#rtl-admin-dashboard h2');
     if(heading) heading.textContent = role === 'admin' ? 'RTL Administration Dashboard' : 'RTL Staff Operations Dashboard';
     openRTLSection('dashboard');
