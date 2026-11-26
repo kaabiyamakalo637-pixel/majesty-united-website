@@ -1274,6 +1274,30 @@ html, body {
   }
 }
 
+
+
+/* RTL administration overview */
+.rtl-admin-overview { margin: 20px 0 24px; }
+.rtl-admin-overview > h3 { margin: 0 0 12px; font-size: 19px; }
+.rtl-overview-stats { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
+.rtl-stat-card { min-width: 0; padding: 15px; border: 1px solid var(--line); border-radius: 10px; background: rgba(16,43,30,.72); }
+.rtl-stat-card span { display: block; color: var(--muted); font-size: 12px; line-height: 1.4; }
+.rtl-stat-card strong { display: block; margin-top: 7px; font-size: 27px; line-height: 1.15; }
+.rtl-recent-updates { margin-top: 14px; padding: 15px; border: 1px solid var(--line); border-radius: 10px; background: rgba(16,43,30,.45); }
+.rtl-recent-updates h3 { margin: 0 0 10px; font-size: 16px; }
+.rtl-update-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 9px 0; border-top: 1px solid rgba(255,255,255,.08); font-size: 13px; }
+.rtl-update-row:first-child { border-top: 0; }
+.rtl-update-row span:last-child { color: var(--muted); text-align: right; white-space: nowrap; }
+@media (max-width: 1100px) { .rtl-overview-stats { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; } }
+@media (max-width: 600px) {
+  .rtl-admin-overview { margin: 15px 0 18px; }
+  .rtl-stat-card { padding: 12px; }
+  .rtl-stat-card span { font-size: 11px; }
+  .rtl-stat-card strong { font-size: 23px; }
+  .rtl-recent-updates { padding: 12px; }
+  .rtl-update-row { font-size: 12px; }
+}
+
 </style>
 </head>
 <body>
@@ -1641,6 +1665,20 @@ html, body {
     <div id="rtl-admin-dashboard" hidden>
   <h2>RTL Administration Dashboard</h2>
   <p>Welcome to the Rising Talents League management centre.</p><button type="button" onclick="rtlLogout()">Sign out</button>
+
+  <section id="rtl-admin-overview" class="rtl-admin-overview" aria-label="League overview">
+    <h3>League Overview</h3>
+    <div class="rtl-overview-stats">
+      <article class="rtl-stat-card"><span>Registered Academies</span><strong id="rtl-stat-academies">Loading</strong></article>
+      <article class="rtl-stat-card"><span>Registered Players</span><strong id="rtl-stat-players">Loading</strong></article>
+      <article class="rtl-stat-card"><span>Pending Approvals</span><strong id="rtl-stat-pending">Loading</strong></article>
+      <article class="rtl-stat-card"><span>Upcoming Fixtures</span><strong id="rtl-stat-fixtures">Loading</strong></article>
+    </div>
+    <div class="rtl-recent-updates">
+      <h3>Recent Academy Updates</h3>
+      <div id="rtl-recent-updates-list" aria-live="polite">Loading recent applications...</div>
+    </div>
+  </section>
 
   <div class="admin-grid" id="rtl-admin-grid">
     <article class="card">
@@ -3009,6 +3047,40 @@ async function loadRTLAcademies() {
 const rtlApi = (table, query='') => `${RTL_DATA_URL}/rest/v1/${table}${query}`;
 function rtlAuthHeaders(extra={}) { const token=sessionStorage.getItem('rtlAccessToken'); return {apikey:RTL_DATA_KEY, Authorization:`Bearer ${token||RTL_DATA_KEY}`, ...extra}; }
 async function rtlRequest(table, query='', options={}) { const r=await fetch(rtlApi(table,query),{...options,headers:rtlAuthHeaders(options.headers||{})}); if(!r.ok) throw new Error(await r.text()); const t=await r.text(); return t?JSON.parse(t):null; }
+
+async function loadRTLAdminOverview() {
+  const setValue = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
+  const today = new Date().toISOString().slice(0, 10);
+  const tasks = [
+    ['rtl-stat-academies', () => rtlRequest('rtl_academies', '?select=id&registration_status=eq.approved')],
+    ['rtl-stat-players', () => rtlRequest('rtl_players', '?select=id')],
+    ['rtl-stat-pending', () => rtlRequest('rtl_academy_applications', '?select=id&application_status=eq.pending')],
+    ['rtl-stat-fixtures', () => rtlRequest('rtl_fixtures', `?select=id&season=eq.2027&match_date=gte.${today}`)]
+  ];
+  await Promise.all(tasks.map(async ([id, request]) => {
+    try { const rows = await request(); setValue(id, String(rows.length)); }
+    catch (error) { console.error('RTL overview metric failed:', id, error); setValue(id, 'N/A'); }
+  }));
+
+  const list = document.getElementById('rtl-recent-updates-list');
+  if (!list) return;
+  try {
+    const rows = await rtlRequest('rtl_academy_applications', '?select=academy_name,application_status,submitted_at&order=submitted_at.desc&limit=5');
+    if (!rows.length) { list.textContent = 'No academy applications have been submitted yet.'; return; }
+    list.innerHTML = rows.map(row => `
+      <div class="rtl-update-row">
+        <span>${rtlSafe(row.academy_name || 'Academy application')}</span>
+        <span>${rtlSafe(row.application_status || 'Status unavailable')} · ${row.submitted_at ? rtlSafe(new Date(row.submitted_at).toLocaleDateString()) : 'Date unavailable'}</span>
+      </div>`).join('');
+  } catch (error) {
+    console.error('RTL recent updates failed:', error);
+    list.textContent = 'Recent academy updates are unavailable right now.';
+  }
+}
+
 function showRTLPortal(role) {
   document.getElementById('rtl-admin-dashboard').hidden = !['admin','rtl_staff'].includes(role);
   document.getElementById('rtl-academy-portal').hidden = role!=='academy_staff';
@@ -3021,6 +3093,7 @@ function showRTLPortal(role) {
     const heading = document.querySelector('#rtl-admin-dashboard h2');
     if(heading) heading.textContent = role === 'admin' ? 'RTL Administration Dashboard' : 'RTL Staff Operations Dashboard';
     openRTLSection('dashboard');
+    loadRTLAdminOverview();
   }
   else if(role==='academy_staff') loadAcademyPortal();
   else if(role==='referee') loadRefereePortal();
