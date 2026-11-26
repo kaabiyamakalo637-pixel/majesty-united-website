@@ -1072,6 +1072,107 @@ input, select, textarea { font-size: 16px; }
   .admin-grid{grid-template-columns:1fr}
 }
 
+
+
+/* RTL dashboard responsive layout v4 */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+#rtl-admin-dashboard,
+#rtl-academy-portal,
+#rtl-referee-portal,
+#rtl-admin-grid {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+#rtl-admin-grid.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 14px;
+  width: 100%;
+}
+#rtl-admin-grid > article.card {
+  min-width: 0;
+  height: 100%;
+  padding: 18px;
+  overflow-wrap: anywhere;
+}
+#rtl-admin-grid > article.card h3 {
+  font-size: clamp(16px, 1.7vw, 20px);
+  line-height: 1.4;
+  margin: 0 0 12px;
+}
+#rtl-admin-grid > article.card p {
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0 0 14px;
+}
+#rtl-admin-grid > article.card button {
+  max-width: 100%;
+  white-space: normal;
+}
+.rtl-table-scroll {
+  max-width: 100%;
+}
+
+/* Tablet: two dashboard columns */
+@media (max-width: 1100px) {
+  #rtl-admin-grid.admin-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  #rtl-admin-grid > article.card {
+    padding: 16px;
+  }
+  .nav, .nav-links, .container, main, section {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+/* Phones: one dashboard column and tighter spacing */
+@media (max-width: 600px) {
+  #rtl-admin-grid.admin-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  #rtl-admin-grid > article.card {
+    padding: 14px;
+  }
+  #rtl-admin-grid > article.card h3 {
+    font-size: 17px;
+    margin-bottom: 8px;
+  }
+  #rtl-admin-grid > article.card p {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  #rtl-admin-dashboard > h2 {
+    font-size: 23px;
+    line-height: 1.25;
+  }
+  #rtl-admin-dashboard > p {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+
+/* Keep wide data tables scrollable inside their own panels */
+.rtl-table-scroll,
+.table-wrap,
+.table-responsive {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
 </style>
 </head>
 <body>
