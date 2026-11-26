@@ -774,6 +774,26 @@ input, select, textarea { font-size: 16px; }
 @media(max-width:520px){.rtl-admin-score-form,.rtl-admin-event-edit{grid-template-columns:1fr}.rtl-admin-score-form button,.rtl-admin-score-form .rtl-event-message,.rtl-admin-event-edit .event-wide,.rtl-admin-event-edit button{grid-column:auto}}
 
 
+
+/* RTL staff live match controls */
+.rtl-quick-event-panel{margin:14px 0;padding:13px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.025)}
+.rtl-quick-event-panel h4{margin:0 0 10px;font-size:13px}
+.rtl-quick-event-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.rtl-quick-event-btn{min-height:48px;padding:9px 6px;border:1px solid rgba(255,255,255,.14);border-radius:9px;background:#173b2a;color:#fff;font-size:12px;font-weight:800;line-height:1.25}
+.rtl-quick-event-btn:active{transform:scale(.98);background:#24583d}
+.rtl-admin-details{margin:11px 0;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(255,255,255,.02);overflow:hidden}
+.rtl-admin-details>summary{padding:13px 14px;cursor:pointer;color:#f4f7f4;font-size:12px;font-weight:800;list-style:none}
+.rtl-admin-details>summary::-webkit-details-marker{display:none}
+.rtl-admin-details>summary:after{content:'＋';float:right;color:#f08a99;font-size:15px}
+.rtl-admin-details[open]>summary:after{content:'−'}
+.rtl-admin-details-body{padding:0 12px 12px}
+.rtl-add-event-details .rtl-admin-event-form{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rtl-add-event-details .rtl-admin-event-form label{font-size:11px;color:var(--muted)}
+.rtl-add-event-details .rtl-admin-event-form input,.rtl-add-event-details .rtl-admin-event-form select{margin:4px 0 8px}
+.rtl-add-event-details .event-wide,.rtl-add-event-details .rtl-admin-event-form button,.rtl-add-event-details .rtl-event-message{grid-column:1/-1}
+.rtl-add-event-details .rtl-admin-event-form button{min-height:46px}
+@media(max-width:600px){.rtl-quick-event-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.rtl-quick-event-btn{min-height:50px;font-size:12px}.rtl-add-event-details .rtl-admin-event-form{grid-template-columns:1fr}.rtl-add-event-details .event-wide,.rtl-add-event-details .rtl-admin-event-form button,.rtl-add-event-details .rtl-event-message{grid-column:auto}.rtl-admin-details-body{padding:0 9px 10px}}
+
 /* RTL Match Centre tabs */
 .rtl-match-tabs{margin-top:16px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px}
 .rtl-match-tabbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:12px}
@@ -2750,6 +2770,8 @@ async function rtlUpdateMatchEvent(event,eventId,fixtureId){
     message.textContent=`Event updated. Score is now ${updatedScore.home}-${updatedScore.away}.`;
     await loadAdminMatchCentre();
     if(document.getElementById('live-match-list')) await loadRTLFixtures();
+    if(typeof loadRTLStandings==='function') await loadRTLStandings();
+    if(typeof loadRTLStandings==='function') await loadRTLStandings();
   }catch(error){message.textContent='Update failed: '+error.message;}
   finally{button.disabled=false;button.textContent='Save Event Changes';}
 }
@@ -2760,6 +2782,8 @@ async function rtlDeleteMatchEvent(eventId,fixtureId){
     await rtlRecalculateMatchScore(fixtureId);
     await loadAdminMatchCentre();
     if(document.getElementById('live-match-list')) await loadRTLFixtures();
+    if(typeof loadRTLStandings==='function') await loadRTLStandings();
+    if(typeof loadRTLStandings==='function') await loadRTLStandings();
   }catch(error){alert('Could not delete event: '+error.message);}
 }
 async function rtlRecalculateMatchScore(fixtureId){
@@ -2795,6 +2819,27 @@ async function rtlSaveLiveScore(event,fixtureId){
     await Promise.all([loadAdminMatchCentre(),loadRTLFixtures(),loadRTLStandings()]);
   }catch(error){message.textContent='Score update failed: '+error.message;}
   finally{button.disabled=false;button.textContent='Update Score & Status';}
+}
+
+function rtlOpenQuickEvent(fixtureId,eventType){
+  const details=document.getElementById(`rtl-add-event-${fixtureId}`);
+  const form=details?.querySelector('form');
+  if(!details||!form)return;
+  details.open=true;
+  const type=form.querySelector('[name="event_type"]');
+  const minute=form.querySelector('[name="minute"]');
+  const team=form.querySelector('[name="team_side"]');
+  if(type)type.value=eventType;
+  if(minute){
+    const live=document.querySelector(`[data-rtl-live-minute][data-match-status="live"]`);
+    const shown=live?.textContent?.match(/\d+/)?.[0];
+    minute.value=shown||'';
+  }
+  if(team)team.value='';
+  const player=form.querySelector('[name="player_name"]');
+  if(player)player.value='';
+  form.scrollIntoView({behavior:'smooth',block:'center'});
+  (eventType==='half_time'||eventType==='full_time'?form.querySelector('button[type="submit"]'):team)?.focus();
 }
 
 async function rtlAddMatchEvent(event,fixtureId){
@@ -2841,6 +2886,7 @@ async function rtlAddMatchEvent(event,fixtureId){
     if(document.getElementById('live-match-list')){
       try{await loadRTLFixtures();}catch(refreshError){console.warn('Public live centre refresh failed:',refreshError);}
     }
+    if(typeof loadRTLStandings==='function') await loadRTLStandings();
   }catch(error){
     message.textContent=error.name==='AbortError'
       ? 'The request timed out. Check the match timeline before trying again, to avoid adding the same event twice.'
@@ -2872,22 +2918,31 @@ async function loadAdminMatchCentre(){
       <div class="rtl-live-team">${rtlSafe(x.away_academy||'Away team')}</div></div>
       ${['live','halftime'].includes(String(x.status||'').toLowerCase())?`<div class="rtl-admin-live-minute" data-rtl-live-minute data-match-date="${rtlSafe(x.match_date)}" data-kick-off="${rtlSafe(x.kick_off)}" data-match-status="${rtlSafe(x.status)}">${rtlLiveMinute(x)}</div>`:''}
       <p>${rtlSafe(x.match_date)} | ${rtlSafe(x.kick_off)} | ${rtlSafe(x.venue||'Venue TBC')}</p>
-      <form class="rtl-admin-score-form" onsubmit="rtlSaveLiveScore(event,'${x.id}')">
-        <h4 class="rtl-score-form-title">Update Match Score</h4>
-        <label><span class="rtl-score-team-label">${rtlSafe(x.home_academy||'Home Team')}<small>Home score</small></span><input class="rtl-score-input" name="home_score" type="number" min="0" step="1" value="${rtlSafe(x.home_score??0)}" required></label>
-        <label><span class="rtl-score-team-label">${rtlSafe(x.away_academy||'Away Team')}<small>Away score</small></span><input class="rtl-score-input" name="away_score" type="number" min="0" step="1" value="${rtlSafe(x.away_score??0)}" required></label>
-        <label class="event-wide">Match status<select name="status">${[['scheduled','Scheduled'],['live','Live'],['halftime','Half-time'],['completed','Full-time'],['postponed','Postponed'],['cancelled','Cancelled']].map(([value,label])=>`<option value="${value}" ${String(x.status||'scheduled').toLowerCase()===value?'selected':''}>${label}</option>`).join('')}</select></label>
-        <button type="submit">Update Score & Status</button>
-        <p class="rtl-event-message" aria-live="polite"></p>
-      </form>
-      <div class="rtl-live-events"><h4>Recorded match events</h4>${rtlRenderAdminMatchEvents(adminEventMap[x.id]||[],x.id)}</div>
-      <form class="rtl-admin-event-form" onsubmit="rtlAddMatchEvent(event,'${x.id}')">
-        <label>Event type<select name="event_type" required><option value="goal">Goal</option><option value="own_goal">Own Goal</option><option value="penalty">Penalty</option><option value="yellow_card">Yellow card</option><option value="red_card">Red card</option><option value="second_yellow">Second yellow</option><option value="substitution">Substitution</option><option value="penalty_missed">Penalty missed</option><option value="half_time">Half-time</option><option value="full_time">Full-time</option></select></label>
-        <label>Minute<input name="minute" type="number" min="0" max="130" required placeholder="e.g. 67"></label>
-        <label>Team<select name="team_side"><option value="">Not applicable</option><option value="home">${rtlSafe(x.home_academy||'Home team')}</option><option value="away">${rtlSafe(x.away_academy||'Away team')}</option></select></label>
-        <label class="event-wide">Player / event details<input name="player_name" maxlength="160" placeholder="Player name, or OFF: Name | ON: Name"></label>
-        <button type="submit">Add Match Event</button><p class="rtl-event-message" aria-live="polite"></p>
-      </form>
+      <div class="rtl-quick-event-panel">
+        <h4>Quick Match Actions</h4>
+        <div class="rtl-quick-event-grid">
+          ${[['goal','⚽ Goal'],['penalty','⚽ Penalty scored'],['own_goal','↩ Own goal'],['yellow_card','🟨 Yellow card'],['red_card','🟥 Red card'],['substitution','🔄 Substitution'],['penalty_missed','✖ Penalty missed'],['half_time','Ⅱ Half-time'],['full_time','■ Full-time']].map(([type,label])=>`<button type="button" class="rtl-quick-event-btn" onclick="rtlOpenQuickEvent('${x.id}','${type}')">${label}</button>`).join('')}
+        </div>
+      </div>
+      <details class="rtl-admin-details rtl-live-events"><summary>Recorded events (${(adminEventMap[x.id]||[]).length})</summary><div class="rtl-admin-details-body">${rtlRenderAdminMatchEvents(adminEventMap[x.id]||[],x.id)}</div></details>
+      <details class="rtl-admin-details rtl-add-event-details" id="rtl-add-event-${x.id}"><summary>Add event details</summary><div class="rtl-admin-details-body">
+        <form class="rtl-admin-event-form" onsubmit="rtlAddMatchEvent(event,'${x.id}')">
+          <label>Event type<select name="event_type" required><option value="goal">Goal</option><option value="own_goal">Own Goal</option><option value="penalty">Penalty scored</option><option value="yellow_card">Yellow card</option><option value="red_card">Red card</option><option value="second_yellow">Second yellow</option><option value="substitution">Substitution</option><option value="penalty_missed">Penalty missed</option><option value="half_time">Half-time</option><option value="full_time">Full-time</option></select></label>
+          <label>Minute<input name="minute" type="number" min="0" max="130" required placeholder="e.g. 67"></label>
+          <label>Team<select name="team_side"><option value="">Not applicable</option><option value="home">${rtlSafe(x.home_academy||'Home team')}</option><option value="away">${rtlSafe(x.away_academy||'Away team')}</option></select></label>
+          <label class="event-wide">Player / event details<input name="player_name" maxlength="160" placeholder="Player name, or OFF: Name | ON: Name"></label>
+          <button type="submit">Save Match Event</button><p class="rtl-event-message" aria-live="polite"></p>
+        </form>
+      </div></details>
+      <details class="rtl-admin-details rtl-manual-score-details"><summary>Manual score correction and match status</summary><div class="rtl-admin-details-body">
+        <form class="rtl-admin-score-form" onsubmit="rtlSaveLiveScore(event,'${x.id}')">
+          <h4 class="rtl-score-form-title">Backup score correction</h4>
+          <label><span class="rtl-score-team-label">${rtlSafe(x.home_academy||'Home Team')}<small>Home score</small></span><input class="rtl-score-input" name="home_score" type="number" min="0" step="1" value="${rtlSafe(x.home_score??0)}" required></label>
+          <label><span class="rtl-score-team-label">${rtlSafe(x.away_academy||'Away Team')}<small>Away score</small></span><input class="rtl-score-input" name="away_score" type="number" min="0" step="1" value="${rtlSafe(x.away_score??0)}" required></label>
+          <label class="event-wide">Match status<select name="status">${[['scheduled','Scheduled'],['live','Live'],['halftime','Half-time'],['completed','Full-time'],['postponed','Postponed'],['cancelled','Cancelled']].map(([value,label])=>`<option value="${value}" ${String(x.status||'scheduled').toLowerCase()===value?'selected':''}>${label}</option>`).join('')}</select></label>
+          <button type="submit">Save Manual Correction</button><p class="rtl-event-message" aria-live="polite"></p>
+        </form>
+      </div></details>
     </article>`;
     box.innerHTML=liveRows.length?`<h3>Live Now</h3>${liveRows.map(card).join('')}`:'';
     box.innerHTML+=(otherRows.length?`<h3>Other Matches</h3>${otherRows.map(card).join('')}`:'');
