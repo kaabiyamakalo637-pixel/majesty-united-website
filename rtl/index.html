@@ -1451,14 +1451,19 @@ html, body {
 .hero-inner {
   position: relative;
   z-index: 1;
-  max-width: 1180px;
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  text-align: center;
 }
 .hero-inner > * {
-  max-width: min(690px, 68%);
+  max-width: min(820px, 88%);
+  margin-left: auto;
+  margin-right: auto;
 }
 .hero-identity {
-  gap: 20px;
-  margin-bottom: 28px;
+  justify-content: center;
+  gap: 22px;
+  margin: 0 auto 28px;
 }
 .hero-crest {
   width: 104px;
@@ -1504,6 +1509,8 @@ html, body {
   margin-top: 22px;
   border-radius: 4px;
   background: linear-gradient(90deg, #c90025, #f08ba0);
+  margin-left: auto;
+  margin-right: auto;
 }
 .hero-supporting-line {
   margin: 0 0 9px;
@@ -1513,7 +1520,7 @@ html, body {
   letter-spacing: 2px;
 }
 .hero-official-slogan {
-  margin: 0 0 20px;
+  margin: 0 auto 20px;
   color: #f18ba0;
   font-size: clamp(15px, 1.7vw, 18px);
   font-weight: 850;
@@ -1551,6 +1558,7 @@ html, body {
     max-width: 100%;
   }
   .hero-identity {
+    justify-content: center;
     margin-bottom: 24px;
   }
   .hero-crest {
@@ -1646,13 +1654,27 @@ body.rtl-event-theme img,body.rtl-event-theme video,body.rtl-event-theme canvas 
 
 <style>
 /* Competition identity editor and dynamic hero label */
+.hero-identity {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.hero-edition {
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+}
 .hero-tournament-name {
   color: #fff;
-  font-size: clamp(13px, 1.6vw, 18px);
-  font-weight: 850;
-  letter-spacing: 1.8px;
+  font-size: clamp(22px, 3.2vw, 36px);
+  font-weight: 950;
+  letter-spacing: 2.6px;
+  line-height: 1.12;
+  text-align: center;
   text-transform: uppercase;
-  margin-bottom: 5px;
+  margin: 0 0 7px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 #rtl-competition-settings-form {
   display: grid;
@@ -1669,7 +1691,11 @@ body.rtl-event-theme img,body.rtl-event-theme video,body.rtl-event-theme canvas 
   letter-spacing: .5px;
 }
 @media(max-width:600px) {
-  .hero-tournament-name { font-size: 12px; letter-spacing: 1px; }
+  .hero-identity { gap: 12px; width: 100%; }
+  .hero-edition { flex: 1 1 auto; min-width: 0; }
+  .hero-tournament-name { font-size: clamp(19px, 5.4vw, 27px); letter-spacing: 1.4px; line-height: 1.15; }
+  .hero-edition .eyebrow { font-size: 11px; letter-spacing: 2px; text-align: center; }
+  .edition-label { font-size: 10px; letter-spacing: 1.5px; }
 }
 </style>
 
@@ -2233,14 +2259,123 @@ body.rtl-event-theme :is(.hero,.hero-section) { background-color:var(--rtl-theme
             </select>
           </div>
           <div id="rtl-theme-auto-options" hidden>
-            <label for="rtl-theme-one-colour">Choose a simple colour</label>
+            <label for="rtl-theme-one-colour">Choose from 113 colours</label>
             <select id="rtl-theme-one-colour">
-              <option value="#CE1126">Red</option><option value="#F97316">Orange</option>
-              <option value="#2563EB">Blue</option><option value="#171717">Black</option>
-              <option value="#16834A">Green</option><option value="#EC4899">Pink</option>
-              <option value="#7C3AED">Violet</option>
+              <option value="#FF0000">Red</option>
+              <option value="#F0F8FF">Aliceblue</option>
+              <option value="#FAEBD7">Antiquewhite</option>
+              <option value="#00FFFF">Aqua</option>
+              <option value="#7FFFD4">Aquamarine</option>
+              <option value="#F0FFFF">Azure</option>
+              <option value="#F5F5DC">Beige</option>
+              <option value="#FFE4C4">Bisque</option>
+              <option value="#000000">Black</option>
+              <option value="#FFEBCD">Blanchedalmond</option>
+              <option value="#0000FF">Blue</option>
+              <option value="#8A2BE2">Blueviolet</option>
+              <option value="#A52A2A">Brown</option>
+              <option value="#DEB887">Burlywood</option>
+              <option value="#5F9EA0">Cadetblue</option>
+              <option value="#7FFF00">Chartreuse</option>
+              <option value="#D2691E">Chocolate</option>
+              <option value="#FF7F50">Coral</option>
+              <option value="#6495ED">Cornflowerblue</option>
+              <option value="#FFF8DC">Cornsilk</option>
+              <option value="#DC143C">Crimson</option>
+              <option value="#00008B">Darkblue</option>
+              <option value="#008B8B">Darkcyan</option>
+              <option value="#B8860B">Darkgoldenrod</option>
+              <option value="#A9A9A9">Darkgray</option>
+              <option value="#006400">Darkgreen</option>
+              <option value="#BDB76B">Darkkhaki</option>
+              <option value="#8B008B">Darkmagenta</option>
+              <option value="#556B2F">Darkolivegreen</option>
+              <option value="#FF8C00">Darkorange</option>
+              <option value="#9932CC">Darkorchid</option>
+              <option value="#8B0000">Darkred</option>
+              <option value="#E9967A">Darksalmon</option>
+              <option value="#8FBC8F">Darkseagreen</option>
+              <option value="#483D8B">Darkslateblue</option>
+              <option value="#2F4F4F">Darkslategray</option>
+              <option value="#00CED1">Darkturquoise</option>
+              <option value="#9400D3">Darkviolet</option>
+              <option value="#FF1493">Deeppink</option>
+              <option value="#00BFFF">Deepskyblue</option>
+              <option value="#696969">Dimgray</option>
+              <option value="#1E90FF">Dodgerblue</option>
+              <option value="#B22222">Firebrick</option>
+              <option value="#FFFAF0">Floralwhite</option>
+              <option value="#228B22">Forestgreen</option>
+              <option value="#FF00FF">Fuchsia</option>
+              <option value="#DCDCDC">Gainsboro</option>
+              <option value="#F8F8FF">Ghostwhite</option>
+              <option value="#FFD700">Gold</option>
+              <option value="#DAA520">Goldenrod</option>
+              <option value="#808080">Gray</option>
+              <option value="#008000">Green</option>
+              <option value="#ADFF2F">Greenyellow</option>
+              <option value="#F0FFF0">Honeydew</option>
+              <option value="#FF69B4">Hotpink</option>
+              <option value="#CD5C5C">Indianred</option>
+              <option value="#4B0082">Indigo</option>
+              <option value="#FFFFF0">Ivory</option>
+              <option value="#F0E68C">Khaki</option>
+              <option value="#E6E6FA">Lavender</option>
+              <option value="#FFF0F5">Lavenderblush</option>
+              <option value="#7CFC00">Lawngreen</option>
+              <option value="#FFFACD">Lemonchiffon</option>
+              <option value="#ADD8E6">Lightblue</option>
+              <option value="#F08080">Lightcoral</option>
+              <option value="#E0FFFF">Lightcyan</option>
+              <option value="#FAFAD2">Lightgoldenrodyellow</option>
+              <option value="#D3D3D3">Lightgray</option>
+              <option value="#90EE90">Lightgreen</option>
+              <option value="#FFB6C1">Lightpink</option>
+              <option value="#FFA07A">Lightsalmon</option>
+              <option value="#20B2AA">Lightseagreen</option>
+              <option value="#87CEFA">Lightskyblue</option>
+              <option value="#778899">Lightslategray</option>
+              <option value="#B0C4DE">Lightsteelblue</option>
+              <option value="#FFFFE0">Lightyellow</option>
+              <option value="#00FF00">Lime</option>
+              <option value="#32CD32">Limegreen</option>
+              <option value="#FAF0E6">Linen</option>
+              <option value="#800000">Maroon</option>
+              <option value="#66CDAA">Mediumaquamarine</option>
+              <option value="#0000CD">Mediumblue</option>
+              <option value="#BA55D3">Mediumorchid</option>
+              <option value="#9370DB">Mediumpurple</option>
+              <option value="#3CB371">Mediumseagreen</option>
+              <option value="#7B68EE">Mediumslateblue</option>
+              <option value="#00FA9A">Mediumspringgreen</option>
+              <option value="#48D1CC">Mediumturquoise</option>
+              <option value="#C71585">Mediumvioletred</option>
+              <option value="#191970">Midnightblue</option>
+              <option value="#F5FFFA">Mintcream</option>
+              <option value="#FFE4E1">Mistyrose</option>
+              <option value="#FFE4B5">Moccasin</option>
+              <option value="#FFDEAD">Navajowhite</option>
+              <option value="#000080">Navy</option>
+              <option value="#FDF5E6">Oldlace</option>
+              <option value="#808000">Olive</option>
+              <option value="#6B8E23">Olivedrab</option>
+              <option value="#FFA500">Orange</option>
+              <option value="#FF4500">Orangered</option>
+              <option value="#DA70D6">Orchid</option>
+              <option value="#EEE8AA">Palegoldenrod</option>
+              <option value="#98FB98">Palegreen</option>
+              <option value="#AFEEEE">Paleturquoise</option>
+              <option value="#DB7093">Palevioletred</option>
+              <option value="#FFEFD5">Papayawhip</option>
+              <option value="#FFDAB9">Peachpuff</option>
+              <option value="#CD853F">Peru</option>
+              <option value="#FFC0CB">Pink</option>
+              <option value="#DDA0DD">Plum</option>
+              <option value="#B0E0E6">Powderblue</option>
+              <option value="#800080">Purple</option>
+              <option value="#663399">Rebeccapurple</option>
             </select>
-            <p>RTL automatically creates matching backgrounds, accents and readable text colours.</p>
+            <p>Choose any of the 113 colours. RTL automatically creates matching backgrounds, accents and readable text colours.</p>
             <div class="rtl-theme-swatches" aria-label="Generated colour palette"><span class="rtl-theme-swatch" id="rtl-theme-auto-primary"></span><span class="rtl-theme-swatch" id="rtl-theme-auto-secondary"></span><span class="rtl-theme-swatch" id="rtl-theme-auto-accent"></span></div>
           </div>
           <div id="rtl-theme-custom-options" hidden>
@@ -2277,7 +2412,7 @@ body.rtl-event-theme :is(.hero,.hero-section) { background-color:var(--rtl-theme
           <label for="rtl-setting-season-year">Season year</label>
           <input id="rtl-setting-season-year" type="number" min="2000" max="2100" step="1" required>
           <label for="rtl-setting-edition-number">Edition number</label>
-          <input id="rtl-setting-edition-number" type="number" min="1" max="999" step="1" required>
+          <input id="rtl-setting-edition-number" type="number" min="1" max="999" step="1" placeholder="Leave blank if not applicable">
           <button type="submit">Save Competition Settings</button>
           <p id="rtl-competition-settings-feedback" role="status" aria-live="polite"></p>
         </form>
@@ -3699,20 +3834,23 @@ function rtlApplyCompetitionIdentity(settings) {
   if (!settings) return;
   const name = String(settings.tournament_name || 'Rising Talents League');
   const year = Number(settings.season_year) || 2027;
-  const edition = Number(settings.edition_number) || 1;
+  const edition = settings.edition_number === null || settings.edition_number === '' || settings.edition_number === undefined ? null : Number(settings.edition_number);
   const nameNode = document.getElementById('rtl-hero-tournament-name');
   const yearNode = document.getElementById('rtl-hero-season-label');
   const editionNode = document.getElementById('rtl-hero-edition-label');
   if (nameNode) nameNode.textContent = name;
   if (yearNode) yearNode.textContent = `THE ${year} SEASON`;
-  if (editionNode) editionNode.textContent = `${rtlOrdinal(edition)} EDITION`;
+  if (editionNode) {
+    editionNode.textContent = edition && Number.isInteger(edition) && edition > 0 ? `${rtlOrdinal(edition)} EDITION` : '';
+    editionNode.hidden = !editionNode.textContent;
+  }
   const regHeading = document.querySelector('#public-academy-registration h3');
   if (regHeading) regHeading.textContent = `Academy Registration for the ${year} Season`;
   const competitionEyebrow = document.querySelector('#competition .section-heading .eyebrow');
   if (competitionEyebrow) competitionEyebrow.textContent = `${year} Competition`;
   document.title = `${name} | ${year}`;
   const preview = document.getElementById('rtl-competition-settings-preview');
-  if (preview) preview.textContent = `${name} · ${year} Season · ${rtlOrdinal(edition)} Edition`;
+  if (preview) preview.textContent = [name, `${year} Season`, edition && Number.isInteger(edition) && edition > 0 ? `${rtlOrdinal(edition)} Edition` : null].filter(Boolean).join(' · ');
 }
 async function loadRTLPublicCompetitionIdentity() {
   try {
@@ -3732,10 +3870,10 @@ async function loadRTLCompetitionSettings() {
   }
   try {
     const rows = await rtlRequest('rtl_site_settings', '?select=tournament_name,season_year,edition_number&setting_key=eq.main&limit=1');
-    const current = rows?.[0] || {tournament_name:'Rising Talents League',season_year:2027,edition_number:1};
+    const current = rows?.[0] || {tournament_name:'Rising Talents League',season_year:2027,edition_number:null};
     document.getElementById('rtl-setting-tournament-name').value = current.tournament_name || 'Rising Talents League';
     document.getElementById('rtl-setting-season-year').value = current.season_year || 2027;
-    document.getElementById('rtl-setting-edition-number').value = current.edition_number || 1;
+    document.getElementById('rtl-setting-edition-number').value = current.edition_number ?? '';
     rtlApplyCompetitionIdentity(current);
     if (feedback) feedback.textContent = '';
   } catch (error) {
@@ -3751,10 +3889,11 @@ document.getElementById('rtl-competition-settings-form')?.addEventListener('subm
     }
     const tournament_name = document.getElementById('rtl-setting-tournament-name').value.trim();
     const season_year = Number(document.getElementById('rtl-setting-season-year').value);
-    const edition_number = Number(document.getElementById('rtl-setting-edition-number').value);
+    const editionValue = document.getElementById('rtl-setting-edition-number').value.trim();
+    const edition_number = editionValue === '' ? null : Number(editionValue);
     if (!tournament_name) throw new Error('Enter the tournament name.');
     if (!Number.isInteger(season_year) || season_year < 2000 || season_year > 2100) throw new Error('Enter a valid season year between 2000 and 2100.');
-    if (!Number.isInteger(edition_number) || edition_number < 1 || edition_number > 999) throw new Error('Enter an edition number between 1 and 999.');
+    if (edition_number !== null && (!Number.isInteger(edition_number) || edition_number < 1 || edition_number > 999)) throw new Error('Enter an edition number between 1 and 999, or leave it blank.');
     if (feedback) feedback.textContent = 'Saving settings...';
     const body = {setting_key:'main', tournament_name, season_year, edition_number, updated_at:new Date().toISOString()};
     await rtlRequest('rtl_site_settings', '?on_conflict=setting_key', {
