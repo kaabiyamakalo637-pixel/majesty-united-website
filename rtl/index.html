@@ -1451,14 +1451,19 @@ html, body {
 .hero-inner {
   position: relative;
   z-index: 1;
-  max-width: 1180px;
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  text-align: center;
 }
 .hero-inner > * {
-  max-width: min(690px, 68%);
+  max-width: min(820px, 88%);
+  margin-left: auto;
+  margin-right: auto;
 }
 .hero-identity {
-  gap: 20px;
-  margin-bottom: 28px;
+  justify-content: center;
+  gap: 22px;
+  margin: 0 auto 28px;
 }
 .hero-crest {
   width: 104px;
@@ -1504,6 +1509,8 @@ html, body {
   margin-top: 22px;
   border-radius: 4px;
   background: linear-gradient(90deg, #c90025, #f08ba0);
+  margin-left: auto;
+  margin-right: auto;
 }
 .hero-supporting-line {
   margin: 0 0 9px;
@@ -1513,7 +1520,7 @@ html, body {
   letter-spacing: 2px;
 }
 .hero-official-slogan {
-  margin: 0 0 20px;
+  margin: 0 auto 20px;
   color: #f18ba0;
   font-size: clamp(15px, 1.7vw, 18px);
   font-weight: 850;
@@ -1551,6 +1558,7 @@ html, body {
     max-width: 100%;
   }
   .hero-identity {
+    justify-content: center;
     margin-bottom: 24px;
   }
   .hero-crest {
@@ -1646,13 +1654,27 @@ body.rtl-event-theme img,body.rtl-event-theme video,body.rtl-event-theme canvas 
 
 <style>
 /* Competition identity editor and dynamic hero label */
+.hero-identity {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.hero-edition {
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+}
 .hero-tournament-name {
   color: #fff;
-  font-size: clamp(13px, 1.6vw, 18px);
-  font-weight: 850;
-  letter-spacing: 1.8px;
+  font-size: clamp(22px, 3.2vw, 36px);
+  font-weight: 950;
+  letter-spacing: 2.6px;
+  line-height: 1.12;
+  text-align: center;
   text-transform: uppercase;
-  margin-bottom: 5px;
+  margin: 0 0 7px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 #rtl-competition-settings-form {
   display: grid;
@@ -1669,7 +1691,11 @@ body.rtl-event-theme img,body.rtl-event-theme video,body.rtl-event-theme canvas 
   letter-spacing: .5px;
 }
 @media(max-width:600px) {
-  .hero-tournament-name { font-size: 12px; letter-spacing: 1px; }
+  .hero-identity { gap: 12px; width: 100%; }
+  .hero-edition { flex: 1 1 auto; min-width: 0; }
+  .hero-tournament-name { font-size: clamp(19px, 5.4vw, 27px); letter-spacing: 1.4px; line-height: 1.15; }
+  .hero-edition .eyebrow { font-size: 11px; letter-spacing: 2px; text-align: center; }
+  .edition-label { font-size: 10px; letter-spacing: 1.5px; }
 }
 </style>
 
@@ -2277,7 +2303,7 @@ body.rtl-event-theme :is(.hero,.hero-section) { background-color:var(--rtl-theme
           <label for="rtl-setting-season-year">Season year</label>
           <input id="rtl-setting-season-year" type="number" min="2000" max="2100" step="1" required>
           <label for="rtl-setting-edition-number">Edition number</label>
-          <input id="rtl-setting-edition-number" type="number" min="1" max="999" step="1" required>
+          <input id="rtl-setting-edition-number" type="number" min="1" max="999" step="1" placeholder="Leave blank if not applicable">
           <button type="submit">Save Competition Settings</button>
           <p id="rtl-competition-settings-feedback" role="status" aria-live="polite"></p>
         </form>
@@ -3699,20 +3725,23 @@ function rtlApplyCompetitionIdentity(settings) {
   if (!settings) return;
   const name = String(settings.tournament_name || 'Rising Talents League');
   const year = Number(settings.season_year) || 2027;
-  const edition = Number(settings.edition_number) || 1;
+  const edition = settings.edition_number === null || settings.edition_number === '' || settings.edition_number === undefined ? null : Number(settings.edition_number);
   const nameNode = document.getElementById('rtl-hero-tournament-name');
   const yearNode = document.getElementById('rtl-hero-season-label');
   const editionNode = document.getElementById('rtl-hero-edition-label');
   if (nameNode) nameNode.textContent = name;
   if (yearNode) yearNode.textContent = `THE ${year} SEASON`;
-  if (editionNode) editionNode.textContent = `${rtlOrdinal(edition)} EDITION`;
+  if (editionNode) {
+    editionNode.textContent = edition && Number.isInteger(edition) && edition > 0 ? `${rtlOrdinal(edition)} EDITION` : '';
+    editionNode.hidden = !editionNode.textContent;
+  }
   const regHeading = document.querySelector('#public-academy-registration h3');
   if (regHeading) regHeading.textContent = `Academy Registration for the ${year} Season`;
   const competitionEyebrow = document.querySelector('#competition .section-heading .eyebrow');
   if (competitionEyebrow) competitionEyebrow.textContent = `${year} Competition`;
   document.title = `${name} | ${year}`;
   const preview = document.getElementById('rtl-competition-settings-preview');
-  if (preview) preview.textContent = `${name} · ${year} Season · ${rtlOrdinal(edition)} Edition`;
+  if (preview) preview.textContent = [name, `${year} Season`, edition && Number.isInteger(edition) && edition > 0 ? `${rtlOrdinal(edition)} Edition` : null].filter(Boolean).join(' · ');
 }
 async function loadRTLPublicCompetitionIdentity() {
   try {
@@ -3732,10 +3761,10 @@ async function loadRTLCompetitionSettings() {
   }
   try {
     const rows = await rtlRequest('rtl_site_settings', '?select=tournament_name,season_year,edition_number&setting_key=eq.main&limit=1');
-    const current = rows?.[0] || {tournament_name:'Rising Talents League',season_year:2027,edition_number:1};
+    const current = rows?.[0] || {tournament_name:'Rising Talents League',season_year:2027,edition_number:null};
     document.getElementById('rtl-setting-tournament-name').value = current.tournament_name || 'Rising Talents League';
     document.getElementById('rtl-setting-season-year').value = current.season_year || 2027;
-    document.getElementById('rtl-setting-edition-number').value = current.edition_number || 1;
+    document.getElementById('rtl-setting-edition-number').value = current.edition_number ?? '';
     rtlApplyCompetitionIdentity(current);
     if (feedback) feedback.textContent = '';
   } catch (error) {
@@ -3751,10 +3780,11 @@ document.getElementById('rtl-competition-settings-form')?.addEventListener('subm
     }
     const tournament_name = document.getElementById('rtl-setting-tournament-name').value.trim();
     const season_year = Number(document.getElementById('rtl-setting-season-year').value);
-    const edition_number = Number(document.getElementById('rtl-setting-edition-number').value);
+    const editionValue = document.getElementById('rtl-setting-edition-number').value.trim();
+    const edition_number = editionValue === '' ? null : Number(editionValue);
     if (!tournament_name) throw new Error('Enter the tournament name.');
     if (!Number.isInteger(season_year) || season_year < 2000 || season_year > 2100) throw new Error('Enter a valid season year between 2000 and 2100.');
-    if (!Number.isInteger(edition_number) || edition_number < 1 || edition_number > 999) throw new Error('Enter an edition number between 1 and 999.');
+    if (edition_number !== null && (!Number.isInteger(edition_number) || edition_number < 1 || edition_number > 999)) throw new Error('Enter an edition number between 1 and 999, or leave it blank.');
     if (feedback) feedback.textContent = 'Saving settings...';
     const body = {setting_key:'main', tournament_name, season_year, edition_number, updated_at:new Date().toISOString()};
     await rtlRequest('rtl_site_settings', '?on_conflict=setting_key', {
