@@ -2613,7 +2613,7 @@ body.rtl-event-theme :is(.hero,.hero-section) { background-color:var(--rtl-theme
           <label for="rtl-setting-season-year">Season year</label>
           <input id="rtl-setting-season-year" type="number" min="2000" max="2100" step="1" required>
           <label for="rtl-setting-edition-number">Edition number</label>
-          <input id="rtl-setting-edition-number" type="number" min="1" max="999" step="1" required>
+          <input id="rtl-setting-edition-number" type="number" min="1" max="999" step="1" placeholder="Optional">
           <button type="submit">Save Competition Settings</button>
           <p id="rtl-competition-settings-feedback" role="status" aria-live="polite"></p>
         </form>
@@ -4135,20 +4135,24 @@ function rtlApplyCompetitionIdentity(settings) {
   if (!settings) return;
   const name = String(settings.tournament_name || 'Rising Talents League');
   const year = Number(settings.season_year) || 2027;
-  const edition = Number(settings.edition_number) || 1;
+  const editionValue = settings.edition_number;
+  const edition = editionValue === null || editionValue === undefined || editionValue === '' ? null : Number(editionValue);
   const nameNode = document.getElementById('rtl-hero-tournament-name');
   const yearNode = document.getElementById('rtl-hero-season-label');
   const editionNode = document.getElementById('rtl-hero-edition-label');
   if (nameNode) nameNode.textContent = name;
   if (yearNode) yearNode.textContent = `THE ${year} SEASON`;
-  if (editionNode) editionNode.textContent = `${rtlOrdinal(edition)} EDITION`;
+  if (editionNode) {
+    editionNode.textContent = Number.isInteger(edition) && edition >= 1 ? `${rtlOrdinal(edition)} EDITION` : '';
+    editionNode.hidden = !(Number.isInteger(edition) && edition >= 1);
+  }
   const regHeading = document.querySelector('#public-academy-registration h3');
   if (regHeading) regHeading.textContent = `Academy Registration for the ${year} Season`;
   const competitionEyebrow = document.querySelector('#competition .section-heading .eyebrow');
   if (competitionEyebrow) competitionEyebrow.textContent = `${year} Competition`;
   document.title = `${name} | ${year}`;
   const preview = document.getElementById('rtl-competition-settings-preview');
-  if (preview) preview.textContent = `${name} · ${year} Season · ${rtlOrdinal(edition)} Edition`;
+  if (preview) preview.textContent = `${name} · ${year} Season${Number.isInteger(edition) && edition >= 1 ? ` · ${rtlOrdinal(edition)} Edition` : ''}`;
 }
 async function loadRTLPublicCompetitionIdentity() {
   try {
@@ -4168,10 +4172,10 @@ async function loadRTLCompetitionSettings() {
   }
   try {
     const rows = await rtlRequest('rtl_site_settings', '?select=tournament_name,season_year,edition_number&setting_key=eq.main&limit=1');
-    const current = rows?.[0] || {tournament_name:'Rising Talents League',season_year:2027,edition_number:1};
+    const current = rows?.[0] || {tournament_name:'Rising Talents League',season_year:2027,edition_number:null};
     document.getElementById('rtl-setting-tournament-name').value = current.tournament_name || 'Rising Talents League';
     document.getElementById('rtl-setting-season-year').value = current.season_year || 2027;
-    document.getElementById('rtl-setting-edition-number').value = current.edition_number || 1;
+    document.getElementById('rtl-setting-edition-number').value = current.edition_number ?? '';
     rtlApplyCompetitionIdentity(current);
     if (feedback) feedback.textContent = '';
   } catch (error) {
@@ -4187,10 +4191,11 @@ document.getElementById('rtl-competition-settings-form')?.addEventListener('subm
     }
     const tournament_name = document.getElementById('rtl-setting-tournament-name').value.trim();
     const season_year = Number(document.getElementById('rtl-setting-season-year').value);
-    const edition_number = Number(document.getElementById('rtl-setting-edition-number').value);
+    const editionInput = document.getElementById('rtl-setting-edition-number').value.trim();
+    const edition_number = editionInput === '' ? null : Number(editionInput);
     if (!tournament_name) throw new Error('Enter the tournament name.');
     if (!Number.isInteger(season_year) || season_year < 2000 || season_year > 2100) throw new Error('Enter a valid season year between 2000 and 2100.');
-    if (!Number.isInteger(edition_number) || edition_number < 1 || edition_number > 999) throw new Error('Enter an edition number between 1 and 999.');
+    if (edition_number !== null && (!Number.isInteger(edition_number) || edition_number < 1 || edition_number > 999)) throw new Error('Enter an edition number between 1 and 999, or leave it blank.');
     if (feedback) feedback.textContent = 'Saving settings...';
     const body = {setting_key:'main', tournament_name, season_year, edition_number, updated_at:new Date().toISOString()};
     await rtlRequest('rtl_site_settings', '?on_conflict=setting_key', {
