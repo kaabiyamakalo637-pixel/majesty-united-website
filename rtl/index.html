@@ -1583,6 +1583,7 @@ html, body {
   }
 }
 
+.rtl-player-event-marker{display:inline-block;margin:2px 1px 0;padding:1px 3px;border-radius:4px;background:rgba(0,0,0,.65);color:#fff;font-size:9px;font-weight:800;white-space:nowrap}
 </style>
 
 <style>
@@ -2704,7 +2705,29 @@ function rtlRenderMatchStats(events,match){
   const stats=[['Final/live score',`${Number(match.home_score??0)} - ${Number(match.away_score??0)}`],['Goals recorded',count('goal','penalty','own_goal')],['Yellow cards',count('yellow_card')],['Red cards',count('red_card','second_yellow')],['Substitutions',count('substitution')]];
   return `<div class="rtl-match-stats">${stats.map(([label,value])=>`<div class="rtl-match-stat"><span>${rtlSafe(value)}</span><span>${label}</span><span></span></div>`).join('')}<p class="rtl-event-empty">Statistics reflect the match events entered by authorised RTL staff.</p></div>`;
 }
-function rtlRenderLineups(rows,match){
+function rtlPlayerLiveMarkers(player,events){
+  const name=String(player.player_name||'').trim().toLowerCase();
+  const number=player.shirt_number===null||player.shirt_number===undefined?'':String(player.shirt_number).trim();
+  if(!name)return '';
+  const label=(number?`#${number} `:'')+name;
+  const matching=(events||[]).map(event=>{
+    const text=String(event.player_name||'').toLowerCase();
+    const type=String(event.event_type||'').toLowerCase();
+    if(type==='substitution'){
+      if(text.includes(`off: ${label}`))return {event,side:'off'};
+      if(text.includes(`on: ${label}`))return {event,side:'on'};
+      return null;
+    }
+    return text.includes(name)?{event,side:''}:null;
+  }).filter(Boolean);
+  return matching.map(({event,side})=>{
+    const type=String(event.event_type||'').toLowerCase();
+    const icon=type==='goal'||type==='penalty'?'⚽':type==='own_goal'?'↩':type==='yellow_card'?'🟨':type==='red_card'||type==='second_yellow'?'🟥':type==='substitution'?(side==='off'?'↗':'↘'):'';
+    return icon?`<small class="rtl-player-event-marker" title="${rtlSafe(type.replace('_',' '))} ${rtlSafe(event.minute??'')}′">${icon} ${rtlSafe(event.minute??'')}′</small>`:'';
+  }).join('');
+}
+
+function rtlRenderLineups(rows,match,events=[]){
   if(!rows?.length)return '<p class="rtl-event-empty">Confirmed line-ups have not been published for this match.</p>';
   const academies=[...new Set(rows.map(p=>p.academy_name||match.home_academy||'Team'))];
   return academies.map(name=>{
@@ -2716,9 +2739,9 @@ function rtlRenderLineups(rows,match){
     const bySlot=Object.fromEntries(starters.map(p=>[String(p.position_slot||''),p]));
     const pitch=shape.map((line,r)=>`<div class="rtl-public-pitch-line">${line.map((position,i)=>{
       const player=bySlot[`${r}-${i}`];
-      return `<div class="rtl-public-pitch-player ${player?.is_goalkeeper?'is-gk':''}"><span class="rtl-public-pitch-shirt">${player?rtlSafe(player.shirt_number??'·'):'·'}</span><span>${player?rtlSafe(player.player_name||'Player'):rtlSafe(position)}${player?.is_captain?' (C)':''}${player?.is_goalkeeper?' (GK)':''}</span></div>`;
+      return `<div class="rtl-public-pitch-player ${player?.is_goalkeeper?'is-gk':''}"><span class="rtl-public-pitch-shirt">${player?rtlSafe(player.shirt_number??'·'):'·'}</span><span>${player?rtlSafe(player.player_name||'Player'):rtlSafe(position)}${player?.is_captain?' (C)':''}${player?.is_goalkeeper?' (GK)':''}${player?rtlPlayerLiveMarkers(player,events):''}</span></div>`;
     }).join('')}</div>`).join('');
-    const bench=subs.length?`<h5>${rtlSafe(name)} · Substitutes</h5><div class="rtl-public-bench">${subs.map(p=>`<span>${rtlSafe(p.shirt_number??'')} ${rtlSafe(p.player_name||'Player')}</span>`).join('')}</div>`:'';
+    const bench=subs.length?`<h5>${rtlSafe(name)} · Substitutes</h5><div class="rtl-public-bench">${subs.map(p=>`<span>${rtlSafe(p.shirt_number??'')} ${rtlSafe(p.player_name||'Player')} ${rtlPlayerLiveMarkers(p,events)}</span>`).join('')}</div>`:'';
     return `<div class="rtl-lineup-team"><h5>${rtlSafe(name)} · Starting XI · ${rtlSafe(formation)}</h5><div class="rtl-public-pitch">${pitch}</div>${bench}</div>`;
   }).join('');
 }
@@ -2741,7 +2764,7 @@ function rtlRenderH2H(match,matches){
 }
 function rtlRenderMatchTabs(match,events,allMatches,lineups=[]){
   const id=rtlMatchTabId(match.id);
-  return `<div class="rtl-match-tabs" data-match-tabs="${id}"><div class="rtl-match-tabbar" role="tablist" aria-label="Match information">${rtlMatchTabButton(id,'events','Match Events',true)}${rtlMatchTabButton(id,'lineup','Line-up')}${rtlMatchTabButton(id,'stats','Match Stats')}${rtlMatchTabButton(id,'h2h','H2H')}</div><section class="rtl-match-tabpanel" id="${id}-events-panel" role="tabpanel">${rtlRenderTimeline(events,match)}</section><section class="rtl-match-tabpanel" id="${id}-lineup-panel" role="tabpanel" hidden>${rtlRenderLineups(lineups,match)}</section><section class="rtl-match-tabpanel" id="${id}-stats-panel" role="tabpanel" hidden>${rtlRenderMatchStats(events,match)}</section><section class="rtl-match-tabpanel" id="${id}-h2h-panel" role="tabpanel" hidden>${rtlRenderH2H(match,allMatches)}</section></div>`;
+  return `<div class="rtl-match-tabs" data-match-tabs="${id}"><div class="rtl-match-tabbar" role="tablist" aria-label="Match information">${rtlMatchTabButton(id,'events','Match Events',true)}${rtlMatchTabButton(id,'lineup','Line-up')}${rtlMatchTabButton(id,'stats','Match Stats')}${rtlMatchTabButton(id,'h2h','H2H')}</div><section class="rtl-match-tabpanel" id="${id}-events-panel" role="tabpanel">${rtlRenderTimeline(events,match)}</section><section class="rtl-match-tabpanel" id="${id}-lineup-panel" role="tabpanel" hidden>${rtlRenderLineups(lineups,match,events)}</section><section class="rtl-match-tabpanel" id="${id}-stats-panel" role="tabpanel" hidden>${rtlRenderMatchStats(events,match)}</section><section class="rtl-match-tabpanel" id="${id}-h2h-panel" role="tabpanel" hidden>${rtlRenderH2H(match,allMatches)}</section></div>`;
 }
 async function rtlFetchPublicLineups(fixtureIds){
   if(!fixtureIds?.length)return {};
@@ -3751,6 +3774,30 @@ async function rtlSaveLiveScore(event,fixtureId){
   finally{button.disabled=false;button.textContent='Update Score & Status';}
 }
 
+function rtlEventPlayerLabel(player){
+  const number=player.shirt_number===null||player.shirt_number===undefined?'':`#${player.shirt_number} `;
+  return `${number}${player.player_name||player.full_name||'Player'}`;
+}
+function rtlUpdateEventPlayerChoices(form){
+  const team=form.querySelector('[name="team_side"]')?.value||'';
+  const type=form.querySelector('[name="event_type"]')?.value||'';
+  const needsPlayer=['goal','penalty','own_goal','yellow_card','red_card','second_yellow','penalty_missed'].includes(type);
+  const isSub=type==='substitution';
+  const playerWrap=form.querySelector('[data-event-player-wrap]');
+  const subWrap=form.querySelector('[data-event-sub-wrap]');
+  if(playerWrap)playerWrap.hidden=!needsPlayer;
+  if(subWrap)subWrap.hidden=!isSub;
+  form.querySelectorAll('select[data-player-team]').forEach(select=>{
+    [...select.options].forEach(option=>{
+      if(!option.value)return;
+      option.hidden=!!team&&option.dataset.team!==team;
+      option.disabled=option.hidden;
+    });
+    if(select.selectedOptions[0]?.disabled)select.value='';
+  });
+  const teamLabel=form.querySelector('[data-event-team-label]');
+  if(teamLabel)teamLabel.hidden=!needsPlayer&&!isSub;
+}
 function rtlOpenQuickEvent(fixtureId,eventType){
   const details=document.getElementById(`rtl-add-event-${fixtureId}`);
   const form=details?.querySelector('form');
@@ -3759,74 +3806,58 @@ function rtlOpenQuickEvent(fixtureId,eventType){
   const type=form.querySelector('[name="event_type"]');
   const minute=form.querySelector('[name="minute"]');
   const team=form.querySelector('[name="team_side"]');
-  if(type)type.value=eventType;
+  if(type){type.value=eventType;type.dispatchEvent(new Event('change'));}
   if(minute){
-    const live=document.querySelector(`[data-rtl-live-minute][data-match-status="live"]`);
-    const shown=live?.textContent?.match(/\d+/)?.[0];
-    minute.value=shown||'';
+    const live=document.querySelector(`[data-rtl-live-minute][data-match-status="live"][data-fixture-id="${fixtureId}"]`);
+    minute.value=live?.textContent?.match(/\d+/)?.[0]||'';
   }
-  if(team)team.value='';
-  const player=form.querySelector('[name="player_name"]');
-  if(player)player.value='';
+  if(team){team.value='';rtlUpdateEventPlayerChoices(form);}
+  form.querySelectorAll('select[data-player-team]').forEach(select=>select.value='');
   form.scrollIntoView({behavior:'smooth',block:'center'});
   (eventType==='half_time'||eventType==='full_time'?form.querySelector('button[type="submit"]'):team)?.focus();
 }
 
 async function rtlAddMatchEvent(event,fixtureId){
   event.preventDefault();
-  const form=event.currentTarget;
-  const button=form.querySelector('button[type="submit"]');
-  const message=form.querySelector('.rtl-event-message');
-  const data=new FormData(form);
-  const minute=Number(data.get('minute'));
-  const eventType=String(data.get('event_type')||'').trim();
-  const playerName=String(data.get('player_name')||'').trim();
-  const teamSide=String(data.get('team_side')||'').trim();
-  if(['goal','penalty','own_goal'].includes(eventType)&&!['home','away'].includes(teamSide)){message.textContent='Select which team the goal belongs to.';return;}
+  const form=event.currentTarget,button=form.querySelector('button[type="submit"]'),message=form.querySelector('.rtl-event-message');
+  const data=new FormData(form),minute=Number(data.get('minute'));
+  const eventType=String(data.get('event_type')||'').trim(),teamSide=String(data.get('team_side')||'').trim();
+  const selectedLabel=name=>form.querySelector(`[name="${name}"]`)?.selectedOptions?.[0]?.textContent?.trim()||'';
+  let playerName='';
+  if(['goal','penalty','own_goal','yellow_card','red_card','second_yellow','penalty_missed'].includes(eventType)){
+    playerName=selectedLabel('player_select');
+    if(!['home','away'].includes(teamSide)){message.textContent='Choose the team first.';return;}
+    if(!playerName){message.textContent='Choose a player from the selected team line-up.';return;}
+  }
+  if(eventType==='substitution'){
+    const off=selectedLabel('player_off'),on=selectedLabel('player_on');
+    if(!['home','away'].includes(teamSide)){message.textContent='Choose the team first.';return;}
+    if(!off||!on){message.textContent='Choose both players for the substitution.';return;}
+    if(off===on){message.textContent='The player coming on must differ from the player coming off.';return;}
+    playerName=`OFF: ${off} | ON: ${on}`;
+  }
   if(!Number.isInteger(minute)||minute<0||minute>130){message.textContent='Enter a match minute between 0 and 130.';return;}
   if(!eventType){message.textContent='Select an event type.';return;}
   if(button.disabled)return;
   button.disabled=true;
-  const originalLabel=button.textContent;
-  button.textContent='Saving...';
-  message.textContent='Saving match event. Please wait.';
-  const controller=new AbortController();
-  const timeout=setTimeout(()=>controller.abort(),15000);
+  const originalLabel=button.textContent;button.textContent='Saving...';message.textContent='Saving match event. Please wait.';
+  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),15000);
   try{
     const response=await fetch(`${RTL_DATA_URL}/rest/v1/rtl_match_events`,{
-      method:'POST',
-      headers:{...rtlAuthHeaders({'Content-Type':'application/json',Prefer:'return=minimal'})},
-      body:JSON.stringify({fixture_id:fixtureId,minute,event_type:eventType,player_name:playerName||null,team_side:teamSide||null}),
-      signal:controller.signal
+      method:'POST',headers:{...rtlAuthHeaders({'Content-Type':'application/json',Prefer:'return=minimal'})},
+      body:JSON.stringify({fixture_id:fixtureId,minute,event_type:eventType,player_name:playerName||null,team_side:teamSide||null}),signal:controller.signal
     });
-    if(!response.ok){
-      const detail=await response.text();
-      throw new Error(`Database error ${response.status}: ${detail||response.statusText}`);
-    }
-    message.textContent='Event saved. Updating score and match timeline...';
+    if(!response.ok){const detail=await response.text();throw new Error(`Database error ${response.status}: ${detail||response.statusText}`);}
     const updatedScore=await rtlRecalculateMatchScore(fixtureId);
     await rtlSyncMatchStatusFromEvents(fixtureId);
-    const eventMap=await rtlFetchMatchEvents([fixtureId]);
-    const card=form.closest('article');
-    const eventPanel=card?.querySelector('.rtl-live-events');
-    if(eventPanel){
-      eventPanel.innerHTML=`<h4>Recorded match events</h4>${rtlRenderMatchEvents(eventMap[fixtureId]||[])}`;
-    }
-    message.textContent=`Event saved. Score updated to ${updatedScore.home}-${updatedScore.away}.`; 
-    form.reset();
-    if(document.getElementById('live-match-list')){
-      try{await loadRTLFixtures();}catch(refreshError){console.warn('Public live centre refresh failed:',refreshError);}
-    }
-    if(typeof loadRTLStandings==='function') await loadRTLStandings();
+    message.textContent=`Event saved. Score updated to ${updatedScore.home}-${updatedScore.away}.`;
+    form.reset();rtlUpdateEventPlayerChoices(form);
+    await loadAdminMatchCentre();
+    if(document.getElementById('live-match-list'))await loadRTLFixtures();
+    if(typeof loadRTLStandings==='function')await loadRTLStandings();
   }catch(error){
-    message.textContent=error.name==='AbortError'
-      ? 'The request timed out. Check the match timeline before trying again, to avoid adding the same event twice.'
-      : 'Could not save event: '+error.message;
-  }finally{
-    clearTimeout(timeout);
-    button.disabled=false;
-    button.textContent=originalLabel;
-  }
+    message.textContent=error.name==='AbortError'?'The request timed out. Check the match timeline before trying again, to avoid adding the same event twice.':'Could not save event: '+error.message;
+  }finally{clearTimeout(timeout);button.disabled=false;button.textContent=originalLabel;}
 }
 
 async function loadAdminMatchCentre(){
@@ -3839,15 +3870,16 @@ async function loadAdminMatchCentre(){
     ]);
     const liveRows=rows.filter(x=>['live','halftime'].includes(String(x.status||'').toLowerCase()));
     const otherRows=rows.filter(x=>!['live','halftime'].includes(String(x.status||'').toLowerCase()));
-    let adminEventMap={};
+    let adminEventMap={},adminLineupMap={};
     try{adminEventMap=await rtlFetchMatchEvents(rows.map(x=>x.id));}catch(eventError){console.warn('Admin match events unavailable:',eventError);}
+    try{adminLineupMap=await rtlFetchPublicLineups(rows.map(x=>x.id));}catch(lineupError){console.warn('Approved match line-ups unavailable for event entry:',lineupError);}
     const card=x=>`<article class="team-slot" style="margin:12px 0;padding:17px">
       <div class="rtl-live-head"><strong>${rtlSafe(x.division)} | ${rtlSafe(x.group_name||'Group')} </strong>
       ${['live','halftime'].includes(String(x.status||'').toLowerCase())?`<span class="rtl-live-badge">${String(x.status).toLowerCase()==='halftime'?'Half-time':'<i class="rtl-live-dot"></i> Live'}</span>`:`<span class="rtl-live-division">${rtlSafe(x.status||'Scheduled')}</span>`}</div>
       <div class="rtl-live-teams"><div class="rtl-live-team">${rtlSafe(x.home_academy||'Home team')}</div>
       <div class="rtl-live-score"><span>${rtlSafe(x.home_score??0)}</span><span>:</span><span>${rtlSafe(x.away_score??0)}</span></div>
       <div class="rtl-live-team">${rtlSafe(x.away_academy||'Away team')}</div></div>
-      ${['live','halftime'].includes(String(x.status||'').toLowerCase())?`<div class="rtl-admin-live-minute" data-rtl-live-minute data-match-date="${rtlSafe(x.match_date)}" data-kick-off="${rtlSafe(x.kick_off)}" data-match-status="${rtlSafe(x.status)}">${rtlLiveMinute(x)}</div>`:''}
+      ${['live','halftime'].includes(String(x.status||'').toLowerCase())?`<div class="rtl-admin-live-minute" data-rtl-live-minute data-match-date="${rtlSafe(x.match_date)}" data-kick-off="${rtlSafe(x.kick_off)}" data-match-status="${rtlSafe(x.status)}" data-fixture-id="${x.id}">${rtlLiveMinute(x)}</div>`:''}
       <p>${rtlSafe(x.match_date)} | ${rtlSafe(x.kick_off)} | ${rtlSafe(x.venue||'Venue TBC')}</p>
       ${['completed','cancelled','postponed'].includes(String(x.status||'').toLowerCase())?`<p class="rtl-event-empty">${String(x.status).toLowerCase()==='completed'?'Match completed. Live controls are closed.':'Match controls are unavailable while this fixture is '+rtlSafe(x.status)+'.'}</p>`:`<div class="rtl-quick-event-panel">
         <h4>Quick Match Actions</h4>
@@ -3858,11 +3890,13 @@ async function loadAdminMatchCentre(){
       <details class="rtl-admin-details rtl-live-events"><summary>Recorded events (${(adminEventMap[x.id]||[]).length})</summary><div class="rtl-admin-details-body">${rtlRenderAdminMatchEvents(adminEventMap[x.id]||[],x.id)}</div></details>
       ${['completed','cancelled','postponed'].includes(String(x.status||'').toLowerCase())?'':`<details class="rtl-admin-details rtl-add-event-details" id="rtl-add-event-${x.id}"><summary>Add event details</summary><div class="rtl-admin-details-body">
         <form class="rtl-admin-event-form" onsubmit="rtlAddMatchEvent(event,'${x.id}')">
-          <label>Event type<select name="event_type" required><option value="goal">Goal</option><option value="own_goal">Own Goal</option><option value="penalty">Penalty scored</option><option value="yellow_card">Yellow card</option><option value="red_card">Red card</option><option value="second_yellow">Second yellow</option><option value="substitution">Substitution</option><option value="penalty_missed">Penalty missed</option><option value="half_time">Half-time</option><option value="full_time">Full-time</option></select></label>
+          <label>Event type<select name="event_type" required onchange="rtlUpdateEventPlayerChoices(this.form)"><option value="goal">Goal</option><option value="own_goal">Own Goal</option><option value="penalty">Penalty scored</option><option value="yellow_card">Yellow card</option><option value="red_card">Red card</option><option value="second_yellow">Second yellow</option><option value="substitution">Substitution</option><option value="penalty_missed">Penalty missed</option><option value="half_time">Half-time</option><option value="full_time">Full-time</option></select></label>
           <label>Minute<input name="minute" type="number" min="0" max="130" required placeholder="e.g. 67"></label>
-          <label>Team<select name="team_side"><option value="">Not applicable</option><option value="home">${rtlSafe(x.home_academy||'Home team')}</option><option value="away">${rtlSafe(x.away_academy||'Away team')}</option></select></label>
-          <label class="event-wide">Player / event details<input name="player_name" maxlength="160" placeholder="Player name, or OFF: Name | ON: Name"></label>
+          <label data-event-team-label>Team<select name="team_side" onchange="rtlUpdateEventPlayerChoices(this.form)"><option value="">Choose team</option><option value="home">${rtlSafe(x.home_academy||'Home team')}</option><option value="away">${rtlSafe(x.away_academy||'Away team')}</option></select></label>
+          <div class="event-wide" data-event-player-wrap><label>Player<select name="player_select" data-player-team><option value="">Choose player from line-up</option>${(adminLineupMap[x.id]||[]).filter(p=>['starter','substitute'].includes(String(p.selection_status||'').toLowerCase())).map(p=>`<option value="${rtlSafe(p.player_id||p.player_name)}" data-team="${String(p.academy_name||'').toLowerCase()===String(x.home_academy||'').toLowerCase()?'home':'away'}">${rtlSafe(rtlEventPlayerLabel(p))}</option>`).join('')}</select></label></div>
+          <div class="event-wide" data-event-sub-wrap hidden><label>Player coming off<select name="player_off" data-player-team><option value="">Choose player coming off</option>${(adminLineupMap[x.id]||[]).filter(p=>['starter','substitute'].includes(String(p.selection_status||'').toLowerCase())).map(p=>`<option value="${rtlSafe(p.player_id||p.player_name)}" data-team="${String(p.academy_name||'').toLowerCase()===String(x.home_academy||'').toLowerCase()?'home':'away'}">${rtlSafe(rtlEventPlayerLabel(p))}</option>`).join('')}</select></label><label>Player coming on<select name="player_on" data-player-team><option value="">Choose player coming on</option>${(adminLineupMap[x.id]||[]).filter(p=>['starter','substitute'].includes(String(p.selection_status||'').toLowerCase())).map(p=>`<option value="${rtlSafe(p.player_id||p.player_name)}" data-team="${String(p.academy_name||'').toLowerCase()===String(x.home_academy||'').toLowerCase()?'home':'away'}">${rtlSafe(rtlEventPlayerLabel(p))}</option>`).join('')}</select></label></div>
           <button type="submit">Save Match Event</button><p class="rtl-event-message" aria-live="polite"></p>
+          ${!(adminLineupMap[x.id]||[]).length?'<p class="rtl-event-message">No approved public line-ups found yet. Submit and approve both teams’ line-ups before recording player events.</p>':''}
         </form>
       </div></details>`}
       ${['completed','cancelled','postponed'].includes(String(x.status||'').toLowerCase())?'':`<details class="rtl-admin-details rtl-manual-score-details"><summary>Manual score correction and match status</summary><div class="rtl-admin-details-body">
