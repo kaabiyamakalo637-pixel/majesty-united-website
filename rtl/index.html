@@ -2704,8 +2704,11 @@ function rtlRenderMatchStats(events,match){
   const stats=[['Final/live score',`${Number(match.home_score??0)} - ${Number(match.away_score??0)}`],['Goals recorded',count('goal','penalty','own_goal')],['Yellow cards',count('yellow_card')],['Red cards',count('red_card','second_yellow')],['Substitutions',count('substitution')]];
   return `<div class="rtl-match-stats">${stats.map(([label,value])=>`<div class="rtl-match-stat"><span>${rtlSafe(value)}</span><span>${label}</span><span></span></div>`).join('')}<p class="rtl-event-empty">Statistics reflect the match events entered by authorised RTL staff.</p></div>`;
 }
-function rtlRenderLineups(rows,match){
-  if(!rows?.length)return '<p class="rtl-event-empty">Confirmed line-ups have not been published for this match.</p>';
+function rtlRenderLineups(rows,match,lineupError=''){
+  if(!rows?.length){
+    if(lineupError)return `<div class="rtl-event-empty"><strong>Line-up data could not be loaded.</strong><p>${rtlSafe(lineupError)}</p></div>`;
+    return '<p class="rtl-event-empty">Confirmed line-ups have not been published for this match.</p>';
+  }
   const academies=[...new Set(rows.map(p=>p.academy_name||match.home_academy||'Team'))];
   return academies.map(name=>{
     const teamRows=rows.filter(p=>(p.academy_name||match.home_academy||'Team')===name);
@@ -2739,9 +2742,9 @@ function rtlRenderH2H(match,matches){
     return `<div class="rtl-h2h-row"><span>${rtlSafe(x.match_date||'Date TBC')} · ${rtlSafe(x.home_academy||'Home')} vs ${rtlSafe(x.away_academy||'Away')}</span><strong>${rtlSafe(first??'-')} - ${rtlSafe(second??'-')}</strong></div>`;
   }).join('');
 }
-function rtlRenderMatchTabs(match,events,allMatches,lineups=[]){
+function rtlRenderMatchTabs(match,events,allMatches,lineups=[],lineupError=''){
   const id=rtlMatchTabId(match.id);
-  return `<div class="rtl-match-tabs" data-match-tabs="${id}"><div class="rtl-match-tabbar" role="tablist" aria-label="Match information">${rtlMatchTabButton(id,'events','Match Events',true)}${rtlMatchTabButton(id,'lineup','Line-up')}${rtlMatchTabButton(id,'stats','Match Stats')}${rtlMatchTabButton(id,'h2h','H2H')}</div><section class="rtl-match-tabpanel" id="${id}-events-panel" role="tabpanel">${rtlRenderTimeline(events,match)}</section><section class="rtl-match-tabpanel" id="${id}-lineup-panel" role="tabpanel" hidden>${rtlRenderLineups(lineups,match)}</section><section class="rtl-match-tabpanel" id="${id}-stats-panel" role="tabpanel" hidden>${rtlRenderMatchStats(events,match)}</section><section class="rtl-match-tabpanel" id="${id}-h2h-panel" role="tabpanel" hidden>${rtlRenderH2H(match,allMatches)}</section></div>`;
+  return `<div class="rtl-match-tabs" data-match-tabs="${id}"><div class="rtl-match-tabbar" role="tablist" aria-label="Match information">${rtlMatchTabButton(id,'events','Match Events',true)}${rtlMatchTabButton(id,'lineup','Line-up')}${rtlMatchTabButton(id,'stats','Match Stats')}${rtlMatchTabButton(id,'h2h','H2H')}</div><section class="rtl-match-tabpanel" id="${id}-events-panel" role="tabpanel">${rtlRenderTimeline(events,match)}</section><section class="rtl-match-tabpanel" id="${id}-lineup-panel" role="tabpanel" hidden>${rtlRenderLineups(lineups,match,lineupError)}</section><section class="rtl-match-tabpanel" id="${id}-stats-panel" role="tabpanel" hidden>${rtlRenderMatchStats(events,match)}</section><section class="rtl-match-tabpanel" id="${id}-h2h-panel" role="tabpanel" hidden>${rtlRenderH2H(match,allMatches)}</section></div>`;
 }
 async function rtlFetchPublicLineups(fixtureIds){
   if(!fixtureIds?.length)return {};
@@ -2890,9 +2893,9 @@ async function loadRTLFixtures() {
       </article>`;
     }).join('') : empty('◷','No fixtures scheduled','The official match schedule will appear here once fixtures are published.');
     rtlRefreshLiveMinutes();
-    let publicEventMap={}, publicLineupMap={}, publicEventsLoaded=true;
+    let publicEventMap={}, publicLineupMap={}, publicEventsLoaded=true, publicLineupError='';
     if(matches.length){try{publicEventMap=await rtlFetchMatchEvents(matches.map(m=>m.id));}catch(eventError){publicEventsLoaded=false;console.warn('RTL public match events unavailable:',eventError);}}
-    if(matches.length){try{publicLineupMap=await rtlFetchPublicLineups(matches.map(m=>m.id));}catch(lineupError){console.warn('RTL public line-ups unavailable:',lineupError);}}
+    if(matches.length){try{publicLineupMap=await rtlFetchPublicLineups(matches.map(m=>m.id));}catch(lineupError){publicLineupError=String(lineupError?.message||lineupError);console.warn('RTL public line-ups unavailable:',lineupError);}}
     // Never reset the seen-event baseline after a temporary events API failure.
     if(publicEventsLoaded) rtlCheckMatchdaySounds(matches,publicEventMap);
     if (liveBox) {
@@ -2909,7 +2912,7 @@ async function loadRTLFixtures() {
           </div>
           <div class="rtl-live-minute" data-rtl-live-minute data-match-date="${rtlSafe(match.match_date)}" data-kick-off="${rtlSafe(match.kick_off)}" data-match-status="${rtlSafe(match.status)}">${rtlLiveMinute(match)}</div>
           <div class="rtl-live-meta"><span>${rtlSafe(match.match_date||'Date TBC')}</span><span>${rtlSafe(match.venue||'Venue TBC')}</span>${match.referee_name?`<span>Referee: ${rtlSafe(match.referee_name)}</span>`:''}</div>
-          ${rtlRenderMatchTabs(match,publicEventMap[match.id]||[],matches,publicLineupMap[match.id]||[])}
+          ${rtlRenderMatchTabs(match,publicEventMap[match.id]||[],matches,publicLineupMap[match.id]||[],publicLineupError)}
         </article>`).join('') : '<p class="rtl-live-empty">No live matches at the moment. Live scores will appear here during matchdays.</p>';
       rtlRefreshLiveMinutes();
     }
@@ -2921,7 +2924,7 @@ async function loadRTLFixtures() {
           <div class="rtl-match-teams"><div class="rtl-match-team">${rtlSafe(match.home_academy||'Home team')}</div><div class="rtl-match-score"><span>${rtlSafe(match.home_score)}</span><span>:</span><span>${rtlSafe(match.away_score)}</span></div><div class="rtl-match-team away">${rtlSafe(match.away_academy||'Away team')}</div></div>
           <div class="rtl-match-meta"><span>◷ ${rtlSafe(match.kick_off||'Kick-off TBC')}</span><span>⌖ ${rtlSafe(match.venue||'Venue TBC')}</span></div>
           <details class="rtl-result-details"><summary>View match details <span>Match Events · Line-up · Stats · H2H</span></summary>
-            ${rtlRenderMatchTabs(match,publicEventMap[match.id]||[],matches,publicLineupMap[match.id]||[])}
+            ${rtlRenderMatchTabs(match,publicEventMap[match.id]||[],matches,publicLineupMap[match.id]||[],publicLineupError)}
           </details>
         </div>
       </article>`).join('') : empty('▣','No results recorded','Final scores will appear here after matches are completed and confirmed.');
