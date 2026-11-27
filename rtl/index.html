@@ -2275,7 +2275,7 @@ html, body {
   </div>
   <div class="card">
     <h3>Registered Player List</h3>
-    <p>Add and maintain your academy's eligible players. Player photographs are optional.</p>
+    <p>Add eligible players and upload a photo from your device. Photos remain private until RTL Admin approval.</p>
     <form id="academy-player-form">
       <label>Player full name</label><input id="roster-player-name" required>
       <div class="grid">
@@ -2284,7 +2284,7 @@ html, body {
       </div>
       <div class="grid">
         <div><label>Date of birth</label><input id="roster-player-dob" type="date"></div>
-        <div><label>Player photo URL (optional)</label><input id="roster-player-photo" type="url" placeholder="https://..."></div>
+        <div><label for="roster-player-photo-file">Player photo (optional)</label><input id="roster-player-photo-file" type="file" accept="image/jpeg,image/png,image/webp"><small>JPEG, PNG or WebP. Maximum 5 MB. Guardian consent is required before publication for players under 18.</small></div>
       </div>
       <button type="submit">Add Player</button><p id="academy-player-message"></p>
     </form>
@@ -2420,7 +2420,7 @@ function openRTLSection(section) {
   if(section==='promotions') loadRTLPromotionsAdmin();
   if(section==='hosted') loadRTLHostedAdmin();
   if(section==='staff') loadAdminStaff();
-  if(section==='players') loadPlayerAcademies();
+  if(section==='players') { loadPlayerAcademies(); loadPendingPlayerPhotos(); }
   if(section==='competition-settings') loadRTLCompetitionSettings();
 }
 
@@ -2443,8 +2443,8 @@ async function renderTeams(division) {
   const grid = document.getElementById('team-grid');
   grid.innerHTML = '<p>Loading approved academies...</p>';
 
-  const SUPABASE_URL = 'https://ewbasvidrguepjklexbd.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3YmFzdmlkcmd1ZXBqa2xleGJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU0OTUwOTQsImV4cCI6MjExMTA3MTA5NH0.RyQy6dY0AIj5KOoOQ9l_vzerJGQV0sj0FyLlIIEGRTE';
+  const SUPABASE_URL = 'https://vjzoxzcezkowxtbbcncx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqem94emNlemtvd3h0YmJjbmN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2OTA1MDYsImV4cCI6MjExMTI2NjUwNn0.DSc1x0HmQa0IAP2mKbtSPPgXX-IDpM9wh9LTxBcS6Nc';
 
   const headers = {
     apikey: SUPABASE_KEY,
@@ -4011,21 +4011,89 @@ async function loadAcademyPortal(){
     await loadAcademyRoster(aid);
   }catch(e){document.getElementById('academy-portal-profile').textContent='Unable to load academy data: '+e.message;}
 }
+async function rtlUploadPlayerPhoto(file, academyId, playerId){
+  if(!file) return null;
+  const allowed=['image/jpeg','image/png','image/webp'];
+  if(!allowed.includes(file.type)) throw new Error('Choose a JPEG, PNG or WebP image.');
+  if(file.size>5*1024*1024) throw new Error('The photo must be 5 MB or smaller.');
+  const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
+  const path=`${academyId}/${playerId}.${ext}`;
+  const response=await fetch(`${RTL_DATA_URL}/storage/v1/object/player-photos-private/${path}`,{
+    method:'POST',headers:rtlAuthHeaders({'Content-Type':file.type}),body:file
+  });
+  if(!response.ok) throw new Error('Photo upload failed: '+await response.text());
+  return path;
+}
 document.getElementById('academy-player-form')?.addEventListener('submit',async e=>{
   e.preventDefault();const msg=document.getElementById('academy-player-message');
+  const submit=e.target.querySelector('button[type="submit"]');
   try{
     const academyId=sessionStorage.getItem('rtlStaffAcademyId');
-    await rtlRequest('rtl_players','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({
+    const file=document.getElementById('roster-player-photo-file').files[0]||null;
+    const dobValue=document.getElementById('roster-player-dob').value;
+    const dob=dobValue?new Date(`${dobValue}T00:00:00`):null;
+    const age=dob?Math.floor((Date.now()-dob.getTime())/31557600000):null;
+    const isMinor=age!==null&&age<18;
+    const guardianConsent=!!file&&isMinor&&confirm('Confirm the parent or legal guardian has given permission for RTL to review this photo and, if approved, publish it.');
+    if(file&&isMinor&&!guardianConsent)return;
+    submit.disabled=true;msg.textContent='Saving player...';
+    const created=await rtlRequest('rtl_players','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({
       academy_id:academyId,full_name:document.getElementById('roster-player-name').value.trim(),
       shirt_number:Number(document.getElementById('roster-player-number').value),
       position:document.getElementById('roster-player-position').value||null,
       date_of_birth:document.getElementById('roster-player-dob').value||null,
-      photo_url:document.getElementById('roster-player-photo').value.trim()||null,
+      photo_url:null,photo_storage_path:null,photo_status:'none',
+      photo_guardian_consent:guardianConsent,photo_guardian_consent_at:guardianConsent?new Date().toISOString():null,
       active:true,created_by:await rtlCurrentUserId()
     })});
-    msg.textContent='Player added to your academy roster.';e.target.reset();await loadAcademyRoster(academyId);
+    const player=created?.[0];
+    if(!player?.id) throw new Error('Player was saved, but the database did not return its ID. Refresh the roster before retrying.');
+    if(file){
+      msg.textContent='Uploading private photo...';
+      try{
+        const path=await rtlUploadPlayerPhoto(file,academyId,player.id);
+        await rtlRequest('rtl_players',`?id=eq.${player.id}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({photo_storage_path:path,photo_status:'pending'})});
+        msg.textContent='Player added. Photo submitted privately for RTL Admin approval.';
+      }catch(uploadError){msg.textContent='Player added, but photo upload failed: '+uploadError.message+' You may upload the photo again after refreshing.';}
+    }else msg.textContent='Player added to your academy roster.';
+    e.target.reset();await loadAcademyRoster(academyId);
   }catch(err){msg.textContent='Unable to add player: '+err.message;}
+  finally{submit.disabled=false;}
 });
+async function loadPendingPlayerPhotos(){
+  const box=document.getElementById('rtl-player-photo-review-list');if(!box)return;
+  try{
+    const rows=await rtlRequest('rtl_players','?select=id,academy_id,full_name,photo_storage_path,photo_status,date_of_birth,photo_guardian_consent&photo_status=eq.pending&order=created_at.desc');
+    box.innerHTML=rows.length?rows.map(p=>`<div class="team-slot"><strong>${rtlSafe(p.full_name)}</strong><p>Photo awaiting approval · ${rtlSafe(p.date_of_birth||'Date of birth not recorded')} · Guardian consent: ${p.photo_guardian_consent?'Recorded':'Not recorded'}</p><button type="button" onclick="approveRTLPlayerPhoto('${p.id}')">Approve photo</button><button type="button" onclick="rejectRTLPlayerPhoto('${p.id}')">Reject photo</button></div>`).join(''):'<p>No player photos awaiting approval.</p>';
+  }catch(e){box.textContent='Unable to load photo submissions: '+e.message;}
+}
+async function approveRTLPlayerPhoto(playerId){
+  if(sessionStorage.getItem('rtlStaffRole')!=='admin')return alert('Only the main RTL Admin may approve player photos.');
+  try{
+    const rows=await rtlRequest('rtl_players',`?select=id,photo_storage_path,date_of_birth,photo_guardian_consent&id=eq.${playerId}`);
+    const player=rows[0];if(!player?.photo_storage_path)throw new Error('Private photo path not found.');
+    if(player.date_of_birth){const dob=new Date(`${player.date_of_birth}T00:00:00`);const age=Math.floor((Date.now()-dob.getTime())/31557600000);if(age<18&&!player.photo_guardian_consent)throw new Error('Guardian consent is required before publishing a player photo for anyone under 18.');}
+    const path=player.photo_storage_path;
+    const signed=await fetch(`${RTL_DATA_URL}/storage/v1/object/sign/player-photos-private/${path}`,{method:'POST',headers:rtlAuthHeaders({'Content-Type':'application/json'}),body:JSON.stringify({expiresIn:300})});
+    if(!signed.ok)throw new Error('Could not access private photo: '+await signed.text());
+    const signedData=await signed.json();const signedPath=signedData.signedURL||signedData.signedUrl;
+    const photoResponse=await fetch(signedPath.startsWith('http')?signedPath:`${RTL_DATA_URL}/storage/v1${signedPath}`);
+    if(!photoResponse.ok)throw new Error('Could not retrieve private photo.');
+    const blob=await photoResponse.blob();
+    const publicPath=path;
+    const upload=await fetch(`${RTL_DATA_URL}/storage/v1/object/player-photos-public/${publicPath}`,{method:'POST',headers:rtlAuthHeaders({'Content-Type':blob.type||'image/jpeg','x-upsert':'true'}),body:blob});
+    if(!upload.ok)throw new Error('Could not publish approved photo: '+await upload.text());
+    const publicUrl=`${RTL_DATA_URL}/storage/v1/object/public/player-photos-public/${publicPath}`;
+    await rtlRequest('rtl_players',`?id=eq.${playerId}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({photo_url:publicUrl,photo_status:'approved',photo_approved_at:new Date().toISOString(),photo_approved_by:await rtlCurrentUserId()})});
+    await loadPendingPlayerPhotos();alert('Player photo approved and published.');
+  }catch(e){alert('Photo approval failed: '+e.message);}
+}
+async function rejectRTLPlayerPhoto(playerId){
+  if(sessionStorage.getItem('rtlStaffRole')!=='admin')return alert('Only the main RTL Admin may reject player photos.');
+  if(!confirm('Reject this photo? The player record will remain.'))return;
+  try{await rtlRequest('rtl_players',`?id=eq.${playerId}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({photo_storage_path:null,photo_status:'rejected',photo_url:null})});await loadPendingPlayerPhotos();}
+  catch(e){alert('Photo rejection failed: '+e.message);}
+}
 async function toggleRosterPlayer(id,active){
   try{await rtlRequest('rtl_players',`?id=eq.${id}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({active})});await loadAcademyRoster(sessionStorage.getItem('rtlStaffAcademyId'));}
   catch(e){alert('Unable to update player: '+e.message);}
