@@ -355,6 +355,9 @@ footer {
   h1 { letter-spacing: -1px; }
 }
 
+/* RTL Smart Line-up workflow */
+#academy-lineup-form #lineup-copy-previous{width:100%;margin:7px 0 2px;background:#173c2a;border-color:rgba(142,224,178,.35);color:#dff8e8}
+.lineup-history-item{background:rgba(255,255,255,.018);padding:10px;border-radius:8px;margin:7px 0}
 /* RTL academy lineup: compact, mobile-first matchday workspace */
 .match-sheet{background:#07150f;color:#edf5ef;border:1px solid rgba(130,190,157,.2);padding:clamp(10px,2vw,18px);border-radius:16px;margin:12px 0;box-shadow:0 12px 30px rgba(0,0,0,.16)}
 .match-sheet>h3{color:#f5f8f5;background:transparent;padding:0;margin:0 0 6px;font-size:clamp(20px,3.5vw,26px)}
@@ -838,6 +841,29 @@ input, select, textarea { font-size: 16px; }
 .rtl-public-pitch-player.is-gk .rtl-public-pitch-shirt{background:#d6a529;color:#111}
 .rtl-public-bench{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0 14px}
 .rtl-public-bench span{padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.07);font-size:10px;color:#e8f1ea}
+
+/* Public match line-ups: both teams on one full pitch */
+.rtl-combined-lineups{margin:12px 0 16px}
+.rtl-combined-pitch{position:relative;display:flex;flex-direction:column;padding:12px 9px;border:2px solid rgba(255,255,255,.72);border-radius:12px;overflow:hidden;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 48px,rgba(0,0,0,.025) 48px 96px),linear-gradient(180deg,#07552f,#063d27)}
+.rtl-combined-pitch:before{content:"";position:absolute;inset:7px;border:1px solid rgba(255,255,255,.3);border-radius:7px;pointer-events:none}
+.rtl-combined-half{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:space-around;gap:7px;min-height:280px;padding:8px 2px}
+.rtl-combined-home{padding-bottom:14px}
+.rtl-combined-away{padding-top:14px}
+.rtl-combined-team-label{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#fff;font-size:11px;font-weight:850;text-shadow:0 1px 3px #000}
+.rtl-combined-team-label span{flex:none;padding:3px 6px;border-radius:5px;background:rgba(0,0,0,.35);font-size:9px}
+.rtl-combined-pitch-line{position:relative;display:flex;justify-content:space-around;align-items:center;gap:3px;min-height:38px}
+.rtl-combined-player{display:flex;flex-direction:column;align-items:center;gap:3px;width:20%;max-width:100px;text-align:center;color:#fff;font-size:9px;font-weight:750;line-height:1.2;text-shadow:0 1px 3px #000;overflow-wrap:anywhere}
+.rtl-combined-player .rtl-public-pitch-shirt{width:25px;height:25px}
+.rtl-combined-player.is-gk .rtl-public-pitch-shirt{background:#d6a529;color:#111}
+.rtl-combined-halfway{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;min-height:32px;border-top:1px solid rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.7)}
+.rtl-combined-halfway:before{content:"";position:absolute;left:50%;top:50%;width:54px;height:54px;transform:translate(-50%,-50%);border:1px solid rgba(255,255,255,.65);border-radius:50%}
+.rtl-combined-halfway span{padding:2px 6px;background:#07502f;color:#d7f2df;font-size:7px;font-weight:900;letter-spacing:1px}
+.rtl-combined-bench{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:6px;margin:7px 0 12px}
+.rtl-combined-bench strong{flex-basis:100%;color:#fff;font-size:11px}
+.rtl-combined-bench span{padding:5px 8px;border-radius:6px;background:rgba(255,255,255,.07);font-size:10px;color:#e8f1ea}
+.rtl-combined-direction{margin:6px 0;color:var(--muted);font-size:10px;text-align:center}
+@media(max-width:520px){.rtl-combined-pitch{padding:9px 5px}.rtl-combined-half{min-height:250px;gap:5px;padding-left:0;padding-right:0}.rtl-combined-player{font-size:8px;width:20%}.rtl-combined-player .rtl-public-pitch-shirt{width:23px;height:23px;font-size:9px}.rtl-combined-team-label{font-size:10px}.rtl-combined-bench span{font-size:9px}}
+
 @media(max-width:520px){.rtl-match-tabbar{gap:4px}.rtl-match-tab{font-size:10px;padding:9px 2px}.rtl-match-tabpanel{padding:9px}.rtl-match-event-row{grid-template-columns:40px minmax(0,1fr) auto;gap:7px}}
 
 
@@ -2298,6 +2324,8 @@ html, body {
       <label for="academy-lineup-fixture">Fixture</label><select id="academy-lineup-fixture" required><option value="">Select your fixture</option></select>
       <label for="academy-lineup-entry">Team entry</label><select id="academy-lineup-entry" required><option value="">Select your team</option></select>
       <label for="academy-lineup-coach">Coach name</label><input id="academy-lineup-coach" autocomplete="name" placeholder="Enter coach full name" required>
+      <button id="lineup-copy-previous" type="button" class="secondary" onclick="copyPreviousAcademyLineup()">Copy Previous Line-up</button>
+      <p class="form-help">Choose your fixture and team entry first. Copy your last line-up, make changes, then submit it as a new match line-up.</p>
       <div class="lineup-step"><span>2</span> Select your squad</div>
       <p class="lineup-intro">Tap Starter or Sub. Tap again to remove a player. Select 11 starters.</p>
       <div class="lineup-selection-summary"><div class="lineup-counter"><strong id="lineup-starter-count">0/11</strong><small>Starting XI</small></div><div class="lineup-counter"><strong id="lineup-sub-count">0</strong><small>Substitutes</small></div><div class="lineup-counter"><strong id="lineup-available-count">0</strong><small>Available</small></div></div>
@@ -2706,21 +2734,39 @@ function rtlRenderMatchStats(events,match){
 }
 function rtlRenderLineups(rows,match){
   if(!rows?.length)return '<p class="rtl-event-empty">Confirmed line-ups have not been published for this match.</p>';
-  const academies=[...new Set(rows.map(p=>p.academy_name||match.home_academy||'Team'))];
-  return academies.map(name=>{
-    const teamRows=rows.filter(p=>(p.academy_name||match.home_academy||'Team')===name);
+  const homeId=String(match.home_entry_id||'');
+  const awayId=String(match.away_entry_id||'');
+  const homeName=match.home_academy||'Home team';
+  const awayName=match.away_academy||'Away team';
+  const homeRows=rows.filter(p=>homeId&&String(p.academy_entry_id||'')===homeId);
+  const awayRows=rows.filter(p=>awayId&&String(p.academy_entry_id||'')===awayId);
+  const homeStarters=homeRows.filter(p=>String(p.selection_status||'').toLowerCase()==='starter');
+  const awayStarters=awayRows.filter(p=>String(p.selection_status||'').toLowerCase()==='starter');
+  if(!homeRows.length||!awayRows.length){
+    const missing=!homeRows.length&&!awayRows.length?'both teams':!homeRows.length?homeName:awayName;
+    return `<p class="rtl-event-empty">The approved public line-up for ${rtlSafe(missing)} is still pending. Both teams will appear together when both line-ups are approved for public view.</p>`;
+  }
+  const renderHalf=(teamRows,teamName,side)=>{
     const starters=teamRows.filter(p=>String(p.selection_status||'').toLowerCase()==='starter');
     const subs=teamRows.filter(p=>String(p.selection_status||'').toLowerCase()==='substitute');
     const formation=starters[0]?.formation||teamRows[0]?.formation||'4-2-3-1';
     const shape=RTL_FORMATIONS[formation]||RTL_FORMATIONS['4-2-3-1'];
     const bySlot=Object.fromEntries(starters.map(p=>[String(p.position_slot||''),p]));
-    const pitch=shape.map((line,r)=>`<div class="rtl-public-pitch-line">${line.map((position,i)=>{
-      const player=bySlot[`${r}-${i}`];
-      return `<div class="rtl-public-pitch-player ${player?.is_goalkeeper?'is-gk':''}"><span class="rtl-public-pitch-shirt">${player?rtlSafe(player.shirt_number??'·'):'·'}</span><span>${player?rtlSafe(player.player_name||'Player'):rtlSafe(position)}${player?.is_captain?' (C)':''}${player?.is_goalkeeper?' (GK)':''}</span></div>`;
-    }).join('')}</div>`).join('');
-    const bench=subs.length?`<h5>${rtlSafe(name)} · Substitutes</h5><div class="rtl-public-bench">${subs.map(p=>`<span>${rtlSafe(p.shirt_number??'')} ${rtlSafe(p.player_name||'Player')}</span>`).join('')}</div>`:'';
-    return `<div class="rtl-lineup-team"><h5>${rtlSafe(name)} · Starting XI · ${rtlSafe(formation)}</h5><div class="rtl-public-pitch">${pitch}</div>${bench}</div>`;
-  }).join('');
+    const ordered=side==='away'?[...shape].reverse():shape;
+    const lines=ordered.map((line,rowIndex)=>{
+      const sourceRow=side==='away'?shape.length-1-rowIndex:rowIndex;
+      return `<div class="rtl-combined-pitch-line">${line.map((position,i)=>{
+        const player=bySlot[`${sourceRow}-${i}`];
+        return `<div class="rtl-combined-player ${player?.is_goalkeeper?'is-gk':''}"><span class="rtl-public-pitch-shirt">${player?rtlSafe(player.shirt_number??'·'):'·'}</span><span>${player?rtlSafe(player.player_name||'Player'):rtlSafe(position)}${player?.is_captain?' (C)':''}${player?.is_goalkeeper?' (GK)':''}</span></div>`;
+      }).join('')}</div>`;
+    }).join('');
+    const bench=subs.length?`<div class="rtl-combined-bench"><strong>${rtlSafe(teamName)} substitutes</strong>${subs.map(p=>`<span>${rtlSafe(p.shirt_number??'')} ${rtlSafe(p.player_name||'Player')}</span>`).join('')}</div>`:`<div class="rtl-combined-bench"><strong>${rtlSafe(teamName)} substitutes</strong><span>None listed</span></div>`;
+    return `<div class="rtl-combined-half rtl-combined-${side}"><div class="rtl-combined-team-label"><strong>${rtlSafe(teamName)}</strong><span>${rtlSafe(formation)}</span></div>${lines}</div>${bench}`;
+  };
+  if(homeStarters.length!==11||awayStarters.length!==11){
+    return '<p class="rtl-event-empty">Both teams need 11 approved starting players before the combined pitch is displayed.</p>';
+  }
+  return `<div class="rtl-combined-lineups"><div class="rtl-combined-pitch">${renderHalf(homeRows,homeName,'home')}<div class="rtl-combined-halfway"><span>HALFWAY LINE</span></div>${renderHalf(awayRows,awayName,'away')}</div><p class="rtl-combined-direction">Home team at the top · Away team at the bottom</p></div>`;
 }
 function rtlRenderH2H(match,matches){
   const home=String(match.home_academy||'').trim().toLowerCase(),away=String(match.away_academy||'').trim().toLowerCase();
@@ -3913,6 +3959,8 @@ document.getElementById('rtl-staff-form')?.addEventListener('submit',async e=>{
  }catch(err){m.textContent='Could not create staff account: '+err.message;}
 });
 let rtlAcademyRoster = [];
+let rtlAcademyLineups = [];
+let rtlAcademyFixtures = [];
 function rosterPhoto(url,name){
   if(url) return `<img class="player-photo" src="${rtlSafe(url)}" alt="${rtlSafe(name)}" loading="lazy" onerror="this.style.display='none'">`;
   return `<div class="player-placeholder">${rtlSafe((name||'?').split(/\s+/).map(x=>x[0]).slice(0,2).join('').toUpperCase())}</div>`;
@@ -3996,18 +4044,20 @@ async function loadAcademyPortal(){
     const [a,entries,fixtures,lineups]=await Promise.all([
       rtlRequest('rtl_academies',`?select=*&id=eq.${aid}`),
       rtlRequest('rtl_entries',`?select=*&academy_id=eq.${aid}&season=eq.2027`),
-      rtlRequest('rtl_public_fixtures','?select=id,division,match_date,kick_off,home_academy,away_academy&season=eq.2027&order=match_date.asc'),
+      rtlRequest('rtl_public_fixtures','?select=id,division,match_date,kick_off,home_academy,away_academy,home_entry_id,away_entry_id&season=eq.2027&order=match_date.asc'),
       rtlRequest('rtl_match_lineups','?select=*&order=submitted_at.desc')
     ]);
     const academy=a[0];
+    rtlAcademyLineups=lineups.filter(x=>entries.some(en=>en.id===x.academy_entry_id));
+    rtlAcademyFixtures=fixtures;
     document.getElementById('academy-portal-profile').innerHTML=academy?`<strong>${rtlSafe(academy.academy_name)}</strong><p>${rtlSafe(academy.location)}</p><p>Status: ${rtlSafe(academy.registration_status)}</p>`:'Academy record unavailable.';
     document.getElementById('academy-portal-entries').innerHTML=entries.length?entries.map(x=>`<p>${rtlSafe(x.division)} | Group ${rtlSafe(x.group_name)} | Entry ${rtlSafe(x.entry_number)}</p>`).join(''):'No approved entries listed.';
     const entrySel=document.getElementById('academy-lineup-entry');
     entrySel.innerHTML='<option value="">Select entry</option>'+entries.map(x=>`<option value="${x.id}">${rtlSafe(x.division)} Group ${rtlSafe(x.group_name)}</option>`).join('');
     const fxSel=document.getElementById('academy-lineup-fixture');
     fxSel.innerHTML='<option value="">Select fixture</option>'+fixtures.map(x=>`<option value="${x.id}">${rtlSafe(x.match_date)} ${rtlSafe(x.division)}: ${rtlSafe(x.home_academy)} vs ${rtlSafe(x.away_academy)}</option>`).join('');
-    const mine=lineups.filter(x=>entries.some(en=>en.id===x.academy_entry_id));
-    document.getElementById('academy-lineup-history').innerHTML=mine.length?mine.map(x=>`<div class="lineup-history-item"><div><strong>${rtlSafe(x.coach_name)}</strong><p>${rtlSafe(x.status)} · ${rtlSafe(x.submitted_at||x.created_at)} · Public request: ${x.public_requested?'Yes':'No'}</p></div><button type="button" onclick="editAcademyLineup('${x.id}')">Edit line-up</button></div>`).join(''):'No line-up submissions yet.';
+    const mine=rtlAcademyLineups;
+    document.getElementById('academy-lineup-history').innerHTML=mine.length?mine.map(x=>{const f=fixtures.find(y=>y.id===x.fixture_id);const entry=entries.find(y=>y.id===x.academy_entry_id);const opponent=f?(String(f.home_entry_id||'')===String(x.academy_entry_id)?f.away_academy:f.home_academy):'Fixture';return `<div class="lineup-history-item"><div><strong>${rtlSafe(f?.match_date||'Match date TBC')} · ${rtlSafe(entry?.division||f?.division||'Team')}</strong><p>${rtlSafe(opponent||'Opponent TBC')} · ${rtlSafe(x.status)} · Public request: ${x.public_requested?'Yes':'No'}</p></div><button type="button" onclick="editAcademyLineup('${x.id}')">Continue / Edit</button></div>`;}).join(''):'No line-ups yet. Select a fixture above to create your first line-up.';
     await loadAcademyRoster(aid);
   }catch(e){document.getElementById('academy-portal-profile').textContent='Unable to load academy data: '+e.message;}
 }
@@ -4030,6 +4080,41 @@ async function toggleRosterPlayer(id,active){
   try{await rtlRequest('rtl_players',`?id=eq.${id}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({active})});await loadAcademyRoster(sessionStorage.getItem('rtlStaffAcademyId'));}
   catch(e){alert('Unable to update player: '+e.message);}
 }
+async function copyPreviousAcademyLineup(){
+ const msg=document.getElementById('academy-lineup-message');
+ const fixtureId=document.getElementById('academy-lineup-fixture').value;
+ const entryId=document.getElementById('academy-lineup-entry').value;
+ if(!fixtureId||!entryId){msg.textContent='Select the new fixture and your team entry first.';return;}
+ try{
+  const candidates=rtlAcademyLineups.filter(x=>String(x.academy_entry_id)===String(entryId)&&String(x.fixture_id)!==String(fixtureId)).sort((a,b)=>String(b.submitted_at||b.created_at||'').localeCompare(String(a.submitted_at||a.created_at||'')));
+  if(!candidates.length)throw new Error('No previous line-up exists for this team entry yet.');
+  const previous=candidates[0];
+  const players=await rtlRequest('rtl_lineup_players',`?select=*&lineup_id=eq.${previous.id}&order=sort_order.asc`);
+  await loadAcademyRoster(sessionStorage.getItem('rtlStaffAcademyId'));
+  document.getElementById('academy-lineup-coach').value=previous.coach_name||sessionStorage.getItem('rtlStaffName')||'';
+  document.getElementById('lineup-formation').value=previous.formation||'4-2-3-1';
+  document.getElementById('lineup-public-request').checked=!!previous.public_requested;
+  document.querySelectorAll('#lineup-eligible-players .player-row').forEach(el=>{
+   const playerId=el.dataset.playerId;
+   const saved=players.find(x=>String(x.player_id)===String(playerId));
+   const select=el.querySelector('.lineup-status');
+   if(select)select.value=saved?.selection_status||'';
+  });
+  rtlPitchAssignments=Object.fromEntries(players.filter(x=>x.selection_status==='starter'&&x.position_slot).map(x=>[x.position_slot,x.player_id]));
+  syncLineupPlayerPickButtons();
+  renderSelectedLineup();
+  const captain=document.getElementById('lineup-captain'),keeper=document.getElementById('lineup-goalkeeper');
+  if(captain)captain.value=previous.captain_player_id||'';
+  if(keeper)keeper.value=previous.goalkeeper_player_id||'';
+  rtlEditingLineupId=null;
+  document.getElementById('lineup-editing-banner').hidden=true;
+  document.getElementById('lineup-cancel-edit').hidden=true;
+  document.querySelector('#academy-lineup-form .lineup-submit').textContent='Submit Match Line-up';
+  msg.textContent='Previous line-up copied. Review the players, positions and leadership, then submit this fixture.';
+  document.getElementById('academy-lineup-form').scrollIntoView({behavior:'smooth',block:'start'});
+ }catch(err){msg.textContent='Unable to copy previous line-up: '+err.message;}
+}
+
 async function editAcademyLineup(id){
  const msg=document.getElementById('academy-lineup-message');
  try{
@@ -4083,6 +4168,13 @@ document.getElementById('academy-lineup-form')?.addEventListener('submit',async 
    captain_player_id:captainId,goalkeeper_player_id:goalkeeperId,
    public_requested:document.getElementById('lineup-public-request').checked,status:'submitted',created_by:await rtlCurrentUserId(),submitted_at:new Date().toISOString()};
   let lineup;
+  if(!rtlEditingLineupId){
+   const existing=await rtlRequest('rtl_match_lineups',`?select=id,status&fixture_id=eq.${encodeURIComponent(lineupPayload.fixture_id)}&academy_entry_id=eq.${encodeURIComponent(lineupPayload.academy_entry_id)}`);
+   if(existing.length){
+    msg.innerHTML=`A line-up already exists for this fixture. Open the existing submission instead of creating a duplicate. <button type="button" onclick="editAcademyLineup('${existing[0].id}')">Open existing line-up</button>`;
+    return;
+   }
+  }
   if(rtlEditingLineupId){
    const id=rtlEditingLineupId;
    await rtlRequest('rtl_match_lineups',`?id=eq.${id}`,{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(lineupPayload)});
@@ -4092,7 +4184,7 @@ document.getElementById('academy-lineup-form')?.addEventListener('submit',async 
    const lineupRows=await rtlRequest('rtl_match_lineups','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(lineupPayload)});
    lineup=lineupRows[0];
   }
-  const players=[...slots.map((x,i)=>({lineup_id:lineup.id,player_id:x.player.id,player_name:x.player.full_name,shirt_number:x.player.shirt_number,selection_status:'starter',position_slot:x.slot,is_captain:x.player.id===captainId,is_goalkeeper:x.player.id===goalkeeperId,sort_order:i+1})),...subs.map((p,i)=>({lineup_id:lineup.id,player_id:p.id,player_name:p.full_name,shirt_number:p.shirt_number,selection_status:'substitute',position_slot:null,sort_order:i+12}))];
+  const players=[...slots.map((x,i)=>({lineup_id:lineup.id,player_id:x.player.id,player_name:x.player.full_name,shirt_number:x.player.shirt_number,selection_status:'starter',position_slot:x.slot,is_captain:x.player.id===captainId,is_goalkeeper:x.player.id===goalkeeperId,sort_order:i+1})),...subs.map((p,i)=>({lineup_id:lineup.id,player_id:p.id,player_name:p.full_name,shirt_number:p.shirt_number,selection_status:'substitute',position_slot:null,is_captain:false,is_goalkeeper:false,sort_order:i+12}))];
   if(players.length)await rtlRequest('rtl_lineup_players','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(players)});
   msg.textContent=rtlEditingLineupId?'Corrected line-up saved and returned to RTL for review.':'Line-up submitted. RTL will review it before any public display.';rtlEditingLineupId=null;rtlPitchAssignments={};e.target.reset();document.getElementById('lineup-editing-banner').hidden=true;document.getElementById('lineup-cancel-edit').hidden=true;e.target.querySelector('.lineup-submit').textContent='Submit Match Line-up';renderSelectedLineup();await loadAcademyPortal();
  }catch(err){msg.textContent='Line-up submission failed: '+err.message;}
