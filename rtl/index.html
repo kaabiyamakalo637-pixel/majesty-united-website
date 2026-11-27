@@ -3894,7 +3894,7 @@ document.getElementById('rtl-staff-form')?.addEventListener('submit',async e=>{
  if(!token){m.textContent='Your session has expired. Sign in again.';return;}
  m.textContent='Creating secure staff account...';
  try{
-   const response=await fetch(`${RTL_DATA_URL}/functions/v1/create-rtl-staff-`,{
+   const response=await fetch(`${RTL_DATA_URL}/functions/v1/create-rtl-staff`,{
      method:'POST',
      headers:{apikey:RTL_DATA_KEY,Authorization:`Bearer ${token}`,'Content-Type':'application/json'},
      body:JSON.stringify({
