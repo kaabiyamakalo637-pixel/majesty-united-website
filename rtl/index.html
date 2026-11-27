@@ -3759,7 +3759,10 @@ function rtlOpenQuickEvent(fixtureId,eventType){
   const type=form.querySelector('[name="event_type"]');
   const minute=form.querySelector('[name="minute"]');
   const team=form.querySelector('[name="team_side"]');
-  if(type)type.value=eventType;
+  if(type){
+    type.value=eventType;
+    if(typeof rtlToggleSubstitutionFields==='function')rtlToggleSubstitutionFields(type);
+  }
   if(minute){
     const live=document.querySelector(`[data-rtl-live-minute][data-match-status="live"]`);
     const shown=live?.textContent?.match(/\d+/)?.[0];
@@ -3772,6 +3775,30 @@ function rtlOpenQuickEvent(fixtureId,eventType){
   (eventType==='half_time'||eventType==='full_time'?form.querySelector('button[type="submit"]'):team)?.focus();
 }
 
+// Registered players from each fixture's confirmed line-ups.
+const rtlAdminFixturePlayers = {};
+function rtlUpdateSubstitutionPlayers(teamSelect){
+  const form=teamSelect.closest('form');
+  if(!form)return;
+  const players=(rtlAdminFixturePlayers[form.dataset.fixtureId]||{})[teamSelect.value]||[];
+  ['player_off','player_on'].forEach(name=>{
+    const select=form.querySelector(`[name="${name}"]`);
+    if(!select)return;
+    const old=select.value;
+    select.innerHTML='<option value="">Select player</option>'+players.map(p=>{
+      const label=(`${p.shirt_number??''} ${p.player_name||'Player'}`).trim();
+      return `<option value="${rtlSafe(p.player_name||'')}" ${old===String(p.player_name||'')?'selected':''}>${rtlSafe(label)}</option>`;
+    }).join('');
+  });
+}
+function rtlToggleSubstitutionFields(typeSelect){
+  const form=typeSelect.closest('form');
+  if(!form)return;
+  const show=typeSelect.value==='substitution';
+  form.querySelector('.rtl-substitution-fields').hidden=!show;
+  form.querySelector('.rtl-player-details-field').hidden=show;
+  if(show)rtlUpdateSubstitutionPlayers(form.querySelector('[name="team_side"]'));
+}
 async function rtlAddMatchEvent(event,fixtureId){
   event.preventDefault();
   const form=event.currentTarget;
@@ -3780,8 +3807,16 @@ async function rtlAddMatchEvent(event,fixtureId){
   const data=new FormData(form);
   const minute=Number(data.get('minute'));
   const eventType=String(data.get('event_type')||'').trim();
-  const playerName=String(data.get('player_name')||'').trim();
   const teamSide=String(data.get('team_side')||'').trim();
+  let playerName=String(data.get('player_name')||'').trim();
+  if(eventType==='substitution'){
+    const playerOff=String(data.get('player_off')||'').trim();
+    const playerOn=String(data.get('player_on')||'').trim();
+    if(!['home','away'].includes(teamSide)){message.textContent='Select the team making the substitution.';return;}
+    if(!playerOff||!playerOn){message.textContent='Select both players.';return;}
+    if(playerOff===playerOn){message.textContent='Select two different players.';return;}
+    playerName=`OFF: ${playerOff} | ON: ${playerOn}`;
+  }
   if(['goal','penalty','own_goal'].includes(eventType)&&!['home','away'].includes(teamSide)){message.textContent='Select which team the goal belongs to.';return;}
   if(!Number.isInteger(minute)||minute<0||minute>130){message.textContent='Enter a match minute between 0 and 130.';return;}
   if(!eventType){message.textContent='Select an event type.';return;}
@@ -3839,8 +3874,23 @@ async function loadAdminMatchCentre(){
     ]);
     const liveRows=rows.filter(x=>['live','halftime'].includes(String(x.status||'').toLowerCase()));
     const otherRows=rows.filter(x=>!['live','halftime'].includes(String(x.status||'').toLowerCase()));
+    let adminLineupMap={};
+    try{adminLineupMap=await rtlFetchPublicLineups(rows.map(x=>x.id));}catch(lineupError){console.warn('Admin match line-ups unavailable:',lineupError);}
     let adminEventMap={};
     try{adminEventMap=await rtlFetchMatchEvents(rows.map(x=>x.id));}catch(eventError){console.warn('Admin match events unavailable:',eventError);}
+    rows.forEach(fixture=>{
+      const teams={home:[],away:[]};
+      const home=String(fixture.home_academy||'').trim().toLowerCase();
+      const away=String(fixture.away_academy||'').trim().toLowerCase();
+      (adminLineupMap[fixture.id]||[]).forEach(player=>{
+        const academy=String(player.academy_name||'').trim().toLowerCase();
+        const side=academy===home?'home':academy===away?'away':'';
+        if(side&&!teams[side].some(p=>p.player_name===player.player_name)){
+          teams[side].push({player_name:player.player_name,shirt_number:player.shirt_number});
+        }
+      });
+      rtlAdminFixturePlayers[fixture.id]=teams;
+    });
     const card=x=>`<article class="team-slot" style="margin:12px 0;padding:17px">
       <div class="rtl-live-head"><strong>${rtlSafe(x.division)} | ${rtlSafe(x.group_name||'Group')} </strong>
       ${['live','halftime'].includes(String(x.status||'').toLowerCase())?`<span class="rtl-live-badge">${String(x.status).toLowerCase()==='halftime'?'Half-time':'<i class="rtl-live-dot"></i> Live'}</span>`:`<span class="rtl-live-division">${rtlSafe(x.status||'Scheduled')}</span>`}</div>
@@ -3857,11 +3907,15 @@ async function loadAdminMatchCentre(){
       </div>`}
       <details class="rtl-admin-details rtl-live-events"><summary>Recorded events (${(adminEventMap[x.id]||[]).length})</summary><div class="rtl-admin-details-body">${rtlRenderAdminMatchEvents(adminEventMap[x.id]||[],x.id)}</div></details>
       ${['completed','cancelled','postponed'].includes(String(x.status||'').toLowerCase())?'':`<details class="rtl-admin-details rtl-add-event-details" id="rtl-add-event-${x.id}"><summary>Add event details</summary><div class="rtl-admin-details-body">
-        <form class="rtl-admin-event-form" onsubmit="rtlAddMatchEvent(event,'${x.id}')">
-          <label>Event type<select name="event_type" required><option value="goal">Goal</option><option value="own_goal">Own Goal</option><option value="penalty">Penalty scored</option><option value="yellow_card">Yellow card</option><option value="red_card">Red card</option><option value="second_yellow">Second yellow</option><option value="substitution">Substitution</option><option value="penalty_missed">Penalty missed</option><option value="half_time">Half-time</option><option value="full_time">Full-time</option></select></label>
+        <form class="rtl-admin-event-form" data-fixture-id="${x.id}" onsubmit="rtlAddMatchEvent(event,'${x.id}')">
+          <label>Event type<select name="event_type" required onchange="rtlToggleSubstitutionFields(this)"><option value="goal">Goal</option><option value="own_goal">Own Goal</option><option value="penalty">Penalty scored</option><option value="yellow_card">Yellow card</option><option value="red_card">Red card</option><option value="second_yellow">Second yellow</option><option value="substitution">Substitution</option><option value="penalty_missed">Penalty missed</option><option value="half_time">Half-time</option><option value="full_time">Full-time</option></select></label>
           <label>Minute<input name="minute" type="number" min="0" max="130" required placeholder="e.g. 67"></label>
-          <label>Team<select name="team_side"><option value="">Not applicable</option><option value="home">${rtlSafe(x.home_academy||'Home team')}</option><option value="away">${rtlSafe(x.away_academy||'Away team')}</option></select></label>
-          <label class="event-wide">Player / event details<input name="player_name" maxlength="160" placeholder="Player name, or OFF: Name | ON: Name"></label>
+          <label>Team<select name="team_side" onchange="rtlUpdateSubstitutionPlayers(this)"><option value="">Not applicable</option><option value="home">${rtlSafe(x.home_academy||'Home team')}</option><option value="away">${rtlSafe(x.away_academy||'Away team')}</option></select></label>
+          <label class="event-wide rtl-player-details-field">Player / event details<input name="player_name" maxlength="160" placeholder="Player name or event details"></label>
+          <div class="event-wide rtl-substitution-fields" hidden>
+            <label>Player coming off (OFF)<select name="player_off"><option value="">Select team first</option></select></label>
+            <label>Player coming on (ON)<select name="player_on"><option value="">Select team first</option></select></label>
+          </div>
           <button type="submit">Save Match Event</button><p class="rtl-event-message" aria-live="polite"></p>
         </form>
       </div></details>`}
