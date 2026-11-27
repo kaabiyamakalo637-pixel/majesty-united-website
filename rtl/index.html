@@ -1650,6 +1650,16 @@ html, body {
   }
 }
 
+
+/* RTL event themes */
+body.rtl-event-theme { --bg: var(--rtl-theme-bg); --panel: var(--rtl-theme-panel); --panel2: var(--rtl-theme-panel2); --accent: var(--rtl-theme-primary); --red: var(--rtl-theme-primary); --line: var(--rtl-theme-line); }
+body.rtl-event-theme header { background: color-mix(in srgb, var(--rtl-theme-bg) 94%, transparent); }
+.rtl-theme-swatches { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 18px; }
+.rtl-theme-swatch { width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,.55); }
+.rtl-theme-preview { border:1px solid var(--line); border-radius:12px; padding:18px; margin:12px 0; background:var(--panel); }
+.rtl-theme-colours { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+@media(max-width:520px){.rtl-theme-colours{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -2095,7 +2105,41 @@ html, body {
     <article class="card"><h3>Partners & Promotions</h3><p>Manage partner profiles and advertising campaigns.</p><button type="button" onclick="openRTLSection('promotions')">Manage Promotions</button></article>
     <article class="card"><h3>Hosted Tournaments</h3><p>Create independent Majesty Group events.</p><button type="button" onclick="openRTLSection('hosted')">Manage Tournaments</button></article>
     <article class="card" id="rtl-competition-settings-card"><h3>Competition Settings</h3><p>Update the season year, edition and tournament name shown across the public website.</p><button type="button" onclick="openRTLSection('competition-settings')">Edit Competition Identity</button></article>
+    <article class="card" id="rtl-theme-manager-card"><h3>Event Theme Manager</h3><p>Change website colours for finals, celebrations and special events. Themes return to RTL colours automatically.</p><button type="button" onclick="openRTLSection('theme-manager')">Manage Event Theme</button></article>
+    <article class="card" id="rtl-vote-manager-card"><h3>Live Vote Management</h3><p>Manage the Fan Vote and Man of the Match voting period.</p><button type="button" onclick="openRTLSection('vote-manager')">Manage Live Vote</button></article>
   </div>
+      <section id="rtl-theme-manager-section" class="admin-section" hidden>
+        <h2>Event Theme Manager</h2>
+        <p>Choose a preset or enter custom colours. Set an end time for automatic restoration of the original RTL colours.</p>
+        <button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button>
+        <form id="rtl-theme-manager-form" class="card" style="margin-top:18px">
+          <label for="rtl-theme-preset">Theme preset</label>
+          <select id="rtl-theme-preset">
+            <option value="original">Original RTL</option><option value="gold-silver">Gold & Silver Final</option>
+            <option value="purple-gold">Royal Purple & Gold</option><option value="black-platinum">Black & Platinum</option>
+            <option value="emerald-gold">Emerald & Gold</option><option value="blue-silver">Royal Blue & Silver</option>
+            <option value="custom">Custom colours</option>
+          </select>
+          <div class="rtl-theme-colours">
+            <div><label for="rtl-theme-primary">Primary colour</label><input id="rtl-theme-primary" type="color" value="#CE1126"></div>
+            <div><label for="rtl-theme-secondary">Secondary colour</label><input id="rtl-theme-secondary" type="color" value="#071b12"></div>
+            <div><label for="rtl-theme-accent">Accent colour</label><input id="rtl-theme-accent" type="color" value="#D4AF37"></div>
+          </div>
+          <label for="rtl-theme-start">Start date and time</label><input id="rtl-theme-start" type="datetime-local">
+          <label for="rtl-theme-end">End date and time</label><input id="rtl-theme-end" type="datetime-local">
+          <p>For a champion celebration, set the end time to 24 hours after the start time.</p>
+          <div class="rtl-theme-preview" id="rtl-theme-preview"><strong>Theme preview</strong><p>Rising Talents League. Developing Talent. Building Futures.</p></div>
+          <button type="submit">Save and Schedule Theme</button>
+          <button type="button" onclick="rtlClearEventTheme()">Restore Original RTL Colours Now</button>
+          <p id="rtl-theme-feedback" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+      <section id="rtl-vote-manager-section" class="admin-section" hidden>
+        <h2>Live Vote Management</h2>
+        <p>The current website file contains the public Fan Vote information section, but no voting records, vote submission logic or management controls. I have not added fake controls that might overwrite voting data.</p>
+        <div class="card"><strong>Voting backend needs to be reconnected.</strong><p>Once the original vote table and its rules are identified, this section will manage opening and closing votes, eligible matches, player options and results.</p></div>
+        <button type="button" onclick="openRTLSection('dashboard')">Back to Dashboard</button>
+      </section>
       <section id="rtl-competition-settings-section" class="admin-section" hidden>
         <h2>Competition Settings</h2>
         <p>Change the public competition identity when a new season, edition or tournament is announced. Changes update the homepage labels for every visitor.</p>
@@ -2389,7 +2433,7 @@ html, body {
 function openRTLSection(section) {
   const role = sessionStorage.getItem('rtlStaffRole');
   const managerSections = ['academies','entries','fixtures','lineups','matches','chat','newsroom','promotions','hosted'];
-  const adminOnly = ['staff','players','competition-settings'];
+  const adminOnly = ['staff','players','competition-settings','theme-manager','vote-manager'];
   if (managerSections.includes(section) && !['admin','rtl_staff'].includes(role)) {
     alert('This section is reserved for RTL administrators.');
     return;
@@ -2402,7 +2446,7 @@ function openRTLSection(section) {
     dashboard:'rtl-admin-grid', fixtures:'rtl-fixtures-section',
     players:'rtl-player-registration', academies:'rtl-academies-section',
     entries:'rtl-entries-section', lineups:'rtl-lineups-section',
-    matches:'rtl-matches-section', chat:'rtl-chat-section', staff:'rtl-staff-section', newsroom:'rtl-newsroom-section', promotions:'rtl-promotions-section', hosted:'rtl-hosted-section', 'competition-settings':'rtl-competition-settings-section'
+    matches:'rtl-matches-section', chat:'rtl-chat-section', staff:'rtl-staff-section', newsroom:'rtl-newsroom-section', promotions:'rtl-promotions-section', hosted:'rtl-hosted-section', 'competition-settings':'rtl-competition-settings-section', 'theme-manager':'rtl-theme-manager-section', 'vote-manager':'rtl-vote-manager-section'
   };
   document.getElementById('rtl-admin-dashboard').hidden = false;
   document.getElementById('rtl-academy-portal').hidden = true;
@@ -2422,6 +2466,7 @@ function openRTLSection(section) {
   if(section==='staff') loadAdminStaff();
   if(section==='players') loadPlayerAcademies();
   if(section==='competition-settings') loadRTLCompetitionSettings();
+  if(section==='theme-manager') loadRTLThemeSettings();
 }
 
 function showDivision(division, button) {
@@ -3431,6 +3476,38 @@ const rtlApi = (table, query='') => `${RTL_DATA_URL}/rest/v1/${table}${query}`;
 function rtlAuthHeaders(extra={}) { const token=sessionStorage.getItem('rtlAccessToken'); return {apikey:RTL_DATA_KEY, Authorization:`Bearer ${token||RTL_DATA_KEY}`, ...extra}; }
 async function rtlRequest(table, query='', options={}) { const r=await fetch(rtlApi(table,query),{...options,headers:rtlAuthHeaders(options.headers||{})}); if(!r.ok) throw new Error(await r.text()); const t=await r.text(); return t?JSON.parse(t):null; }
 
+const RTL_THEME_DEFAULT = {name:'Original RTL',primary:'#CE1126',secondary:'#071b12',accent:'#D4AF37'};
+const RTL_THEME_PRESETS = {
+  original:{name:'Original RTL',primary:'#CE1126',secondary:'#071b12',accent:'#D4AF37'},
+  'gold-silver':{name:'Gold & Silver Final',primary:'#C9A227',secondary:'#171717',accent:'#C0C0C0'},
+  'purple-gold':{name:'Royal Purple & Gold',primary:'#51247A',secondary:'#160D22',accent:'#D4AF37'},
+  'black-platinum':{name:'Black & Platinum',primary:'#BFC5CC',secondary:'#090B0E',accent:'#E5E4E2'},
+  'emerald-gold':{name:'Emerald & Gold',primary:'#087A55',secondary:'#061B14',accent:'#D4AF37'},
+  'blue-silver':{name:'Royal Blue & Silver',primary:'#1746A2',secondary:'#071329',accent:'#C0C0C0'}
+};
+function rtlThemeIsActive(row){const now=Date.now();return !!row && (!row.starts_at || new Date(row.starts_at).getTime()<=now) && (!row.ends_at || new Date(row.ends_at).getTime()>now) && row.theme_name!=='Original RTL';}
+let rtlThemeTransitionTimer=null;
+function rtlApplyEventTheme(row){
+  if(rtlThemeTransitionTimer) clearTimeout(rtlThemeTransitionTimer);
+  const active=rtlThemeIsActive(row), t=active?row:RTL_THEME_DEFAULT, root=document.documentElement;
+  root.style.setProperty('--rtl-theme-primary',t.primary_color||t.primary||RTL_THEME_DEFAULT.primary);
+  root.style.setProperty('--rtl-theme-bg',t.secondary_color||t.secondary||RTL_THEME_DEFAULT.secondary);
+  root.style.setProperty('--rtl-theme-panel',t.panel_color||'#102b1e');
+  root.style.setProperty('--rtl-theme-panel2',t.panel2_color||'#173b2a');
+  root.style.setProperty('--rtl-theme-line',(t.accent_color||t.accent||RTL_THEME_DEFAULT.accent)+'66');
+  document.body.classList.toggle('rtl-event-theme',active);
+  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=active?(t.secondary_color||t.secondary):'#101820';
+  if(row){const now=Date.now(), transitions=[row.starts_at,row.ends_at].filter(Boolean).map(v=>new Date(v).getTime()).filter(v=>v>now);if(transitions.length){const delay=Math.max(1000,Math.min(2147480000,Math.min(...transitions)-now+1200));rtlThemeTransitionTimer=setTimeout(rtlFetchCurrentTheme,delay);}}
+}
+async function rtlFetchCurrentTheme(){try{const rows=await rtlRequest('rtl_site_theme_settings','?select=*&id=eq.true&limit=1');const row=rows?.[0]||null;rtlApplyEventTheme(row);return row;}catch(e){console.error('RTL theme load failed:',e);rtlApplyEventTheme(null);return null;}}
+function rtlThemePresetChanged(){const key=document.getElementById('rtl-theme-preset').value;const t=RTL_THEME_PRESETS[key];if(!t)return;document.getElementById('rtl-theme-primary').value=t.primary;document.getElementById('rtl-theme-secondary').value=t.secondary;document.getElementById('rtl-theme-accent').value=t.accent;rtlUpdateThemePreview();}
+function rtlUpdateThemePreview(){const p=document.getElementById('rtl-theme-primary')?.value||'#CE1126',s=document.getElementById('rtl-theme-secondary')?.value||'#071b12',a=document.getElementById('rtl-theme-accent')?.value||'#D4AF37',box=document.getElementById('rtl-theme-preview');if(box){box.style.background=s;box.style.borderColor=a;box.style.color='#fff';box.querySelector('strong').style.color=p;}}
+async function loadRTLThemeSettings(){const feedback=document.getElementById('rtl-theme-feedback');if(feedback)feedback.textContent='Loading current theme...';const row=await rtlFetchCurrentTheme();if(row){document.getElementById('rtl-theme-preset').value=Object.keys(RTL_THEME_PRESETS).find(k=>{const t=RTL_THEME_PRESETS[k];return t.primary===row.primary_color&&t.secondary===row.secondary_color&&t.accent===row.accent_color;})||'custom';document.getElementById('rtl-theme-primary').value=row.primary_color;document.getElementById('rtl-theme-secondary').value=row.secondary_color;document.getElementById('rtl-theme-accent').value=row.accent_color;document.getElementById('rtl-theme-start').value=row.starts_at?new Date(row.starts_at).toISOString().slice(0,16):'';document.getElementById('rtl-theme-end').value=row.ends_at?new Date(row.ends_at).toISOString().slice(0,16):'';}else{document.getElementById('rtl-theme-preset').value='original';}rtlUpdateThemePreview();if(feedback)feedback.textContent=row&&rtlThemeIsActive(row)?`Active theme: ${row.theme_name}`:'Original RTL colours are active.';}
+async function rtlSaveTheme(event){event.preventDefault();const feedback=document.getElementById('rtl-theme-feedback');const preset=document.getElementById('rtl-theme-preset').value;const chosen=RTL_THEME_PRESETS[preset]||{name:'Custom Event Theme'};const start=document.getElementById('rtl-theme-start').value;const end=document.getElementById('rtl-theme-end').value;if(start&&end&&new Date(end)<=new Date(start)){feedback.textContent='End time must be later than start time.';return;}if(!start&&end&&new Date(end)<=new Date()){feedback.textContent='End time must be in the future.';return;}const payload={id:true,theme_name:chosen.name,primary_color:document.getElementById('rtl-theme-primary').value,secondary_color:document.getElementById('rtl-theme-secondary').value,accent_color:document.getElementById('rtl-theme-accent').value,starts_at:start?new Date(start).toISOString():new Date().toISOString(),ends_at:end?new Date(end).toISOString():null,updated_at:new Date().toISOString()};feedback.textContent='Saving theme...';try{await rtlRequest('rtl_site_theme_settings','?on_conflict=id',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=representation'},body:JSON.stringify(payload)});await rtlFetchCurrentTheme();feedback.textContent='Theme saved. It will activate at the scheduled start time and revert automatically after the end time.';}catch(e){feedback.textContent='Unable to save theme: '+e.message;}}
+async function rtlClearEventTheme(){const feedback=document.getElementById('rtl-theme-feedback');try{await rtlRequest('rtl_site_theme_settings','?id=eq.true',{method:'PATCH',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({theme_name:'Original RTL',primary_color:RTL_THEME_DEFAULT.primary,secondary_color:RTL_THEME_DEFAULT.secondary,accent_color:RTL_THEME_DEFAULT.accent,starts_at:new Date().toISOString(),ends_at:new Date().toISOString(),updated_at:new Date().toISOString()})});rtlApplyEventTheme(null);feedback.textContent='Original RTL colours restored.';}catch(e){feedback.textContent='Unable to restore theme: '+e.message;}}
+document.addEventListener('DOMContentLoaded',()=>{rtlFetchCurrentTheme();document.getElementById('rtl-theme-preset')?.addEventListener('change',rtlThemePresetChanged);['rtl-theme-primary','rtl-theme-secondary','rtl-theme-accent'].forEach(id=>document.getElementById(id)?.addEventListener('input',()=>{document.getElementById('rtl-theme-preset').value='custom';rtlUpdateThemePreview();}));document.getElementById('rtl-theme-manager-form')?.addEventListener('submit',rtlSaveTheme);});
+
+
 // Public competition identity. The public site reads the single settings row.
 // Only the main Admin is offered the editor, and Supabase RLS enforces write access.
 function rtlOrdinal(value) {
@@ -3559,6 +3636,7 @@ function showRTLPortal(role) {
     if(playerCard) playerCard.hidden = role !== 'admin';
     const settingsCard = document.getElementById('rtl-competition-settings-card');
     if(settingsCard) settingsCard.hidden = role !== 'admin';
+    ['rtl-theme-manager-card','rtl-vote-manager-card'].forEach(id=>{const card=document.getElementById(id);if(card)card.hidden=role!=='admin';});
     const heading = document.querySelector('#rtl-admin-dashboard h2');
     if(heading) heading.textContent = role === 'admin' ? 'RTL Administration Dashboard' : 'RTL Staff Operations Dashboard';
     openRTLSection('dashboard');
@@ -3759,7 +3837,10 @@ function rtlOpenQuickEvent(fixtureId,eventType){
   const type=form.querySelector('[name="event_type"]');
   const minute=form.querySelector('[name="minute"]');
   const team=form.querySelector('[name="team_side"]');
-  if(type)type.value=eventType;
+  if(type){
+    type.value=eventType;
+    if(typeof rtlToggleSubstitutionFields==='function')rtlToggleSubstitutionFields(type);
+  }
   if(minute){
     const live=document.querySelector(`[data-rtl-live-minute][data-match-status="live"]`);
     const shown=live?.textContent?.match(/\d+/)?.[0];
@@ -3772,6 +3853,30 @@ function rtlOpenQuickEvent(fixtureId,eventType){
   (eventType==='half_time'||eventType==='full_time'?form.querySelector('button[type="submit"]'):team)?.focus();
 }
 
+// Registered players from each fixture's confirmed line-ups.
+const rtlAdminFixturePlayers = {};
+function rtlUpdateSubstitutionPlayers(teamSelect){
+  const form=teamSelect.closest('form');
+  if(!form)return;
+  const players=(rtlAdminFixturePlayers[form.dataset.fixtureId]||{})[teamSelect.value]||[];
+  ['player_off','player_on'].forEach(name=>{
+    const select=form.querySelector(`[name="${name}"]`);
+    if(!select)return;
+    const old=select.value;
+    select.innerHTML='<option value="">Select player</option>'+players.map(p=>{
+      const label=(`${p.shirt_number??''} ${p.player_name||'Player'}`).trim();
+      return `<option value="${rtlSafe(p.player_name||'')}" ${old===String(p.player_name||'')?'selected':''}>${rtlSafe(label)}</option>`;
+    }).join('');
+  });
+}
+function rtlToggleSubstitutionFields(typeSelect){
+  const form=typeSelect.closest('form');
+  if(!form)return;
+  const show=typeSelect.value==='substitution';
+  form.querySelector('.rtl-substitution-fields').hidden=!show;
+  form.querySelector('.rtl-player-details-field').hidden=show;
+  if(show)rtlUpdateSubstitutionPlayers(form.querySelector('[name="team_side"]'));
+}
 async function rtlAddMatchEvent(event,fixtureId){
   event.preventDefault();
   const form=event.currentTarget;
@@ -3780,8 +3885,16 @@ async function rtlAddMatchEvent(event,fixtureId){
   const data=new FormData(form);
   const minute=Number(data.get('minute'));
   const eventType=String(data.get('event_type')||'').trim();
-  const playerName=String(data.get('player_name')||'').trim();
   const teamSide=String(data.get('team_side')||'').trim();
+  let playerName=String(data.get('player_name')||'').trim();
+  if(eventType==='substitution'){
+    const playerOff=String(data.get('player_off')||'').trim();
+    const playerOn=String(data.get('player_on')||'').trim();
+    if(!['home','away'].includes(teamSide)){message.textContent='Select the team making the substitution.';return;}
+    if(!playerOff||!playerOn){message.textContent='Select both players.';return;}
+    if(playerOff===playerOn){message.textContent='Select two different players.';return;}
+    playerName=`OFF: ${playerOff} | ON: ${playerOn}`;
+  }
   if(['goal','penalty','own_goal'].includes(eventType)&&!['home','away'].includes(teamSide)){message.textContent='Select which team the goal belongs to.';return;}
   if(!Number.isInteger(minute)||minute<0||minute>130){message.textContent='Enter a match minute between 0 and 130.';return;}
   if(!eventType){message.textContent='Select an event type.';return;}
@@ -3839,8 +3952,23 @@ async function loadAdminMatchCentre(){
     ]);
     const liveRows=rows.filter(x=>['live','halftime'].includes(String(x.status||'').toLowerCase()));
     const otherRows=rows.filter(x=>!['live','halftime'].includes(String(x.status||'').toLowerCase()));
+    let adminLineupMap={};
+    try{adminLineupMap=await rtlFetchPublicLineups(rows.map(x=>x.id));}catch(lineupError){console.warn('Admin match line-ups unavailable:',lineupError);}
     let adminEventMap={};
     try{adminEventMap=await rtlFetchMatchEvents(rows.map(x=>x.id));}catch(eventError){console.warn('Admin match events unavailable:',eventError);}
+    rows.forEach(fixture=>{
+      const teams={home:[],away:[]};
+      const home=String(fixture.home_academy||'').trim().toLowerCase();
+      const away=String(fixture.away_academy||'').trim().toLowerCase();
+      (adminLineupMap[fixture.id]||[]).forEach(player=>{
+        const academy=String(player.academy_name||'').trim().toLowerCase();
+        const side=academy===home?'home':academy===away?'away':'';
+        if(side&&!teams[side].some(p=>p.player_name===player.player_name)){
+          teams[side].push({player_name:player.player_name,shirt_number:player.shirt_number});
+        }
+      });
+      rtlAdminFixturePlayers[fixture.id]=teams;
+    });
     const card=x=>`<article class="team-slot" style="margin:12px 0;padding:17px">
       <div class="rtl-live-head"><strong>${rtlSafe(x.division)} | ${rtlSafe(x.group_name||'Group')} </strong>
       ${['live','halftime'].includes(String(x.status||'').toLowerCase())?`<span class="rtl-live-badge">${String(x.status).toLowerCase()==='halftime'?'Half-time':'<i class="rtl-live-dot"></i> Live'}</span>`:`<span class="rtl-live-division">${rtlSafe(x.status||'Scheduled')}</span>`}</div>
@@ -3857,11 +3985,15 @@ async function loadAdminMatchCentre(){
       </div>`}
       <details class="rtl-admin-details rtl-live-events"><summary>Recorded events (${(adminEventMap[x.id]||[]).length})</summary><div class="rtl-admin-details-body">${rtlRenderAdminMatchEvents(adminEventMap[x.id]||[],x.id)}</div></details>
       ${['completed','cancelled','postponed'].includes(String(x.status||'').toLowerCase())?'':`<details class="rtl-admin-details rtl-add-event-details" id="rtl-add-event-${x.id}"><summary>Add event details</summary><div class="rtl-admin-details-body">
-        <form class="rtl-admin-event-form" onsubmit="rtlAddMatchEvent(event,'${x.id}')">
-          <label>Event type<select name="event_type" required><option value="goal">Goal</option><option value="own_goal">Own Goal</option><option value="penalty">Penalty scored</option><option value="yellow_card">Yellow card</option><option value="red_card">Red card</option><option value="second_yellow">Second yellow</option><option value="substitution">Substitution</option><option value="penalty_missed">Penalty missed</option><option value="half_time">Half-time</option><option value="full_time">Full-time</option></select></label>
+        <form class="rtl-admin-event-form" data-fixture-id="${x.id}" onsubmit="rtlAddMatchEvent(event,'${x.id}')">
+          <label>Event type<select name="event_type" required onchange="rtlToggleSubstitutionFields(this)"><option value="goal">Goal</option><option value="own_goal">Own Goal</option><option value="penalty">Penalty scored</option><option value="yellow_card">Yellow card</option><option value="red_card">Red card</option><option value="second_yellow">Second yellow</option><option value="substitution">Substitution</option><option value="penalty_missed">Penalty missed</option><option value="half_time">Half-time</option><option value="full_time">Full-time</option></select></label>
           <label>Minute<input name="minute" type="number" min="0" max="130" required placeholder="e.g. 67"></label>
-          <label>Team<select name="team_side"><option value="">Not applicable</option><option value="home">${rtlSafe(x.home_academy||'Home team')}</option><option value="away">${rtlSafe(x.away_academy||'Away team')}</option></select></label>
-          <label class="event-wide">Player / event details<input name="player_name" maxlength="160" placeholder="Player name, or OFF: Name | ON: Name"></label>
+          <label>Team<select name="team_side" onchange="rtlUpdateSubstitutionPlayers(this)"><option value="">Not applicable</option><option value="home">${rtlSafe(x.home_academy||'Home team')}</option><option value="away">${rtlSafe(x.away_academy||'Away team')}</option></select></label>
+          <label class="event-wide rtl-player-details-field">Player / event details<input name="player_name" maxlength="160" placeholder="Player name or event details"></label>
+          <div class="event-wide rtl-substitution-fields" hidden>
+            <label>Player coming off (OFF)<select name="player_off"><option value="">Select team first</option></select></label>
+            <label>Player coming on (ON)<select name="player_on"><option value="">Select team first</option></select></label>
+          </div>
           <button type="submit">Save Match Event</button><p class="rtl-event-message" aria-live="polite"></p>
         </form>
       </div></details>`}
