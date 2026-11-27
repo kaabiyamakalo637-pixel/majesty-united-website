@@ -4661,23 +4661,120 @@ document.getElementById('rtl-hosted-form')?.addEventListener('submit',async e=>{
 
 
 // Public data surfaces for the newsroom, partners and independent hosted tournaments.
+
 async function rtlLoadPublicPlatform(){
-  const news=document.getElementById('rtl-public-news-list');
-  const promos=document.getElementById('rtl-public-promotions');
-  const events=document.getElementById('rtl-public-hosted-tournaments');
-  try{
-    const [articles,partners,campaigns,tournaments]=await Promise.all([
-      rtlRequest('rtl_news_articles','?select=id,title,slug,summary,article_type,division,cover_image_url,published_at&status=eq.published&order=published_at.desc&limit=12'),
-      rtlRequest('rtl_promotion_partners','?select=id,name,description,logo_url,website_url&active=eq.true&order=name.asc'),
-      rtlRequest('rtl_promotion_campaigns','?select=id,title,placement,image_url,target_url,partner_id&active=eq.true&order=created_at.desc'),
-      rtlRequest('rtl_hosted_tournaments','?select=id,name,slug,description,venue,start_date,end_date,format,status&is_public=eq.true&order=start_date.asc.nullslast')
+  const news = document.getElementById('rtl-public-news-list');
+  const promos = document.getElementById('rtl-public-promotions');
+  const events = document.getElementById('rtl-public-hosted-tournaments');
+  const regSelect = document.getElementById('rtl-register-tournament');
+
+  // Load hosted tournaments independently.
+  // News and promotions must never block team registration.
+  try {
+    const tournaments = await rtlRequest(
+      'rtl_hosted_tournaments',
+      '?select=id,name,slug,description,venue,start_date,end_date,format,status&is_public=eq.true&order=start_date.asc.nullslast'
+    );
+
+    const openTournaments = tournaments.filter(t =>
+      String(t.status || '').trim().toLowerCase() === 'registration'
+    );
+
+    if (regSelect) {
+      regSelect.innerHTML =
+        '<option value="">Select an open tournament</option>' +
+        openTournaments.map(t =>
+          `<option value="${t.id}">${rtlEsc(t.name)}</option>`
+        ).join('');
+
+      if (!openTournaments.length) {
+        regSelect.innerHTML =
+          '<option value="">No open tournaments available</option>';
+      }
+    }
+
+    if (events) {
+      events.innerHTML = tournaments.length
+        ? tournaments.map(t => `
+          <article class="card">
+            <small>${rtlEsc(t.status)} · ${rtlEsc(t.format || '')}</small>
+            <h3>${rtlEsc(t.name)}</h3>
+            <p>${rtlEsc(t.description || '')}</p>
+            <p>${rtlEsc(t.venue || 'Venue to be announced')} ·
+            ${rtlEsc(t.start_date || 'Date to be announced')}</p>
+            <button type="button"
+              onclick="rtlOpenHostedTournament('${t.id}')">
+              View tournament details
+            </button>
+            <div id="rtl-hosted-detail-${t.id}"></div>
+          </article>
+        `).join('')
+        : '<article class="card"><h3>No public tournaments listed</h3></article>';
+    }
+
+  } catch (e) {
+    console.error('Hosted tournament loading failed:', e);
+
+    if (regSelect) {
+      regSelect.innerHTML =
+        '<option value="">Unable to load tournaments. Refresh page.</option>';
+    }
+
+    if (events) {
+      events.textContent = 'Unable to load public tournaments.';
+    }
+  }
+
+  // Load news independently.
+  try {
+    const articles = await rtlRequest(
+      'rtl_news_articles',
+      '?select=id,title,slug,summary,article_type,division,cover_image_url,published_at&status=eq.published&order=published_at.desc&limit=12'
+    );
+
+    if (news) {
+      news.innerHTML = articles.length
+        ? articles.map(a => `
+          <article class="card">
+            <h3>${rtlEsc(a.title)}</h3>
+            <p>${rtlEsc(a.summary || '')}</p>
+          </article>
+        `).join('')
+        : '<p>No published stories yet.</p>';
+    }
+  } catch (e) {
+    console.warn('News loading failed:', e);
+  }
+
+  // Load promotions independently.
+  try {
+    const [partners, campaigns] = await Promise.all([
+      rtlRequest('rtl_promotion_partners',
+        '?select=id,name,description,logo_url,website_url&active=eq.true&order=name.asc'),
+      rtlRequest('rtl_promotion_campaigns',
+        '?select=id,title,placement,image_url,target_url,partner_id&active=eq.true&order=created_at.desc')
     ]);
-    if(news)news.innerHTML=articles.length?articles.map(a=>`<article class="card">${a.cover_image_url?`<img src="${rtlEsc(a.cover_image_url)}" alt="${rtlEsc(a.title)}" loading="lazy" style="width:100%;max-height:220px;object-fit:cover;border-radius:9px">`:''}<small>${rtlEsc(a.article_type)}${a.division?' · '+rtlEsc(a.division):''} · ${a.published_at?new Date(a.published_at).toLocaleDateString():''}</small><h3>${rtlEsc(a.title)}</h3><p>${rtlEsc(a.summary||'')}</p></article>`).join(''):'<article class="card"><h3>No published stories yet</h3><p>Check back for official RTL news and match reports.</p></article>';
-    if(promos){const phtml=partners.map(p=>`<article class="card">${p.logo_url?`<img src="${rtlEsc(p.logo_url)}" alt="${rtlEsc(p.name)}" loading="lazy" style="max-width:180px;max-height:90px;object-fit:contain">`:''}<h3>${rtlEsc(p.name)}</h3><p>${rtlEsc(p.description||'Official RTL partner')}</p>${p.website_url?`<a href="${rtlEsc(p.website_url)}" target="_blank" rel="noopener noreferrer">Visit partner</a>`:''}</article>`).join('');const chtml=campaigns.map(c=>`<article class="card">${c.image_url?`<img src="${rtlEsc(c.image_url)}" alt="${rtlEsc(c.title)}" loading="lazy" style="width:100%;max-height:180px;object-fit:cover;border-radius:9px">`:''}<h3>${rtlEsc(c.title)}</h3><small>${rtlEsc(c.placement.replaceAll('_',' '))}</small>${c.target_url?`<p><a href="${rtlEsc(c.target_url)}" target="_blank" rel="noopener noreferrer">Learn more</a></p>`:''}</article>`).join('');promos.innerHTML=phtml+chtml||'<article class="card"><h3>Partner with RTL</h3><p>Promotional opportunities for organisations supporting youth football.</p></article>';}
-    const regSelect=document.getElementById('rtl-register-tournament');if(regSelect)regSelect.innerHTML='<option value="">Select an open tournament</option>'+tournaments.filter(t=>t.status==='registration').map(t=>`<option value="${t.id}">${rtlEsc(t.name)}</option>`).join('');
-    if(events)events.innerHTML=tournaments.length?tournaments.map(t=>`<article class="card"><small>${rtlEsc(t.status)} · ${rtlEsc(t.format.replaceAll('_',' '))}</small><h3>${rtlEsc(t.name)}</h3><p>${rtlEsc(t.description||'')}</p><p>${rtlEsc(t.venue||'Venue to be announced')} · ${rtlEsc(t.start_date||'Date to be announced')}${t.end_date?' to '+rtlEsc(t.end_date):''}</p><button type="button" onclick="rtlOpenHostedTournament('${t.id}')">View tournament details</button><div id="rtl-hosted-detail-${t.id}"></div></article>`).join(''):'<article class="card"><h3>No public tournaments listed</h3><p>New Majesty Group hosted events will appear here when published.</p></article>';
-  }catch(e){[news,promos,events].filter(Boolean).forEach(el=>el.innerHTML='<article class="card"><p>Platform information is temporarily unavailable. Please refresh later.</p></article>');console.warn('Public platform load:',e);}
+
+    if (promos) {
+      promos.innerHTML = [
+        ...partners.map(p => `
+          <article class="card">
+            <h3>${rtlEsc(p.name)}</h3>
+            <p>${rtlEsc(p.description || '')}</p>
+          </article>
+        `),
+        ...campaigns.map(c => `
+          <article class="card">
+            <h3>${rtlEsc(c.title)}</h3>
+          </article>
+        `)
+      ].join('');
+    }
+  } catch (e) {
+    console.warn('Promotions loading failed:', e);
+  }
 }
+
 async function rtlOpenHostedTournament(id){const box=document.getElementById('rtl-hosted-detail-'+id);if(!box)return;box.innerHTML='<p>Loading tournament details...</p>';try{const [teams,fixtures,standings]=await Promise.all([rtlRequest('rtl_hosted_tournament_teams_public',`?select=id,team_name,group_name,registration_status&tournament_id=eq.${encodeURIComponent(id)}&registration_status=eq.approved&order=team_name.asc`),rtlRequest('rtl_hosted_tournament_fixtures',`?select=id,stage,group_name,match_date,kick_off,status,home_score,away_score,home_penalties,away_penalties,home_team_id,away_team_id&tournament_id=eq.${encodeURIComponent(id)}&order=match_date.asc.nullslast,kick_off.asc`),rtlRequest('rtl_hosted_tournament_standings',`?select=team_id,team_name,group_name,played,won,drawn,lost,goals_for,goals_against,goal_difference,points&tournament_id=eq.${encodeURIComponent(id)}&order=group_name.asc,points.desc,goal_difference.desc,goals_for.desc`) ]);const teamNames=Object.fromEntries(teams.map(t=>[t.id,t.team_name]));const groups=[...new Set(standings.map(t=>t.group_name||'Overall'))];const standingsHTML=groups.map(g=>`<h5>${rtlEsc(g)}</h5><div class="table-wrap"><table><thead><tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody>${standings.filter(t=>(t.group_name||'Overall')===g).map(t=>`<tr><td>${rtlEsc(t.team_name)}</td><td>${t.played}</td><td>${t.won}</td><td>${t.drawn}</td><td>${t.lost}</td><td>${t.goals_for}</td><td>${t.goals_against}</td><td>${t.goal_difference}</td><td><strong>${t.points}</strong></td></tr>`).join('')}</tbody></table></div>`).join('');box.innerHTML=`<h4>Participating teams</h4>${teams.length?teams.map(t=>`<p>${rtlEsc(t.team_name)}${t.group_name?' · '+rtlEsc(t.group_name):''}</p>`).join(''):'<p>Team list will be published after approval.</p>'}<h4>Fixtures and results</h4>${fixtures.length?fixtures.map(f=>`<p>${rtlEsc(f.match_date||'TBC')} ${rtlEsc(f.kick_off||'')} · ${rtlEsc(teamNames[f.home_team_id]||'TBC')} ${f.home_score} : ${f.away_score} ${rtlEsc(teamNames[f.away_team_id]||'TBC')}${f.home_penalties!==null&&f.home_penalties!==undefined?' (pens '+f.home_penalties+':'+f.away_penalties+')':''} · ${rtlEsc(f.stage.replaceAll('_',' '))} · ${rtlEsc(f.status)}</p>`).join(''):'<p>Fixtures will be published when ready.'}<h4>Standings</h4>${standingsHTML||'<p>Standings will appear after completed matches.</p>'}`;}catch(e){box.textContent='Tournament details are not available yet.';console.warn(e);}}
 document.getElementById('rtl-hosted-team-registration')?.addEventListener('submit',async e=>{e.preventDefault();const feedback=document.getElementById('rtl-hosted-registration-feedback');try{const tournament_id=document.getElementById('rtl-register-tournament').value;if(!tournament_id)throw new Error('Select an open tournament.');await rtlRequest('rtl_hosted_tournament_teams','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({tournament_id,team_name:document.getElementById('rtl-register-team-name').value.trim(),contact_name:document.getElementById('rtl-register-contact-name').value.trim(),contact_phone:document.getElementById('rtl-register-contact-phone').value.trim(),registration_status:'pending'})});feedback.textContent='Registration submitted. Majesty Group will review your team.';e.target.reset();}catch(err){feedback.textContent='Unable to submit registration: '+err.message;}});
 document.getElementById('rtl-journalist-application-form')?.addEventListener('submit',async e=>{e.preventDefault();const f=document.getElementById('rtl-journalist-application-feedback');try{await rtlRequest('rtl_journalist_applications','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({full_name:document.getElementById('rtl-journalist-name').value.trim(),organisation:document.getElementById('rtl-journalist-org').value.trim()||null,email:document.getElementById('rtl-journalist-email').value.trim(),phone:document.getElementById('rtl-journalist-phone').value.trim()||null,portfolio_url:document.getElementById('rtl-journalist-portfolio').value.trim()||null,status:'pending'})});f.textContent='Application received. The RTL team will review your submission.';e.target.reset();}catch(x){f.textContent='Unable to submit application: '+x.message;}});
