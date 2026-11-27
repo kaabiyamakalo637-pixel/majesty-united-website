@@ -1747,6 +1747,46 @@ body.rtl-event-theme img,body.rtl-event-theme video,body.rtl-event-theme canvas 
   #rtl-hosted-events .rtl-hosted-tournament-card p{font-size:14px}
 }
 
+
+/* Hosted tournament centre: event summary and match centre are separate blocks */
+#rtl-public-hosted-tournaments{display:block!important}
+#rtl-public-hosted-tournaments>.rtl-hosted-tournament-card{width:100%;margin:22px 0 0;padding:26px 28px;border:1px solid rgba(196,166,70,.28);border-top:5px solid #a98218;background:linear-gradient(120deg,rgba(40,18,0,.45),rgba(15,13,3,.96));}
+.rtl-hosted-tournament-card small{display:block;color:#c6a64b;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.rtl-hosted-tournament-card h3{font-size:clamp(22px,3vw,30px);line-height:1.25;margin:0 0 14px}
+.rtl-hosted-tournament-card p{line-height:1.65}
+.rtl-hosted-tournament-card .rtl-hosted-meta{color:var(--muted,#aaa);font-size:14px;margin:18px 0}
+.rtl-hosted-tournament-card button{margin-top:8px}
+.rtl-hosted-tournament-details{width:100%;margin:0 0 36px;padding:0 2px}
+.rtl-hosted-tournament-details:empty{display:none}
+.rtl-hosted-detail-section{width:100%;margin:22px 0 28px;padding:0 0 22px;border-bottom:1px solid rgba(255,255,255,.08)}
+.rtl-hosted-detail-section h3{font-size:20px;margin:0 0 16px;padding-left:13px;border-left:4px solid #d45b79}
+.rtl-hosted-team-list{display:flex;flex-wrap:wrap;gap:10px}
+.rtl-hosted-team-chip{display:inline-flex;padding:10px 14px;border:1px solid rgba(255,255,255,.08);border-radius:8px;background:rgba(255,255,255,.025);font-weight:650}
+.rtl-hosted-match-list{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.rtl-hosted-match-card{width:100%;padding:20px 18px;border:1px solid rgba(190,160,65,.22);border-left:5px solid #a98218;border-radius:13px;background:rgba(18,16,5,.75)}
+.rtl-hosted-match-card.is-live{border-left-color:#315bd8}
+.rtl-hosted-match-top{display:flex;justify-content:space-between;gap:12px;color:#c5a64b;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.rtl-hosted-match-top strong{color:#f1d36c}
+.rtl-hosted-match-score{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:14px;margin:22px 0;text-align:center}
+.rtl-hosted-match-score span{font-size:clamp(14px,2.2vw,19px);font-weight:750;overflow-wrap:anywhere}
+.rtl-hosted-match-score span:first-child{text-align:left}
+.rtl-hosted-match-score span:last-child{text-align:right}
+.rtl-hosted-match-score b{font-size:clamp(23px,4vw,32px);white-space:nowrap}
+.rtl-hosted-match-score i{font-style:normal;color:#b99a3c;padding:0 5px}
+.rtl-hosted-match-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;color:#aaa;font-size:13px}
+.rtl-hosted-standings-group{margin:12px 0 22px}
+.rtl-hosted-standings-group h5{margin:0 0 10px;color:#c9a94a}
+.rtl-hosted-standings-group .table-wrap{overflow-x:auto}
+.rtl-hosted-standings-group table{min-width:620px;width:100%}
+.rtl-hosted-empty,.rtl-hosted-loading{color:#aaa;padding:14px 0}
+@media(max-width:600px){
+ #rtl-public-hosted-tournaments>.rtl-hosted-tournament-card{padding:20px 17px}
+ .rtl-hosted-match-card{padding:16px 12px}
+ .rtl-hosted-match-score{gap:7px;margin:18px 0}
+ .rtl-hosted-match-score b{font-size:22px}
+ .rtl-hosted-match-score span{font-size:13px}
+}
+
 </style>
 
 <style>
@@ -4812,10 +4852,36 @@ async function rtlLoadPublicPlatform(){
     if(news)news.innerHTML=articles.length?articles.map(a=>`<article class="card">${a.cover_image_url?`<img src="${rtlEsc(a.cover_image_url)}" alt="${rtlEsc(a.title)}" loading="lazy" style="width:100%;max-height:220px;object-fit:cover;border-radius:9px">`:''}<small>${rtlEsc(a.article_type)}${a.division?' · '+rtlEsc(a.division):''} · ${a.published_at?new Date(a.published_at).toLocaleDateString():''}</small><h3>${rtlEsc(a.title)}</h3><p>${rtlEsc(a.summary||'')}</p></article>`).join(''):'<article class="card"><h3>No published stories yet</h3><p>Check back for official RTL news and match reports.</p></article>';
     if(promos){const phtml=partners.map(p=>`<article class="card">${p.logo_url?`<img src="${rtlEsc(p.logo_url)}" alt="${rtlEsc(p.name)}" loading="lazy" style="max-width:180px;max-height:90px;object-fit:contain">`:''}<h3>${rtlEsc(p.name)}</h3><p>${rtlEsc(p.description||'Official RTL partner')}</p>${p.website_url?`<a href="${rtlEsc(p.website_url)}" target="_blank" rel="noopener noreferrer">Visit partner</a>`:''}</article>`).join('');const chtml=campaigns.map(c=>`<article class="card">${c.image_url?`<img src="${rtlEsc(c.image_url)}" alt="${rtlEsc(c.title)}" loading="lazy" style="width:100%;max-height:180px;object-fit:cover;border-radius:9px">`:''}<h3>${rtlEsc(c.title)}</h3><small>${rtlEsc(c.placement.replaceAll('_',' '))}</small>${c.target_url?`<p><a href="${rtlEsc(c.target_url)}" target="_blank" rel="noopener noreferrer">Learn more</a></p>`:''}</article>`).join('');promos.innerHTML=phtml+chtml||'<article class="card"><h3>Partner with RTL</h3><p>Promotional opportunities for organisations supporting youth football.</p></article>';}
     const regSelect=document.getElementById('rtl-register-tournament');if(regSelect)regSelect.innerHTML='<option value="">Select an open tournament</option>'+tournaments.filter(t=>t.status==='registration').map(t=>`<option value="${t.id}">${rtlEsc(t.name)}</option>`).join('');
-    if(events)events.innerHTML=tournaments.length?tournaments.map(t=>`<article class="card rtl-hosted-tournament-card"><small>${rtlEsc(t.status)} · ${rtlEsc(t.format.replaceAll('_',' '))}</small><h3>${rtlEsc(t.name)}</h3><p>${rtlEsc(t.description||'')}</p><p>${rtlEsc(t.venue||'Venue to be announced')} · ${rtlEsc(t.start_date||'Date to be announced')}${t.end_date?' to '+rtlEsc(t.end_date):''}</p><button type="button" onclick="rtlOpenHostedTournament('${t.id}')">View tournament details</button><div id="rtl-hosted-detail-${t.id}"></div></article>`).join(''):'<article class="card"><h3>No public tournaments listed</h3><p>New Majesty Group hosted events will appear here when published.</p></article>';
+    if(events)events.innerHTML=tournaments.length?tournaments.map(t=>`<article class="card rtl-hosted-tournament-card"><small>● MAJESTY GROUP · ${rtlEsc(t.status)} · ${rtlEsc(t.format.replaceAll('_',' '))}</small><h3>${rtlEsc(t.name)}</h3><p>${rtlEsc(t.description||'')}</p><p class="rtl-hosted-meta">📍 ${rtlEsc(t.venue||'Venue to be announced')}　 ·　 ${rtlEsc(t.start_date||'Date to be announced')}${t.end_date?' to '+rtlEsc(t.end_date):''}</p><button type="button" onclick="rtlOpenHostedTournament('${t.id}')">View tournament centre</button></article><div class="rtl-hosted-tournament-details" id="rtl-hosted-detail-${t.id}"></div>`).join(''):'<article class="card"><h3>No public tournaments listed</h3><p>New Majesty Group hosted events will appear here when published.</p></article>';
   }catch(e){[news,promos,events].filter(Boolean).forEach(el=>el.innerHTML='<article class="card"><p>Platform information is temporarily unavailable. Please refresh later.</p></article>');console.warn('Public platform load:',e);}
 }
-async function rtlOpenHostedTournament(id){const box=document.getElementById('rtl-hosted-detail-'+id);if(!box)return;box.innerHTML='<p>Loading tournament details...</p>';try{const [teams,fixtures,standings]=await Promise.all([rtlRequest('rtl_hosted_tournament_teams_public',`?select=id,team_name,group_name,registration_status&tournament_id=eq.${encodeURIComponent(id)}&registration_status=eq.approved&order=team_name.asc`),rtlRequest('rtl_hosted_tournament_fixtures',`?select=id,stage,group_name,match_date,kick_off,status,home_score,away_score,home_penalties,away_penalties,home_team_id,away_team_id&tournament_id=eq.${encodeURIComponent(id)}&order=match_date.asc.nullslast,kick_off.asc`),rtlRequest('rtl_hosted_tournament_standings',`?select=team_id,team_name,group_name,played,won,drawn,lost,goals_for,goals_against,goal_difference,points&tournament_id=eq.${encodeURIComponent(id)}&order=group_name.asc,points.desc,goal_difference.desc,goals_for.desc`) ]);const teamNames=Object.fromEntries(teams.map(t=>[t.id,t.team_name]));const groups=[...new Set(standings.map(t=>t.group_name||'Overall'))];const standingsHTML=groups.map(g=>`<h5>${rtlEsc(g)}</h5><div class="table-wrap"><table><thead><tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody>${standings.filter(t=>(t.group_name||'Overall')===g).map(t=>`<tr><td>${rtlEsc(t.team_name)}</td><td>${t.played}</td><td>${t.won}</td><td>${t.drawn}</td><td>${t.lost}</td><td>${t.goals_for}</td><td>${t.goals_against}</td><td>${t.goal_difference}</td><td><strong>${t.points}</strong></td></tr>`).join('')}</tbody></table></div>`).join('');box.innerHTML=`<h4>Participating teams</h4>${teams.length?teams.map(t=>`<p>${rtlEsc(t.team_name)}${t.group_name?' · '+rtlEsc(t.group_name):''}</p>`).join(''):'<p>Team list will be published after approval.</p>'}<h4>Fixtures and results</h4>${fixtures.length?fixtures.map(f=>`<p>${rtlEsc(f.match_date||'TBC')} ${rtlEsc(f.kick_off||'')} · ${rtlEsc(teamNames[f.home_team_id]||'TBC')} ${f.home_score} : ${f.away_score} ${rtlEsc(teamNames[f.away_team_id]||'TBC')}${f.home_penalties!==null&&f.home_penalties!==undefined?' (pens '+f.home_penalties+':'+f.away_penalties+')':''} · ${rtlEsc(f.stage.replaceAll('_',' '))} · ${rtlEsc(f.status)}</p>`).join(''):'<p>Fixtures will be published when ready.'}<h4>Standings</h4>${standingsHTML||'<p>Standings will appear after completed matches.</p>'}`;}catch(e){box.textContent='Tournament details are not available yet.';console.warn(e);}}
+async function rtlOpenHostedTournament(id){
+ const box=document.getElementById('rtl-hosted-detail-'+id);
+ if(!box)return;
+ if(box.dataset.loaded==='true'){box.hidden=!box.hidden;return;}
+ box.hidden=false;
+ box.innerHTML='<p class="rtl-hosted-loading">Loading tournament centre...</p>';
+ try{
+  const [teams,fixtures,standings]=await Promise.all([
+   rtlRequest('rtl_hosted_tournament_teams_public',`?select=id,team_name,group_name,registration_status&tournament_id=eq.${encodeURIComponent(id)}&registration_status=eq.approved&order=team_name.asc`),
+   rtlRequest('rtl_hosted_tournament_fixtures',`?select=id,stage,group_name,match_date,kick_off,status,home_score,away_score,home_penalties,away_penalties,home_team_id,away_team_id&tournament_id=eq.${encodeURIComponent(id)}&order=match_date.asc.nullslast,kick_off.asc`),
+   rtlRequest('rtl_hosted_tournament_standings',`?select=team_id,team_name,group_name,played,won,drawn,lost,goals_for,goals_against,goal_difference,points&tournament_id=eq.${encodeURIComponent(id)}&order=group_name.asc,points.desc,goal_difference.desc,goals_for.desc`)
+  ]);
+  const teamNames=Object.fromEntries(teams.map(t=>[t.id,t.team_name]));
+  const groups=[...new Set(standings.map(t=>t.group_name||'Overall'))];
+  const standingsHTML=groups.map(g=>`<div class="rtl-hosted-standings-group"><h5>${rtlEsc(g)}</h5><div class="table-wrap"><table><thead><tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead><tbody>${standings.filter(t=>(t.group_name||'Overall')===g).map(t=>`<tr><td>${rtlEsc(t.team_name)}</td><td>${t.played}</td><td>${t.won}</td><td>${t.drawn}</td><td>${t.lost}</td><td>${t.goals_for}</td><td>${t.goals_against}</td><td>${t.goal_difference}</td><td><strong>${t.points}</strong></td></tr>`).join('')}</tbody></table></div></div>`).join('');
+  const teamHTML=teams.length?teams.map(t=>`<span class="rtl-hosted-team-chip">${rtlEsc(t.team_name)}${t.group_name?' · '+rtlEsc(t.group_name):''}</span>`).join(''):'<p>Team list will be published after approval.</p>';
+  const fixtureHTML=fixtures.length?fixtures.map(f=>{
+   const home=teamNames[f.home_team_id]||'TBC',away=teamNames[f.away_team_id]||'TBC';
+   const done=String(f.status||'').toLowerCase()==='completed';
+   const live=['live','halftime'].includes(String(f.status||'').toLowerCase());
+   const scoreReady=f.home_score!==null&&f.home_score!==undefined&&f.away_score!==null&&f.away_score!==undefined;
+   return `<article class="rtl-hosted-match-card ${live?'is-live':''}"><div class="rtl-hosted-match-top"><span>${rtlEsc(f.group_name||f.stage||'MATCH')}</span><strong>${live?'LIVE':done?'FULL TIME':rtlEsc(f.status||'SCHEDULED')}</strong></div><div class="rtl-hosted-match-score"><span>${rtlEsc(home)}</span><b>${scoreReady?f.home_score: '-'} <i>:</i> ${scoreReady?f.away_score:'-'}</b><span>${rtlEsc(away)}</span></div><div class="rtl-hosted-match-meta"><span>${rtlEsc(f.match_date||'Date TBC')} · ${rtlEsc(f.kick_off||'')}</span>${f.home_penalties!==null&&f.home_penalties!==undefined?`<span>Penalties ${f.home_penalties} : ${f.away_penalties}</span>`:''}</div></article>`;
+  }).join(''):'<p class="rtl-hosted-empty">Fixtures will appear here when they are published.</p>';
+  box.innerHTML=`<section class="rtl-hosted-detail-section"><h3>Participating teams</h3><div class="rtl-hosted-team-list">${teamHTML}</div></section><section class="rtl-hosted-detail-section"><h3>Matches and results</h3><div class="rtl-hosted-match-list">${fixtureHTML}</div></section><section class="rtl-hosted-detail-section"><h3>Standings</h3>${standingsHTML||'<p class="rtl-hosted-empty">Standings will appear after completed matches.</p>'}</section>`;
+  box.dataset.loaded='true';
+ }catch(e){box.textContent='Tournament details are not available yet. '+e.message;console.warn(e);}
+}
 document.getElementById('rtl-hosted-team-registration')?.addEventListener('submit',async e=>{e.preventDefault();const feedback=document.getElementById('rtl-hosted-registration-feedback');try{const tournament_id=document.getElementById('rtl-register-tournament').value;if(!tournament_id)throw new Error('Select an open tournament.');await rtlRequest('rtl_hosted_tournament_teams','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({tournament_id,team_name:document.getElementById('rtl-register-team-name').value.trim(),contact_name:document.getElementById('rtl-register-contact-name').value.trim(),contact_phone:document.getElementById('rtl-register-contact-phone').value.trim(),registration_status:'pending'})});feedback.textContent='Registration submitted. Majesty Group will review your team.';e.target.reset();}catch(err){feedback.textContent='Unable to submit registration: '+err.message;}});
 document.getElementById('rtl-journalist-application-form')?.addEventListener('submit',async e=>{e.preventDefault();const f=document.getElementById('rtl-journalist-application-feedback');try{await rtlRequest('rtl_journalist_applications','',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({full_name:document.getElementById('rtl-journalist-name').value.trim(),organisation:document.getElementById('rtl-journalist-org').value.trim()||null,email:document.getElementById('rtl-journalist-email').value.trim(),phone:document.getElementById('rtl-journalist-phone').value.trim()||null,portfolio_url:document.getElementById('rtl-journalist-portfolio').value.trim()||null,status:'pending'})});f.textContent='Application received. The RTL team will review your submission.';e.target.reset();}catch(x){f.textContent='Unable to submit application: '+x.message;}});
 document.getElementById('rtl-journalist-login-form')?.addEventListener('submit',async e=>{
