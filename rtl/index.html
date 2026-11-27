@@ -404,11 +404,22 @@ footer {
 .lineup-history-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid rgba(150,195,166,.15)}
 .lineup-history-item p{margin:3px 0;color:#9fb4a6;font-size:11px}
 .lineup-history-item button{min-height:38px;padding:7px 10px;white-space:nowrap;font-size:12px}
-.public-lineup-card{background:#0b2117;border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0}
-.public-lineup-pitch{background:linear-gradient(180deg,#07552f,#063d27);border:2px solid #fff;border-radius:10px;padding:12px 6px;display:flex;flex-direction:column;gap:10px}
-.public-lineup-row{display:flex;justify-content:space-evenly;gap:4px}
-.public-player{max-width:24%;text-align:center;color:#fff;font-size:10px;font-weight:700;text-shadow:0 1px 2px #000;overflow-wrap:anywhere}
-.public-player .shirt{display:block;margin:auto auto 3px;width:26px;height:26px;border-radius:50%;background:#fff;color:#063d27;line-height:26px;text-shadow:none;font-size:11px}
+/* Matchday lineup presentation */
+.public-lineup-card{background:linear-gradient(155deg,#091b12,#06130c);border:1px solid rgba(198,165,77,.28);border-radius:14px;padding:14px;margin:12px 0;box-shadow:0 12px 28px rgba(0,0,0,.22)}
+.public-lineup-card h3{color:#f7f4e9;margin-bottom:6px}
+.public-lineup-card>strong{display:inline-block;margin:8px 0 12px;padding:5px 10px;border-radius:6px;background:#9e0712;color:#fff;font-size:12px;letter-spacing:.5px;text-transform:uppercase}
+.public-lineup-pitch{position:relative;isolation:isolate;overflow:hidden;background:repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 10%,transparent 10% 20%),linear-gradient(180deg,#12643b,#07502e 48%,#0b5b35);border:2px solid rgba(255,255,255,.88);border-radius:10px;padding:18px 7px;min-height:430px;display:flex;flex-direction:column;justify-content:space-around;gap:13px}
+.public-lineup-pitch:before{content:"";position:absolute;z-index:-1;inset:7px;border:1px solid rgba(255,255,255,.72);border-radius:2px;background:linear-gradient(180deg,transparent calc(50% - .5px),rgba(255,255,255,.75) calc(50% - .5px),rgba(255,255,255,.75) calc(50% + .5px),transparent calc(50% + .5px)),radial-gradient(circle at center,transparent 0 42px,rgba(255,255,255,.72) 43px 44px,transparent 45px)}
+.public-lineup-pitch:after{content:"";position:absolute;z-index:-1;left:27%;right:27%;top:7px;bottom:7px;border:1px solid rgba(255,255,255,.65);pointer-events:none;clip-path:inset(0 0 0 0)}
+.public-lineup-row{display:flex;justify-content:space-evenly;align-items:flex-start;gap:4px;position:relative;z-index:1;width:100%}
+.public-player{flex:1 1 0;min-width:0;max-width:25%;text-align:center;color:#fff;font-size:10px;font-weight:750;text-shadow:0 1px 3px #001b0d;overflow-wrap:anywhere;display:flex;flex-direction:column;align-items:center;gap:4px}
+.public-player .shirt{width:35px;height:34px;display:grid;place-items:center;position:relative;background:linear-gradient(145deg,#e5bd55,#a97919);color:#17130a;filter:drop-shadow(0 2px 3px rgba(0,0,0,.55));clip-path:polygon(24% 4%,39% 0,61% 0,76% 4%,100% 24%,86% 43%,77% 36%,77% 100%,23% 100%,23% 36%,14% 43%,0 24%)}
+.public-player .shirt b{font-size:11px;font-weight:900;text-shadow:none;transform:translateY(2px)}
+.public-player-name{display:block;line-height:1.2;max-width:100%;padding:2px 4px;border-radius:4px;background:rgba(0,18,9,.55)}
+.public-player-name em{color:#f4d16d;font-style:normal;font-weight:900}
+.public-pitch-goal{position:absolute;z-index:1;left:39%;width:22%;height:9px;border:1px solid rgba(255,255,255,.75);background:rgba(255,255,255,.08)}
+.public-pitch-goal-top{top:7px;border-top:0}.public-pitch-goal-bottom{bottom:7px;border-bottom:0}
+@media(max-width:520px){.public-lineup-pitch{min-height:390px;padding:14px 3px;gap:10px}.public-player{font-size:9px}.public-player .shirt{width:31px;height:30px}.public-lineup-row{gap:1px}}
 @media(max-width:520px){
  .match-sheet{padding:10px}
  .match-sheet .sheet-panel{padding:7px}
@@ -1583,6 +1594,31 @@ html, body {
   }
 }
 
+
+/* Matchday pitch and one-tap live controls */
+.shared-match-pitch{min-height:820px;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 8%,transparent 8% 16%),linear-gradient(90deg,#063d22,#0a5a31 50%,#063d22)}
+.shared-team{padding:20px 10px 14px}
+.shared-team-heading{position:relative;z-index:2}
+.shared-pitch-player{max-width:23%;gap:5px}
+.shared-shirt{width:39px;height:37px;border-radius:4px;position:relative}
+.shared-shirt img{width:100%;height:100%;object-fit:cover;border-radius:50%;clip-path:none;border:2px solid rgba(255,255,255,.8)}
+.shared-player-name{font-size:clamp(9px,1.5vw,12px);max-width:100%;white-space:normal}
+.shared-player-status{display:flex;gap:3px;justify-content:center;flex-wrap:wrap;min-height:14px}
+.shared-player-status b{font-size:10px;padding:1px 4px;border-radius:4px;background:#101820;color:#fff}
+.shared-player-status .yc{background:#e6c329;color:#111}.shared-player-status .rc{background:#c8102e;color:#fff}.shared-player-status .yr{background:linear-gradient(90deg,#e6c329 0 48%,#c8102e 52%);color:#111}
+.shared-team-subs span{display:flex;flex-wrap:wrap;gap:6px}
+.shared-team-subs .shared-sub-player{display:inline-flex;align-items:center;gap:4px;padding:3px 6px;border-radius:5px;background:rgba(255,255,255,.08)}
+.shared-team-subs .shared-sub-player img{width:22px;height:22px;object-fit:cover;border-radius:50%}
+.rtl-one-tap-roster{margin:12px 0;padding:12px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:#071b11}
+.rtl-one-tap-roster h4{margin:0 0 9px;font-size:14px}
+.rtl-one-tap-team{margin:9px 0}.rtl-one-tap-team>strong{display:block;margin-bottom:6px;color:#e9d18a;font-size:12px}
+.rtl-one-tap-player{display:grid;grid-template-columns:minmax(0,1fr) repeat(4,42px);gap:5px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.rtl-one-tap-player>span{font-size:12px;min-width:0;overflow-wrap:anywhere}
+.rtl-one-tap-player button{min-height:38px;padding:4px;border-radius:7px;background:#173b2a;color:#fff;border:1px solid rgba(255,255,255,.15);font-size:17px}
+.rtl-one-tap-player button:disabled{opacity:.45}
+.rtl-one-tap-feedback{min-height:18px;color:#a9e6bd;font-size:11px;margin:7px 0 0}
+@media(max-width:520px){.shared-match-pitch{min-height:760px}.shared-team{padding:14px 4px 10px}.shared-shirt{width:32px;height:31px}.rtl-one-tap-player{grid-template-columns:minmax(0,1fr) repeat(4,38px);gap:4px}.rtl-one-tap-player button{min-height:40px}}
+
 </style>
 
 <style>
@@ -1649,6 +1685,44 @@ html, body {
     font-size: 25px !important;
   }
 }
+
+
+/* One shared matchday pitch showing both teams together */
+.shared-match-card{padding:18px}
+.shared-match-title{text-align:center;margin-bottom:14px}
+.shared-match-title>span{display:inline-block;color:#e6c66d;font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase}
+.shared-match-title h3{margin:5px 0;color:#fff;font-size:clamp(18px,3vw,25px)}
+.shared-match-title h3 i{color:#d8b85b;font-style:normal;font-size:.75em;padding:0 5px}
+.shared-match-title p{margin:4px 0;color:#b9c7bd;font-size:13px}
+.shared-match-pitch{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;min-height:760px;border:2px solid rgba(255,255,255,.82);border-radius:14px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 10%,transparent 10% 20%),linear-gradient(90deg,#07502b,#0a6537 50%,#07502b)}
+.shared-pitch-outline{position:absolute;inset:8px;border:1px solid rgba(255,255,255,.7);pointer-events:none}
+.shared-centre-line{position:absolute;left:8px;right:8px;top:50%;border-top:1px solid rgba(255,255,255,.75);z-index:0}
+.shared-centre-circle{position:absolute;width:116px;height:116px;border:1px solid rgba(255,255,255,.75);border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);z-index:0}
+.shared-goal{position:absolute;left:36%;width:28%;height:25px;border:1px solid rgba(255,255,255,.72);z-index:0}
+.shared-goal-top{top:8px;border-top:0}
+.shared-goal-bottom{bottom:8px;border-bottom:0}
+.shared-team{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:space-between;flex:1 1 50%;min-height:0;padding:18px 12px 13px}
+.shared-team-home{border-bottom:1px solid rgba(255,255,255,.32)}
+.shared-team-away{flex-direction:column-reverse}
+.shared-team-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:0 5px 10px}
+.shared-team-heading strong{font-size:clamp(12px,2vw,16px);color:#fff;text-shadow:0 1px 3px #001b0d}
+.shared-team-heading span{background:#99101b;color:#fff;border-radius:5px;padding:4px 8px;font-size:10px;font-weight:800;white-space:nowrap}
+.shared-team-lines{display:flex;flex-direction:column;justify-content:space-evenly;flex:1;gap:9px}
+.shared-pitch-line{display:flex;justify-content:space-evenly;align-items:center;gap:3px;width:100%}
+.shared-pitch-player{flex:1 1 0;min-width:0;max-width:25%;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;color:#fff;font-size:clamp(9px,1.4vw,12px);font-weight:750;text-shadow:0 1px 3px #001b0d}
+.shared-shirt{width:35px;height:34px;display:grid;place-items:center;background:linear-gradient(145deg,#f0d47c,#a97919);color:#17130a;clip-path:polygon(24% 4%,39% 0,61% 0,76% 4%,100% 24%,86% 43%,77% 36%,77% 100%,23% 100%,23% 36%,14% 43%,0 24%);filter:drop-shadow(0 2px 3px rgba(0,0,0,.55))}
+.shared-shirt b{font-size:11px;font-weight:900;text-shadow:none}
+.shared-player-name{display:block;max-width:100%;overflow-wrap:anywhere;line-height:1.15;padding:2px 4px;border-radius:4px;background:rgba(0,18,9,.58)}
+.shared-player-name em{color:#f4d16d;font-style:normal;font-weight:900}
+.shared-team-away .shared-shirt{background:linear-gradient(145deg,#f1f3f7,#aeb8c8);color:#111827}
+.shared-team-subs{display:flex;flex-direction:column;gap:3px;margin-top:10px;padding:8px 10px;border-radius:7px;background:rgba(0,15,8,.58);font-size:11px;color:#dce7df}
+.shared-team-subs b{color:#f2d27a;text-transform:uppercase;letter-spacing:.7px;font-size:10px}
+.shared-team-subs span{line-height:1.5}
+.shared-team-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;flex:1;color:#fff;text-align:center}
+.shared-team-empty strong{font-size:15px}
+.shared-team-empty span,.shared-lineup-note{color:#d7e0d9;font-size:12px}
+.shared-lineup-note{text-align:center;margin:10px 0 0}
+@media(max-width:600px){.shared-match-card{padding:10px}.shared-match-pitch{min-height:690px}.shared-team{padding:15px 5px 10px}.shared-pitch-player{font-size:9px}.shared-shirt{width:30px;height:29px}.shared-centre-circle{width:88px;height:88px}.shared-team-subs{font-size:10px;padding:7px}}
 
 </style>
 </head>
@@ -2548,94 +2622,96 @@ function rtlSafe(value) {
 async function loadPublicLineups() {
   const box = document.getElementById('public-lineups-list');
   if (!box) return;
-
-  box.innerHTML = '<p>Loading confirmed line-ups...</p>';
-
+  box.innerHTML = '<p>Loading confirmed match line-ups...</p>';
   try {
     const response = await fetch(
       `${RTL_DATA_URL}/rest/v1/rtl_public_lineups?select=*&order=match_date.asc`,
       { headers: rtlHeaders }
     );
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${await response.text()}`);
-    }
-
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);
     const rows = await response.json();
-    const grouped = {};
 
+    // A public match card is built from both approved team line-ups for the same fixture.
+    const fixtures = new Map();
+    let publicEvents = {};
+    try { publicEvents = await rtlFetchMatchEvents([...new Set(rows.map(r => r.fixture_id).filter(Boolean))]); } catch (e) { console.warn('Line-up event markers unavailable:', e); }
     rows.forEach(row => {
-      (grouped[row.lineup_id] ??= []).push(row);
+      const key = row.fixture_id || `single-${row.lineup_id}`;
+      if (!fixtures.has(key)) fixtures.set(key, []);
+      fixtures.get(key).push(row);
     });
 
-    const cards = Object.values(grouped);
+    const renderTeam = (items, teamName, side) => {
+      if (!items || !items.length) {
+        return `<div class="shared-team-empty"><strong>${rtlSafe(teamName)}</strong><span>Line-up not yet confirmed</span></div>`;
+      }
+      const first = items[0];
+      const formationName = first.formation || '4-2-3-1';
+      const shape = RTL_FORMATIONS[formationName] || RTL_FORMATIONS['4-2-3-1'];
+      const bySlot = Object.fromEntries(
+        items.filter(x => x.selection_status === 'starter').map(x => [x.position_slot, x])
+      );
+      const fixtureEvents = publicEvents[first.fixture_id] || [];
+      const statusFor = player => {
+        const matching = fixtureEvents.filter(ev => String(ev.player_name||'').trim().toLowerCase() === String(player?.player_name||'').trim().toLowerCase() && ev.team_side === side);
+        const second = matching.some(ev => String(ev.event_type).toLowerCase() === 'second_yellow');
+        const red = matching.some(ev => String(ev.event_type).toLowerCase() === 'red_card');
+        const yellow = matching.some(ev => String(ev.event_type).toLowerCase() === 'yellow_card');
+        return second ? '<b class="yr" title="Second yellow and red">🟨🟥</b>' : red ? '<b class="rc" title="Red card">🟥</b>' : yellow ? '<b class="yc" title="Yellow card">🟨</b>' : '';
+      };
+      const lines = side === 'away' ? [...shape].reverse() : shape;
+      const starters = lines.map((line, r) => `
+        <div class="shared-pitch-line">
+          ${line.map((pos, i) => {
+            const originalRow = side === 'away' ? shape.length - 1 - r : r;
+            const player = bySlot[`${originalRow}-${i}`];
+            const photo = player?.photo_url || player?.player_photo_url || '';
+            return `<div class="shared-pitch-player">
+              <span class="shared-shirt">${photo ? `<img src="${rtlSafe(photo)}" alt="" loading="lazy">` : `<b>${player ? rtlSafe(player.shirt_number) : '·'}</b>`}</span>
+              <span class="shared-player-name">${player ? rtlSafe(player.player_name) : rtlSafe(pos)}
+                ${player?.is_captain ? '<em>(C)</em>' : ''}
+                ${player?.is_goalkeeper ? '<em>(GK)</em>' : ''}
+              </span><span class="shared-player-status">${player ? statusFor(player) : ''}</span>
+            </div>`;
+          }).join('')}
+        </div>`).join('');
+      const subs = items.filter(x => x.selection_status === 'substitute');
+      return `<section class="shared-team shared-team-${side}">
+        <div class="shared-team-heading"><strong>${rtlSafe(teamName)}</strong><span>${rtlSafe(formationName)}</span></div>
+        <div class="shared-team-lines">${starters}</div>
+        <div class="shared-team-subs"><b>Substitutes</b><span>${subs.map(x => { const photo=x.photo_url||x.player_photo_url||''; return `<i class="shared-sub-player">${photo?`<img src="${rtlSafe(photo)}" alt="" loading="lazy">`:''}#${rtlSafe(x.shirt_number)} ${rtlSafe(x.player_name)} ${statusFor(x)}</i>`; }).join('') || 'None listed'}</span></div>
+      </section>`;
+    };
 
-    box.innerHTML = cards.length
-      ? cards.map(items => {
-          const first = items[0];
-          const shape = RTL_FORMATIONS[first.formation] ||
-            RTL_FORMATIONS['4-2-3-1'];
-
-          const bySlot = Object.fromEntries(
-            items
-              .filter(x => x.selection_status === 'starter')
-              .map(x => [x.position_slot, x])
-          );
-
-          return `
-            <article class="public-lineup-card">
-              <h3>${rtlSafe(first.academy_name)} | ${rtlSafe(first.division)}</h3>
-
-              <p>
-                ${rtlSafe(first.home_academy)} vs
-                ${rtlSafe(first.away_academy)}
-                · ${rtlSafe(first.match_date || 'Date TBC')}
-              </p>
-
-              <strong>Formation: ${rtlSafe(first.formation)}</strong>
-
-              <div class="public-lineup-pitch">
-                ${shape.map((line, r) => `
-                  <div class="public-lineup-row">
-                    ${line.map((pos, i) => {
-                      const player = bySlot[`${r}-${i}`];
-
-                      return `
-                        <div class="public-player">
-                          <span class="shirt">
-                            ${player ? rtlSafe(player.shirt_number) : '·'}
-                          </span>
-                          ${player
-                            ? rtlSafe(player.player_name) +
-                              (player.is_captain ? ' (C)' : '') +
-                              (player.is_goalkeeper ? ' (GK)' : '')
-                            : pos}
-                        </div>
-                      `;
-                    }).join('')}
-                  </div>
-                `).join('')}
-              </div>
-
-              <h4>Substitutes</h4>
-              <p>
-                ${items
-                  .filter(x => x.selection_status === 'substitute')
-                  .map(x => rtlSafe(x.shirt_number) + ' ' + rtlSafe(x.player_name))
-                  .join(' · ') || 'None listed'}
-              </p>
-            </article>
-          `;
-        }).join('')
-      : '<p>No public line-ups confirmed yet.</p>';
-
+    const cards = [...fixtures.values()].map(items => {
+      const first = items[0];
+      const homeName = first.home_academy || 'Home team';
+      const awayName = first.away_academy || 'Away team';
+      const homeItems = items.filter(x => x.academy_name === homeName);
+      const awayItems = items.filter(x => x.academy_name === awayName);
+      // Keep the single-team fallback visible if the opponent has not submitted a public line-up.
+      const hasHome = homeItems.length > 0;
+      const hasAway = awayItems.length > 0;
+      return `<article class="public-lineup-card shared-match-card">
+        <div class="shared-match-title"><span>${rtlSafe(first.division || '')}</span><h3>${rtlSafe(homeName)} <i>vs</i> ${rtlSafe(awayName)}</h3><p>${rtlSafe(first.match_date || 'Date TBC')}</p></div>
+        <div class="shared-match-pitch" aria-label="Both teams starting line-ups on one shared football pitch">
+          <div class="shared-pitch-outline"></div>
+          <div class="shared-centre-circle"></div>
+          <div class="shared-centre-line"></div>
+          <div class="shared-goal shared-goal-top"></div>
+          <div class="shared-goal shared-goal-bottom"></div>
+          ${renderTeam(hasHome ? homeItems : [], homeName, 'home')}
+          ${renderTeam(hasAway ? awayItems : [], awayName, 'away')}
+        </div>
+        ${(!hasHome || !hasAway) ? `<p class="shared-lineup-note">${!hasHome ? rtlSafe(homeName) + ' line-up is awaiting confirmation. ' : ''}${!hasAway ? rtlSafe(awayName) + ' line-up is awaiting confirmation.' : ''}</p>` : ''}
+      </article>`;
+    });
+    box.innerHTML = cards.length ? cards.join('') : '<p>No public line-ups confirmed yet.</p>';
   } catch (error) {
     console.error('RTL public line-ups loading error:', error);
-    box.innerHTML =
-      `<p>Unable to load confirmed line-ups: ${rtlSafe(error.message)}</p>`;
+    box.innerHTML = `<p>Unable to load confirmed line-ups: ${rtlSafe(error.message)}</p>`;
   }
 }
-
 
 function rtlLiveMinute(match) {
   const status = String(match.status || '').toLowerCase();
@@ -3829,19 +3905,40 @@ async function rtlAddMatchEvent(event,fixtureId){
   }
 }
 
+
+async function rtlOneTapPlayerEvent(fixtureId,eventType,playerName,teamSide,button){
+  if(button?.disabled)return;
+  const card=button?.closest('article');
+  const feedback=card?.querySelector(`[data-one-tap-feedback="${fixtureId}"]`);
+  const minuteNode=card?.querySelector('[data-rtl-live-minute]');
+  const minuteText=minuteNode?.textContent?.match(/\d+/)?.[0];
+  const minute=Number(minuteText||0);
+  if(button){button.disabled=true;button.dataset.old=button.textContent;button.textContent='…';}
+  try{
+    const response=await fetch(`${RTL_DATA_URL}/rest/v1/rtl_match_events`,{method:'POST',headers:{...rtlAuthHeaders({'Content-Type':'application/json',Prefer:'return=minimal'})},body:JSON.stringify({fixture_id:fixtureId,minute,event_type:eventType,player_name:playerName,team_side:teamSide})});
+    if(!response.ok)throw new Error((await response.text())||`HTTP ${response.status}`);
+    const score=await rtlRecalculateMatchScore(fixtureId); await rtlSyncMatchStatusFromEvents(fixtureId);
+    if(feedback)feedback.textContent=`Saved ${eventType.replace('_',' ')} for ${playerName} at ${minute}′. Score ${score.home}-${score.away}.`;
+    await loadAdminMatchCentre();
+    if(typeof loadRTLFixtures==='function')await loadRTLFixtures();
+  }catch(error){if(feedback)feedback.textContent='Could not save: '+error.message;else alert('Could not save event: '+error.message);}
+  finally{if(button){button.disabled=false;button.textContent=button.dataset.old||'✓';}}
+}
+
 async function loadAdminMatchCentre(){
   const box=document.getElementById('rtl-admin-match-list');
   const reportsBox=document.getElementById('rtl-admin-report-list');
   try{
-    const [rows,reports]=await Promise.all([
+    const [rows,reports,publicLineups]=await Promise.all([
       rtlRequest('rtl_public_fixtures','?select=*&season=eq.2027&order=match_date.asc'),
-      rtlRequest('rtl_referee_reports','?select=*&order=submitted_at.desc')
+      rtlRequest('rtl_referee_reports','?select=*&order=submitted_at.desc'),
+      rtlRequest('rtl_public_lineups','?select=*&order=match_date.asc').catch(()=>[])
     ]);
     const liveRows=rows.filter(x=>['live','halftime'].includes(String(x.status||'').toLowerCase()));
     const otherRows=rows.filter(x=>!['live','halftime'].includes(String(x.status||'').toLowerCase()));
     let adminEventMap={};
     try{adminEventMap=await rtlFetchMatchEvents(rows.map(x=>x.id));}catch(eventError){console.warn('Admin match events unavailable:',eventError);}
-    const card=x=>`<article class="team-slot" style="margin:12px 0;padding:17px">
+    const card=x=>{const roster=(publicLineups||[]).filter(p=>p.fixture_id===x.id);const rosterUI=roster.length?`<section class="rtl-one-tap-roster"><h4>One-tap player actions</h4>${[ ['home',x.home_academy],['away',x.away_academy] ].map(([side,name])=>{const team=roster.filter(p=>p.academy_name===name);return team.length?`<div class="rtl-one-tap-team"><strong>${rtlSafe(name)}</strong>${team.map(p=>`<div class="rtl-one-tap-player"><span>#${rtlSafe(p.shirt_number??'')} ${rtlSafe(p.player_name||'Player')}</span><button type="button" title="Goal" onclick="rtlOneTapPlayerEvent('${x.id}','goal',decodeURIComponent('${encodeURIComponent(String(p.player_name||''))}'),'${side}',this)">⚽</button><button type="button" title="Yellow card" onclick="rtlOneTapPlayerEvent('${x.id}','yellow_card',decodeURIComponent('${encodeURIComponent(String(p.player_name||''))}'),'${side}',this)">🟨</button><button type="button" title="Red card" onclick="rtlOneTapPlayerEvent('${x.id}','red_card',decodeURIComponent('${encodeURIComponent(String(p.player_name||''))}'),'${side}',this)">🟥</button><button type="button" title="Substitution" onclick="rtlOneTapPlayerEvent('${x.id}','substitution',decodeURIComponent('${encodeURIComponent(String(p.player_name||''))}'),'${side}',this)">🔄</button></div>`).join('')}</div>`:''}).join('')}<p class="rtl-one-tap-feedback" data-one-tap-feedback="${x.id}" aria-live="polite"></p></section>`:'<p class="rtl-event-empty">Approved line-ups are needed for player-specific one-tap controls.</p>';return `<article class="team-slot" style="margin:12px 0;padding:17px">
       <div class="rtl-live-head"><strong>${rtlSafe(x.division)} | ${rtlSafe(x.group_name||'Group')} </strong>
       ${['live','halftime'].includes(String(x.status||'').toLowerCase())?`<span class="rtl-live-badge">${String(x.status).toLowerCase()==='halftime'?'Half-time':'<i class="rtl-live-dot"></i> Live'}</span>`:`<span class="rtl-live-division">${rtlSafe(x.status||'Scheduled')}</span>`}</div>
       <div class="rtl-live-teams"><div class="rtl-live-team">${rtlSafe(x.home_academy||'Home team')}</div>
@@ -3855,6 +3952,7 @@ async function loadAdminMatchCentre(){
           ${[['goal','⚽ Goal'],['penalty','⚽ Penalty scored'],['own_goal','↩ Own goal'],['yellow_card','🟨 Yellow card'],['red_card','🟥 Red card'],['substitution','🔄 Substitution'],['penalty_missed','✖ Penalty missed'],['half_time','Ⅱ Half-time'],['full_time','■ Full-time']].map(([type,label])=>`<button type="button" class="rtl-quick-event-btn" onclick="rtlOpenQuickEvent('${x.id}','${type}')">${label}</button>`).join('')}
         </div>
       </div>`}
+      ${['completed','cancelled','postponed'].includes(String(x.status||'').toLowerCase())?'':rosterUI}
       <details class="rtl-admin-details rtl-live-events"><summary>Recorded events (${(adminEventMap[x.id]||[]).length})</summary><div class="rtl-admin-details-body">${rtlRenderAdminMatchEvents(adminEventMap[x.id]||[],x.id)}</div></details>
       ${['completed','cancelled','postponed'].includes(String(x.status||'').toLowerCase())?'':`<details class="rtl-admin-details rtl-add-event-details" id="rtl-add-event-${x.id}"><summary>Add event details</summary><div class="rtl-admin-details-body">
         <form class="rtl-admin-event-form" onsubmit="rtlAddMatchEvent(event,'${x.id}')">
@@ -3874,7 +3972,7 @@ async function loadAdminMatchCentre(){
           <button type="submit">Save Manual Correction</button><p class="rtl-event-message" aria-live="polite"></p>
         </form>
       </div></details>`}
-    </article>`;
+    </article>`};
     box.innerHTML=liveRows.length?`<h3>Live Now</h3>${liveRows.map(card).join('')}`:'';
     box.innerHTML+=(otherRows.length?`<h3>Other Matches</h3>${otherRows.map(card).join('')}`:'');
     if(!rows.length) box.innerHTML='<p>No matches scheduled.</p>';
@@ -4313,7 +4411,7 @@ async function rtlEnablePushNotifications() {
 // RTL platform operations: newsroom, partner campaigns and independent hosted events.
 function rtlEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function rtlRequireManager(){if(!['admin','rtl_staff'].includes(sessionStorage.getItem('rtlStaffRole'))||!sessionStorage.getItem('rtlAccessToken'))throw new Error('Admin or RTL Staff sign-in required.');}
-async function loadRTLNewsroomAdmin(){const apps=document.getElementById('rtl-journalist-applications'),articles=document.getElementById('rtl-news-review-list');try{rtlRequireManager();const [a,n]=await Promise.all([rtlRequest('rtl_journalist_applications','?select=id,full_name,organisation,email,phone,portfolio_url,status,created_at&order=created_at.desc'),rtlRequest('rtl_news_articles','?select=id,title,summary,article_type,status,created_at,author_id&status=in.(submitted,approved)&order=created_at.desc')]);apps.innerHTML=a.length?a.map(x=>`<article class="card"><b>${rtlEsc(x.full_name)}</b><p>${rtlEsc(x.organisation)} · ${rtlEsc(x.email)} · ${rtlEsc(x.phone)}</p><p>Status: ${rtlEsc(x.status)}</p>${x.portfolio_url?`<a href="${rtlEsc(x.portfolio_url)}" target="_blank" rel="noopener">Portfolio</a>`:''}<p>${sessionStorage.getItem('rtlStaffRole')==='admin'?`<button type="button" onclick="rtlSetJournalistApplication('${x.id}','approved')">Approve & create login</button>`:''} <button type="button" onclick="rtlSetJournalistApplication('${x.id}','rejected')">Reject</button></p></article>`).join(''):'<p>No applications.</p>';articles.innerHTML=n.length?n.map(x=>`<article class="card"><b>${rtlEsc(x.title)}</b><p>${rtlEsc(x.article_type)} · ${rtlEsc(x.status)}</p><p>${rtlEsc(x.summary)}</p><button type="button" onclick="rtlReviewArticle('${x.id}','published')">Publish</button> <button type="button" onclick="rtlReviewArticle('${x.id}','rejected')">Return to author</button></article>`).join(''):'<p>No articles awaiting review.</p>';}catch(e){apps.textContent=e.message;articles.textContent=e.message;}}
+async function loadRTLNewsroomAdmin(){const apps=document.getElementById('rtl-journalist-applications'),articles=document.getElementById('rtl-news-review-list');try{rtlRequireManager();const [a,n]=await Promise.all([rtlRequest('rtl_journalist_applications','?select=id,full_name,organisation,email,phone,portfolio_url,status,created_at&order=created_at.desc'),rtlRequest('rtl_news_articles','?select=id,title,summary,article_type,status,created_at,author_id&status=in.(submitted,approved)&order=created_at.desc')]);apps.innerHTML=a.length?a.map(x=>{const status=String(x.status||'pending').toLowerCase();const actions=status==='pending'?`${sessionStorage.getItem('rtlStaffRole')==='admin'?`<button type="button" onclick="rtlSetJournalistApplication('${x.id}','approved')">Approve & create login</button>`:''} <button type="button" onclick="rtlSetJournalistApplication('${x.id}','rejected')">Reject</button>`:'';const statusLabel=status==='approved'?'Approved':status==='rejected'?'Rejected':'Pending';return `<article class="card"><b>${rtlEsc(x.full_name)}</b><p>${rtlEsc(x.organisation)} · ${rtlEsc(x.email)} · ${rtlEsc(x.phone)}</p><p>Status: <strong>${statusLabel}</strong></p>${x.portfolio_url?`<a href="${rtlEsc(x.portfolio_url)}" target="_blank" rel="noopener">Portfolio</a>`:''}${actions?`<p>${actions}</p>`:''}</article>`;}).join(''):'<p>No applications.</p>';articles.innerHTML=n.length?n.map(x=>`<article class="card"><b>${rtlEsc(x.title)}</b><p>${rtlEsc(x.article_type)} · ${rtlEsc(x.status)}</p><p>${rtlEsc(x.summary)}</p><button type="button" onclick="rtlReviewArticle('${x.id}','published')">Publish</button> <button type="button" onclick="rtlReviewArticle('${x.id}','rejected')">Return to author</button></article>`).join(''):'<p>No articles awaiting review.</p>';}catch(e){apps.textContent=e.message;articles.textContent=e.message;}}
 async function rtlSetJournalistApplication(id,status){
  try{
   rtlRequireManager();
