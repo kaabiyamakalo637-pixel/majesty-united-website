@@ -117,6 +117,9 @@ header {
   color: var(--muted);
 }
 .nav-links a:hover { color: var(--accent); }
+.rtl-language-picker{display:flex;align-items:center;gap:6px;margin-left:10px;color:var(--muted);font-size:12px;white-space:nowrap}
+.rtl-language-picker select{width:auto;min-width:112px;padding:8px 28px 8px 10px;border:1px solid var(--line);border-radius:8px;background:#102b1e;color:#fff;font:inherit}
+@media(max-width:800px){.rtl-language-picker{margin:8px 0 0;padding:8px;border-top:1px solid var(--line)}.rtl-language-picker select{flex:1}}
 .nav-menu-toggle { display: none; }
 .hero {
   padding: 95px 22px 85px;
@@ -1986,18 +1989,26 @@ body.rtl-event-theme :is(.hero,.hero-section) { background-color:var(--rtl-theme
       <span>RISING TALENTS<small>LEAGUE</small></span>
     </a>
     <div class="nav-links" id="rtl-main-nav-links">
-      <a href="#about">About</a>
-      <a href="#competition">Competition</a>
-      <a href="#fixtures">Fixtures</a>
-      <a href="#live">Live Centre</a>
-      <a href="#rtl-live-chat">Live Chat</a>
-      <a href="#rtl-newsroom">Newsroom</a>
-      <a href="#rtl-promotions">Partners</a>
-      <a href="#rtl-hosted-events">Tournaments</a>
-      <a href="#fan-vote">Fan Vote</a>
-      <a href="#pathway">Talent Pathway</a>
+      <a href="#about" data-i18n="About">About</a>
+      <a href="#competition" data-i18n="Competition">Competition</a>
+      <a href="#fixtures" data-i18n="Fixtures">Fixtures</a>
+      <a href="#live" data-i18n="Live Centre">Live Centre</a>
+      <a href="#rtl-live-chat" data-i18n="Live Chat">Live Chat</a>
+      <a href="#rtl-newsroom" data-i18n="Newsroom">Newsroom</a>
+      <a href="#rtl-promotions" data-i18n="Partners">Partners</a>
+      <a href="#rtl-hosted-events" data-i18n="Tournaments">Tournaments</a>
+      <a href="#fan-vote" data-i18n="Fan Vote">Fan Vote</a>
+      <a href="#pathway" data-i18n="Talent Pathway">Talent Pathway</a>
+      <label class="rtl-language-picker" for="rtl-language-select"><span data-i18n="Language">Language</span>
+        <select id="rtl-language-select" aria-label="Website language">
+          <option value="EN">English</option>
+          <option value="FR">Français</option>
+          <option value="ES">Español</option>
+          <option value="DE">Deutsch</option>
+        </select>
+      </label>
     </div>
-    <a class="nav-login-link" id="rtl-header-access" href="#staff-login">Admin Login</a>
+    <a class="nav-login-link" id="rtl-header-access" href="#staff-login" data-i18n="Admin Login">Admin Login</a>
   </nav>
 </header>
 
@@ -2613,7 +2624,7 @@ body.rtl-event-theme :is(.hero,.hero-section) { background-color:var(--rtl-theme
           <label for="rtl-setting-season-year">Season year</label>
           <input id="rtl-setting-season-year" type="number" min="2000" max="2100" step="1" required>
           <label for="rtl-setting-edition-number">Edition number</label>
-          <input id="rtl-setting-edition-number" type="number" min="1" max="999" step="1" required>
+          <input id="rtl-setting-edition-number" type="number" min="1" max="999" step="1" placeholder="Leave blank if this competition has no edition number">
           <button type="submit">Save Competition Settings</button>
           <p id="rtl-competition-settings-feedback" role="status" aria-live="polite"></p>
         </form>
@@ -4135,20 +4146,23 @@ function rtlApplyCompetitionIdentity(settings) {
   if (!settings) return;
   const name = String(settings.tournament_name || 'Rising Talents League');
   const year = Number(settings.season_year) || 2027;
-  const edition = Number(settings.edition_number) || 1;
+  const edition = settings.edition_number === null || settings.edition_number === undefined || settings.edition_number === '' ? null : Number(settings.edition_number);
   const nameNode = document.getElementById('rtl-hero-tournament-name');
   const yearNode = document.getElementById('rtl-hero-season-label');
   const editionNode = document.getElementById('rtl-hero-edition-label');
   if (nameNode) nameNode.textContent = name;
   if (yearNode) yearNode.textContent = `THE ${year} SEASON`;
-  if (editionNode) editionNode.textContent = `${rtlOrdinal(edition)} EDITION`;
+  if (editionNode) {
+    editionNode.textContent = edition ? `${rtlOrdinal(edition)} EDITION` : '';
+    editionNode.hidden = !edition;
+  }
   const regHeading = document.querySelector('#public-academy-registration h3');
   if (regHeading) regHeading.textContent = `Academy Registration for the ${year} Season`;
   const competitionEyebrow = document.querySelector('#competition .section-heading .eyebrow');
   if (competitionEyebrow) competitionEyebrow.textContent = `${year} Competition`;
   document.title = `${name} | ${year}`;
   const preview = document.getElementById('rtl-competition-settings-preview');
-  if (preview) preview.textContent = `${name} · ${year} Season · ${rtlOrdinal(edition)} Edition`;
+  if (preview) preview.textContent = `${name} · ${year} Season${edition ? ` · ${rtlOrdinal(edition)} Edition` : ''}`;
 }
 async function loadRTLPublicCompetitionIdentity() {
   try {
@@ -4171,7 +4185,7 @@ async function loadRTLCompetitionSettings() {
     const current = rows?.[0] || {tournament_name:'Rising Talents League',season_year:2027,edition_number:1};
     document.getElementById('rtl-setting-tournament-name').value = current.tournament_name || 'Rising Talents League';
     document.getElementById('rtl-setting-season-year').value = current.season_year || 2027;
-    document.getElementById('rtl-setting-edition-number').value = current.edition_number || 1;
+    document.getElementById('rtl-setting-edition-number').value = current.edition_number ?? '';
     rtlApplyCompetitionIdentity(current);
     if (feedback) feedback.textContent = '';
   } catch (error) {
@@ -4187,10 +4201,11 @@ document.getElementById('rtl-competition-settings-form')?.addEventListener('subm
     }
     const tournament_name = document.getElementById('rtl-setting-tournament-name').value.trim();
     const season_year = Number(document.getElementById('rtl-setting-season-year').value);
-    const edition_number = Number(document.getElementById('rtl-setting-edition-number').value);
+    const editionInput = document.getElementById('rtl-setting-edition-number').value.trim();
+    const edition_number = editionInput === '' ? null : Number(editionInput);
     if (!tournament_name) throw new Error('Enter the tournament name.');
     if (!Number.isInteger(season_year) || season_year < 2000 || season_year > 2100) throw new Error('Enter a valid season year between 2000 and 2100.');
-    if (!Number.isInteger(edition_number) || edition_number < 1 || edition_number > 999) throw new Error('Enter an edition number between 1 and 999.');
+    if (edition_number !== null && (!Number.isInteger(edition_number) || edition_number < 1 || edition_number > 999)) throw new Error('Enter an edition number between 1 and 999, or leave it blank.');
     if (feedback) feedback.textContent = 'Saving settings...';
     const body = {setting_key:'main', tournament_name, season_year, edition_number, updated_at:new Date().toISOString()};
     await rtlRequest('rtl_site_settings', '?on_conflict=setting_key', {
@@ -5005,6 +5020,47 @@ window.setInterval(()=>{if(document.visibilityState==='visible')rtlLoadChat();},
   window.addEventListener('resize',()=>{if(window.innerWidth>800)close();});
   document.addEventListener('keydown',event=>{if(event.key==='Escape')close();});
 })();
+
+// RTL multilingual interface. Only explicitly marked interface labels are translated.
+// Player names, team names, scores, dates, articles, chat messages and submitted content stay untouched.
+const RTL_I18N_FUNCTION_URL = `${RTL_DATA_URL}/functions/v1/rtl-translate`;
+const RTL_LANGUAGE_STORAGE_KEY = 'rtlWebsiteLanguage';
+const RTL_I18N_EN = {
+  'Menu':'Menu','About':'About','Competition':'Competition','Fixtures':'Fixtures','Live Centre':'Live Centre','Live Chat':'Live Chat','Newsroom':'Newsroom','Partners':'Partners','Tournaments':'Tournaments','Fan Vote':'Fan Vote','Talent Pathway':'Talent Pathway','Language':'Language','Admin Login':'Admin Login'
+};
+let rtlTranslationCache = {};
+async function rtlSetLanguage(language) {
+  const allowed = ['EN','FR','ES','DE'];
+  const target = allowed.includes(language) ? language : 'EN';
+  document.documentElement.lang = target.toLowerCase();
+  localStorage.setItem(RTL_LANGUAGE_STORAGE_KEY, target);
+  const picker = document.getElementById('rtl-language-select');
+  if (picker) picker.value = target;
+  const nodes = [...document.querySelectorAll('[data-i18n]')];
+  if (target === 'EN') {
+    nodes.forEach(node => { const key=node.getAttribute('data-i18n'); if (key in RTL_I18N_EN) node.textContent=RTL_I18N_EN[key]; });
+    return;
+  }
+  const keys = [...new Set(nodes.map(node => node.getAttribute('data-i18n')).filter(Boolean))];
+  const missing = keys.filter(key => !rtlTranslationCache[`${target}:${key}`]);
+  if (missing.length) {
+    try {
+      const response = await fetch(RTL_I18N_FUNCTION_URL, {
+        method:'POST', headers:{'Content-Type':'application/json','apikey':RTL_DATA_KEY,'Authorization':`Bearer ${RTL_DATA_KEY}`},
+        body:JSON.stringify({target_lang:target,texts:missing})
+      });
+      if (!response.ok) throw new Error(`Translation service returned ${response.status}`);
+      const data = await response.json();
+      missing.forEach((key,index) => { const translated=data.translations?.[index]; if (translated) rtlTranslationCache[`${target}:${key}`]=translated; });
+    } catch (error) {
+      console.warn('RTL translation service is not configured yet.', error);
+      return;
+    }
+  }
+  nodes.forEach(node => { const key=node.getAttribute('data-i18n'); const translated=rtlTranslationCache[`${target}:${key}`]; if (translated) node.textContent=translated; });
+}
+document.getElementById('rtl-language-select')?.addEventListener('change', event => rtlSetLanguage(event.target.value));
+rtlSetLanguage(localStorage.getItem(RTL_LANGUAGE_STORAGE_KEY) || 'EN');
 
 // RTL Web Push notifications. Fans opt in from each device/browser.
 const RTL_PUSH_PUBLIC_KEY = 'BL-kUnKGt8EWpOqNIXcV2t5-84vTOPmNGQC_MxZjp43U7z3abd1e5n8vwcwIpe54_aPp1a5jc0Fw_UxIc72oBF0';
