@@ -1704,64 +1704,127 @@ body.rtl-event-theme img,body.rtl-event-theme video,body.rtl-event-theme canvas 
 
 
 
-/* Hosted tournament public cards: full-width professional layout */
+/* Hosted tournaments: compact competition hub cards */
 #rtl-hosted-events #rtl-public-hosted-tournaments.grid{
   display:grid!important;
-  grid-template-columns:minmax(0,1fr)!important;
-  gap:22px!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:18px!important;
   align-items:stretch;
   width:100%;
 }
 #rtl-hosted-events #rtl-public-hosted-tournaments > .rtl-hosted-tournament-card{
-  display:block;
-  width:100%;
+  display:flex;
+  flex-direction:column;
   min-width:0;
+  width:100%;
   max-width:100%;
-  padding:clamp(18px,3vw,30px);
+  padding:22px;
   margin:0;
   overflow:hidden;
   border:1px solid rgba(255,255,255,.12);
-  border-top:4px solid #CE1126;
-  border-radius:16px;
-  background:linear-gradient(145deg,rgba(28,13,9,.96),rgba(7,27,18,.98) 42%,rgba(4,17,11,.99));
-  box-shadow:0 14px 34px rgba(0,0,0,.22);
+  border-top:3px solid #CE1126;
+  border-radius:14px;
+  background:linear-gradient(150deg,rgba(23,43,31,.98),rgba(7,27,18,.99) 72%);
+  box-shadow:0 10px 26px rgba(0,0,0,.18);
+}
+#rtl-hosted-events .rtl-hosted-card-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:12px;
+}
+#rtl-hosted-events .rtl-hosted-card-status,
+#rtl-hosted-events .rtl-hosted-card-format{
+  display:inline-flex;
+  align-items:center;
+  min-height:25px;
+  padding:4px 9px;
+  border-radius:5px;
+  font-size:10px;
+  line-height:1.2;
+  font-weight:850;
+  letter-spacing:.7px;
+  text-transform:uppercase;
+}
+#rtl-hosted-events .rtl-hosted-card-status{
+  color:#b9edca;
+  background:rgba(71,166,105,.14);
+  border:1px solid rgba(113,207,145,.22);
+}
+#rtl-hosted-events .rtl-hosted-card-format{
+  color:#e2c77b;
+  background:rgba(206,162,53,.10);
+  border:1px solid rgba(206,162,53,.2);
 }
 #rtl-hosted-events .rtl-hosted-tournament-card h3{
-  max-width:100%;
-  margin:8px 0 12px;
-  font-size:clamp(21px,3vw,30px);
-  line-height:1.22;
+  margin:0 0 10px;
+  color:#fff;
+  font-size:clamp(19px,2vw,24px);
+  line-height:1.25;
   overflow-wrap:anywhere;
 }
-#rtl-hosted-events .rtl-hosted-tournament-card p{
-  max-width:100%;
-  line-height:1.65;
+#rtl-hosted-events .rtl-hosted-tournament-card .rtl-hosted-summary{
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:3;
+  overflow:hidden;
+  margin:0 0 16px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.55;
+}
+#rtl-hosted-events .rtl-hosted-card-meta{
+  display:grid;
+  gap:8px;
+  margin-top:auto;
+  padding:12px 0;
+  border-top:1px solid rgba(255,255,255,.09);
+  color:#d6e2d9;
+  font-size:12px;
+}
+#rtl-hosted-events .rtl-hosted-card-meta span{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  min-width:0;
   overflow-wrap:anywhere;
+}
+#rtl-hosted-events .rtl-hosted-card-meta strong{
+  flex:0 0 54px;
+  color:#9fb5a6;
+  font-size:10px;
+  letter-spacing:.6px;
+  text-transform:uppercase;
 }
 #rtl-hosted-events .rtl-hosted-tournament-card > button{
-  min-height:48px;
-  padding:12px 20px;
+  align-self:flex-start;
+  min-height:42px;
+  margin-top:4px;
+  padding:10px 16px;
+  border-radius:7px;
 }
 #rtl-hosted-events .rtl-hosted-tournament-card [id^="rtl-hosted-detail-"]{
   display:block;
   width:100%;
   min-width:0;
-  margin-top:20px;
-  padding-top:18px;
+  margin-top:14px;
+  padding-top:14px;
   border-top:1px solid rgba(255,255,255,.1);
 }
 #rtl-hosted-events .rtl-hosted-tournament-card [id^="rtl-hosted-detail-"] h4{
-  margin:20px 0 10px;
+  margin:16px 0 9px;
   color:#fff;
-  font-size:17px;
+  font-size:16px;
 }
 #rtl-hosted-events .rtl-hosted-tournament-card [id^="rtl-hosted-detail-"] p{
   margin:8px 0;
-  padding:12px 14px;
+  padding:10px 12px;
   border:1px solid rgba(255,255,255,.09);
-  border-radius:9px;
+  border-radius:8px;
   background:rgba(255,255,255,.035);
-  font-size:13px;
+  font-size:12px;
 }
 #rtl-hosted-events .rtl-hosted-tournament-card [id^="rtl-hosted-detail-"] .table-wrap{
   width:100%;
@@ -1775,19 +1838,15 @@ body.rtl-event-theme img,body.rtl-event-theme video,body.rtl-event-theme canvas 
 }
 #rtl-hosted-events .rtl-hosted-tournament-card [id^="rtl-hosted-detail-"] th,
 #rtl-hosted-events .rtl-hosted-tournament-card [id^="rtl-hosted-detail-"] td{
-  padding:10px 9px;
+  padding:9px 8px;
   border-bottom:1px solid rgba(255,255,255,.08);
   text-align:left;
   white-space:nowrap;
 }
-@media(max-width:600px){
-  #rtl-hosted-events #rtl-public-hosted-tournaments.grid{gap:14px!important}
-  #rtl-hosted-events #rtl-public-hosted-tournaments > .rtl-hosted-tournament-card{
-    padding:17px 15px;
-    border-radius:12px;
-  }
+@media(max-width:700px){
+  #rtl-hosted-events #rtl-public-hosted-tournaments.grid{grid-template-columns:minmax(0,1fr)!important;gap:13px!important}
+  #rtl-hosted-events #rtl-public-hosted-tournaments > .rtl-hosted-tournament-card{padding:18px 16px;border-radius:12px}
   #rtl-hosted-events .rtl-hosted-tournament-card h3{font-size:21px}
-  #rtl-hosted-events .rtl-hosted-tournament-card p{font-size:14px}
 }
 
 
@@ -5349,7 +5408,9 @@ async function rtlLoadPublicPlatform(){
     if(news)news.innerHTML=articles.length?articles.map(a=>`<article class="card">${a.cover_image_url?`<img src="${rtlEsc(a.cover_image_url)}" alt="${rtlEsc(a.title)}" loading="lazy" style="width:100%;max-height:220px;object-fit:cover;border-radius:9px">`:''}<small>${rtlEsc(a.article_type)}${a.division?' · '+rtlEsc(a.division):''} · ${a.published_at?new Date(a.published_at).toLocaleDateString():''}</small><h3>${rtlEsc(a.title)}</h3><p>${rtlEsc(a.summary||'')}</p></article>`).join(''):'<article class="card"><h3>No published stories yet</h3><p>Check back for official RTL news and match reports.</p></article>';
     if(promos){const phtml=partners.map(p=>`<article class="card rtl-partner-card">${p.logo_url?`<img src="${rtlEsc(p.logo_url)}" alt="${rtlEsc(p.name)}" loading="lazy">`:''}<h3>${rtlEsc(p.name)}</h3><p>${rtlEsc(p.description||'Official RTL partner')}</p>${p.website_url?`<a href="${rtlEsc(p.website_url)}" target="_blank" rel="noopener noreferrer">Visit partner</a>`:''}</article>`).join('');const chtml=campaigns.map(c=>`<article class="card">${c.image_url?`<img src="${rtlEsc(c.image_url)}" alt="${rtlEsc(c.title)}" loading="lazy" style="width:100%;max-height:180px;object-fit:cover;border-radius:9px">`:''}<h3>${rtlEsc(c.title)}</h3><small>${rtlEsc(c.placement.replaceAll('_',' '))}</small>${c.target_url?`<p><a href="${rtlEsc(c.target_url)}" target="_blank" rel="noopener noreferrer">Learn more</a></p>`:''}</article>`).join('');promos.innerHTML=phtml+chtml||'<article class="card"><h3>Partner with RTL</h3><p>Promotional opportunities for organisations supporting youth football.</p></article>';}
     const regSelect=document.getElementById('rtl-register-tournament');if(regSelect)regSelect.innerHTML='<option value="">Select an open tournament</option>'+tournaments.filter(t=>t.status==='registration').map(t=>`<option value="${t.id}">${rtlEsc(t.name)}</option>`).join('');
-    if(events)events.innerHTML=tournaments.length?tournaments.map(t=>`<article class="card rtl-hosted-tournament-card"><small>${rtlEsc(t.status)} · ${rtlEsc(t.format.replaceAll('_',' '))}</small><h3>${rtlEsc(t.name)}</h3><p>${rtlEsc(t.description||'')}</p><p>${rtlEsc(t.venue||'Venue to be announced')} · ${rtlEsc(t.start_date||'Date to be announced')}${t.end_date?' to '+rtlEsc(t.end_date):''}</p><button type="button" onclick="rtlOpenHostedTournament('${t.id}')">View tournament details</button><div id="rtl-hosted-detail-${t.id}"></div></article>`).join(''):'<article class="card"><h3>No public tournaments listed</h3><p>New Majesty Group hosted events will appear here when published.</p></article>';
+    const hostedDateLabel=value=>{if(!value)return 'Date to be announced';const d=new Date(value+'T00:00:00');return Number.isNaN(d.getTime())?value:d.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});};
+    const hostedStatusLabel=value=>(value||'scheduled').replaceAll('_',' ').replace(/\\b\\w/g,ch=>ch.toUpperCase());
+    if(events)events.innerHTML=tournaments.length?tournaments.map(t=>`<article class="card rtl-hosted-tournament-card"><div class="rtl-hosted-card-top"><span class="rtl-hosted-card-status">${rtlEsc(hostedStatusLabel(t.status))}</span><span class="rtl-hosted-card-format">${rtlEsc((t.format||'Tournament').replaceAll('_',' '))}</span></div><h3>${rtlEsc(t.name)}</h3><p class="rtl-hosted-summary">${rtlEsc(t.description||'Tournament information will be announced soon.')}</p><div class="rtl-hosted-card-meta"><span><strong>Venue</strong>${rtlEsc(t.venue||'To be announced')}</span><span><strong>Date</strong>${rtlEsc(hostedDateLabel(t.start_date))}${t.end_date&&t.end_date!==t.start_date?' to '+rtlEsc(hostedDateLabel(t.end_date)):''}</span></div><button type="button" onclick="rtlOpenHostedTournament('${t.id}')">View tournament details</button><div id="rtl-hosted-detail-${t.id}"></div></article>`).join(''):'<article class="card"><h3>No public tournaments listed</h3><p>New Majesty Group hosted events will appear here when published.</p></article>';
   }catch(e){[news,promos,events].filter(Boolean).forEach(el=>el.innerHTML='<article class="card"><p>Platform information is temporarily unavailable. Please refresh later.</p></article>');console.warn('Public platform load:',e);}
 }
 async function rtlOpenHostedTournament(id){
