@@ -5061,18 +5061,27 @@ function rtlCaptureStaticTranslationNodes() {
   }
 }
 function rtlCaptureDynamicUi(root) {
-  if (!root || root.nodeType !== 1) return;
-  const allowed = 'button,label,th,summary,legend';
-  const candidates = [];
-  if (root.matches?.(allowed)) candidates.push(root);
-  candidates.push(...root.querySelectorAll?.(allowed) || []);
-  candidates.forEach(el => {
-    if (el.closest(RTL_TRANSLATION_PROTECTED) || el.closest('[data-no-translate],[data-user-content="true"]')) return;
-    // Only translate a control when its text is fixed UI copy, not a record name or value.
-    const textNodes = [...el.childNodes].filter(n => n.nodeType === Node.TEXT_NODE && n.nodeValue.trim());
-    if (!textNodes.length || textNodes.some(n => n.nodeValue.trim().length > 1000)) return;
-    textNodes.forEach(n => { if (!rtlOriginalTextNodes.has(n)) { rtlOriginalTextNodes.set(n, n.nodeValue); rtlDynamicUiNodes.add(n); } });
-  });
+  if (!root || root.nodeType !== Node.ELEMENT_NODE) return;
+  // Capture newly rendered interface copy, not text inside known user-data areas.
+  // Keep common record containers excluded even when a page inserts them dynamically.
+  const dynamicDataExclusions = [
+    'tbody', '[data-record]', '[data-player-id]', '[data-match-id]', '[data-fixture-id]',
+    '[data-user-content="true"]', '.rtl-chat-message', '.rtl-announcement-history-item',
+    '.rtl-player-card', '.rtl-player-row', '.rtl-fixture-row', '.rtl-match-row',
+    '.rtl-news-card', '.rtl-article-card', '.rtl-event-card', '.rtl-promotion-card'
+  ].join(',');
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let node;
+  while ((node = walker.nextNode())) {
+    const value = node.nodeValue;
+    if (!value || !value.trim() || value.trim().length > 1000) continue;
+    if (rtlTranslationExcluded(node)) continue;
+    if (node.parentElement.closest(dynamicDataExclusions)) continue;
+    if (!rtlOriginalTextNodes.has(node)) {
+      rtlOriginalTextNodes.set(node, value);
+      rtlDynamicUiNodes.add(node);
+    }
+  }
 }
 async function rtlTranslatePhrases(target, phrases) {
   const unique = [...new Set(phrases)];
